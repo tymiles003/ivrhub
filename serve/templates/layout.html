@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Hawthorne</title>
+
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    {% block head %}
+    {% endblock %}
+
+  </head>
+  <body>
+
+    <!-- topbar -->
+    <!-- /topbar -->
+
+    <div class='container'>
+      {% block body %}
+      {% endblock %}
+    </div>
+
+    <!-- footer -->
+    <!-- /footer -->
+
+  </body>
+</html>
