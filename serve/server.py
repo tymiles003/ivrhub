@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
-upload_server.py
-uploading sample data and performing some basic parsing
+server.py
+data entry management
 '''
 import flask
 

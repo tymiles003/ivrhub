@@ -1,7 +1,7 @@
 '''
 hawthorne_settings_sample.py
 the following settings are placeholders
-copy this file somewhere secure, rename it, and point an env var at it:
+copy this file somewhere secure, rename it, and point an env var to it:
     $ export HAWTHORNE_SETTINGS=/path/to/settings.py
 you may also want to do this in your .bashrc or .zshrc
 '''
