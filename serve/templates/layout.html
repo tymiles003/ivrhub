@@ -1,26 +1,62 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Hawthorne</title>
+    <head>
+        <title>Hawthorne</title>
 
-    <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap.css') }}">
+        <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap.css') }}">
 
-    {% block head %}
-    {% endblock %}
+        {% block head %}
+        {% endblock %}
 
-  </head>
-  <body>
-
-    <!-- topbar -->
-    <!-- /topbar -->
-
-    <div class='container'>
-      {% block body %}
-      {% endblock %}
+    </head>
+    <body>
+        <div class='navbar'>
+            <div class='navbar-inner'>
+                <div class='container'>
+                    <a class='brand' href="{{url_for('home')}}">Hawthorne</a>
+                    <ul class='nav'>
+                        <li><a href='#'>About</a></li>
+                        <li><a href='#'>Help</a></li>
+                        <li><a href='#'>Demo</a></li>
+                        <li><a href="{{url_for('register')}}">Register</a></li>
+                    </ul>
+                    <ul class='nav pull-right'>
+                        {% if session.email %}
+                        <li class='dropdown'>
+                        <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+                            {{ session.email }} <b class='caret'></b>
+                        </a>
+                        <ul class='dropdown-menu'>
+                            <li><a href="#">Profile</a></li>
+                            <li><a href="#">Forms</a></li>
+                            <li class='divider'></li>
+                            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                        </ul>
+                        </li>
+                        {% else %}
+                        <li><a href="{{url_for('login')}}">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </ul>
+            </div>
+        </div>
     </div>
 
-    <!-- footer -->
-    <!-- /footer -->
 
-  </body>
+    <div class='container'>
+        {% block body %}
+        {% endblock %}
+    </div>
+
+    {% block footer %}
+    {% endblock %}
+    
+    <!-- cdn needs local fallback -->
+    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-dropdown.js') }}"></script>
+
+    {% block js %}
+    {% endblock %}
+
+</body>
 </html>
