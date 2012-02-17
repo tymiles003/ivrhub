@@ -1,3 +1,6 @@
 [submodule "serve/static/bootstrap"]
 	path = serve/static/bootstrap
 	url = https://github.com/twitter/bootstrap.git
+[submodule "serve/static/happy"]
+	path = serve/static/happy
+	url = git://github.com/andyet/Happy.js
