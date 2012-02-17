@@ -23,3 +23,21 @@ MONGO_CONFIG = {
     , 'host': 'localhost'
     , 'port': 27017
 }
+
+# amazon web services credentials
+# you must verify a sender and seek production access via AWS SES
+AWS = {
+    'access_key_id': 'AKzyxw987'
+    , 'secret_access_key': 'lmnop456'
+    , 'verified_sender': 'bruce@wayneindustries.com'
+}
+
+
+# this user is injected into the database as the first admin
+# can be used to promote other 'real' users to admins
+INITIAL_USER = {
+    'email': 'peter@dailybugle.net'
+    , 'name': 'Peter Parker'
+    , 'organization': 'The Daily Bugle'
+    , 'password': 'ven0msuck5'
+}
