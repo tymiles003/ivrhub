@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<h1>verification status</h1>
+<div class='row'>
+    <div class='offset3 span6'>
+        <table class='table table-bordered'>
+            <tbody>
+                <tr>
+                    <td>Email confirmed</td>
+                    {% if email_confirmed %}
+                    <td>yup</td>
+                    {% else %}
+                    <td>not yet</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>Identity verified</td>
+                    {% if identity_verified %}
+                    <td>indeed</td>
+                    {% else %}
+                    <td>nope</td>
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

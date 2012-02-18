@@ -13,7 +13,7 @@
         {% endif %}
 
         <form class='form-horizontal' action="{{ url_for('login') }}" method=post id='login_form'>
-            <fieldset>
+            <fieldset> 
                 <legend>Login</legend>
                 <div class='control-group'>
                     <label class='control-label' for='email'>Email</label>
@@ -28,6 +28,7 @@
                         <a class='help-block pull-right' href="{{ url_for('forgot') }}">Forgot your password?</a>
                     </div>
                 </div>
+                <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
 
                 <div class='form-actions'>
                     <button type='submit' class='btn btn-primary'>Submit</button>
