@@ -187,6 +187,7 @@ def login():
         user.last_login_time = datetime.datetime.utcnow()
         user.save()
         flask.session['email'] = flask.request.form['email']
+        flask.session['admin_rights'] = user.admin_rights
 
         return flask.redirect(flask.url_for('dashboard'))
 
@@ -197,6 +198,7 @@ def logout():
     redirect home
     '''
     flask.session.pop('email', None)
+    flask.session.pop('admin_rights', None)
 
     return flask.redirect(flask.url_for('home'))
 
@@ -238,14 +240,11 @@ def directory(internal_id):
 
         try:
             user.save()
-            message = 'updates saved successfully'
             return flask.render_template('directory_single_user.html'
-                , email=user.email, success=message, user=user)
+                , success='updates saved successfully', user=user)
         except:
             return flask.render_template('directory_single_user.html'
-                , email=user.email, error='error saving changes, sorry |:'
-                , user=user)
-
+                , error='error saving changes, sorry /:', user=user)
         
     if flask.request.method == 'GET':
         if internal_id:
@@ -263,9 +262,32 @@ def directory(internal_id):
 @login_required
 def profile():
     ''' viewing/editing ones own profile
-    admins can view/edit at /directory
+    note that admins can view/edit any profile at /directory
     '''
-    return flask.render_template('profile.html')
+    user = User.objects(email=flask.session['email'])
+    if not user:  # uh, what?
+        flask.abort(404)
+    user = user[0]
+
+    if flask.request.method == 'POST':
+        user.name = flask.request.form['name']
+        user.email = flask.request.form['email']
+        user.organization = flask.request.form['organization']
+
+        try:
+            user.save()
+            # have to update the session in case the email was edited
+            # might want to vet the new email with another confirmation step
+            flask.session['email'] = flask.request.form['email']
+            message = 'updates saved successfully'
+            return flask.render_template('profile.html', success=message
+                , user=user)
+        except:
+            return flask.render_template('directory_single_user.html'
+                , error='error saving changes, sorry /:', user=user)
+    
+    if flask.request.method == 'GET':
+        return flask.render_template('profile.html', user=user)
 
 
 @app.route('/forgot/', defaults={'code': None})

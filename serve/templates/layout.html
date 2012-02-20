@@ -18,7 +18,10 @@
                         <li><a href='#'>About</a></li>
                         <li><a href='#'>Help</a></li>
                         <li><a href='#'>Demo</a></li>
+                        
+                        {% if not session.email %}
                         <li><a href="{{url_for('register')}}">Register</a></li>
+                        {% endif %}
                     </ul>
                     <ul class='nav pull-right'>
                         {% if session.email %}
@@ -27,8 +30,14 @@
                             {{ session.email }} <b class='caret'></b>
                         </a>
                         <ul class='dropdown-menu'>
-                            <li><a href="#"><i class='icon-user'></i> Profile</a></li>
-                            <li><a href="#"><i class='icon-list-alt'></i> Forms</a></li>
+                            <li><a href="#"><i class='icon-list-alt'></i> My Forms</a></li>
+                            <li><a href="#"><i class='icon-check'></i> View Submissions</a></li>
+                            <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Edit Profile</a></li>
+                            {% if session.admin_rights %}
+                            <li class='divider'></li>
+                            <li><a href="{{ url_for('directory') }}"><i class='icon-book'></i> Directory</a></li>
+                            {% endif %}
+
                             <li class='divider'></li>
                             <li><a href="{{ url_for('logout') }}"><i class='icon-off'></i> Logout</a></li>
                         </ul>
