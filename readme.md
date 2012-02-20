@@ -12,3 +12,8 @@ use virtualenv and pip to install
     pymongo
     mongoengine
     boto
+
+after cloning, get the bootstrap and happy.js repos:
+    submodule init()
+    git submodule update()
+
