@@ -118,7 +118,8 @@ def register():
         _send_confirmation_email(new_user)
 
         # log the user in  
-        flask.session['email'] = user.email
+        flask.session['email'] = new_user.email
+        flask.session['admin_rights'] = new_user.admin_rights
 
         # redirect to a holding area
         return flask.redirect(flask.url_for('verification_status'))
@@ -154,10 +155,7 @@ def verification_status():
     '''
     user = User.objects(email=flask.session['email'])[0]
     # if verified/confirmed, redirect to dash
-    return flask.render_template(
-        'verification_status.html'
-        , email_confirmed=user.email_confirmed
-        , identity_verified=user.verified)
+    return flask.render_template('verification_status.html', user=user)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -227,8 +225,15 @@ def directory(internal_id):
         user.name = flask.request.form['name']
         user.email = flask.request.form['email']
         user.organization = flask.request.form['organization']
-
+        
         if flask.request.form['verification'] == 'verified':
+            # check to see if the verification status has changed
+            if not user.verified:
+                # send email to user that they've been verified
+                # catch any email changes with by reloading the doc
+                print 'reloading'
+                user.reload()
+                _send_notification_of_verification(user)
             user.verified = True
         elif flask.request.form['verification'] == 'unverified':
             user.verified = False
@@ -330,6 +335,21 @@ def _generate_random_string(length):
         , os.urandom(length)))
     
 
+def _send_notification_of_verification(user):
+    ''' email a user that they've been verified by an admin and now have full
+    access to the site
+    '''
+    print 'emailing..'
+    body = '''
+        Hello!  Your information has been verified by an administrator and you 
+        now have full access to Hawthorne.  Thanks!
+
+         http://127.0.0.1:8000
+         '''
+
+    _send_email(user.email, 'you now have access to Hawthorne', body)
+
+
 def _send_admin_verification(user):
     ''' email to an admin indicating that there a user needs verification
     '''
@@ -347,13 +367,11 @@ def _send_admin_verification(user):
         http://127.0.0.1:8000/directory/%s
 
         Thanks!
-        ''' % (user.name, user.email, user.organization, user.email)
+        ''' % (user.name, user.email, user.organization, user._id)
 
     # send to the AWS verified sender..should probably use a manager's email
-    _send_email(
-        app.config['AWS']['verified_sender']
-        , 'Hawthorne -- %s needs to be verified' % user.name
-        , body)
+    _send_email(app.config['AWS']['verified_sender']
+        , 'Hawthorne -- %s needs to be verified' % user.name, body)
 
 
 def _send_confirmation_email(user):
@@ -386,6 +404,7 @@ def _send_email(recipient, subject, body):
         , subject
         , body
         , [recipient])
+    print result
     # need to catch errors in result
 
 
