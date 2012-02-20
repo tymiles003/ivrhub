@@ -288,7 +288,7 @@ def profile():
             return flask.render_template('profile.html', success=message
                 , user=user)
         except:
-            return flask.render_template('directory_single_user.html'
+            return flask.render_template('profile.html'
                 , error='error saving changes, sorry /:', user=user)
     
     if flask.request.method == 'GET':
