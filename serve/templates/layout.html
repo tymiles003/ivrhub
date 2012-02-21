@@ -15,7 +15,7 @@
                 <div class='container'>
                     <a class='brand' href="{{url_for('home')}}">Hawthorne</a>
                     <ul class='nav'>
-                        <li><a href='#'>About</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
                         <li><a href='#'>Help</a></li>
                         <li><a href='#'>Demo</a></li>
                         
@@ -32,6 +32,7 @@
                         <ul class='dropdown-menu'>
                             <li><a href="#"><i class='icon-list-alt'></i> My Forms</a></li>
                             <li><a href="#"><i class='icon-check'></i> View Submissions</a></li>
+                            <li><a href="#"><i class='icon-signal'></i> Analysis</a></li>
                             <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Edit Profile</a></li>
                             {% if session.admin_rights %}
                             <li class='divider'></li>

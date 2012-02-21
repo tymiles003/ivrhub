@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<h3>About</h3>
+<div class='row'>
+    <div class='span12'>
+        <p>This is a skeleton Flask app using mongodb.</p>
+
+        <div class='row'>
+            <div class='span4'>
+                <strong>Roles</strong>
+                <p>There are two roles: admins and normals.  Admins can see things like the user directory.  They can also edit anyone's profile (though not their password).</p>
+            </div>
+            <div class='span4'>
+                <strong>Signup flow</strong>
+                <p>Users are asked to register and are sent the typical email with a confirmation link.  There is another hurdle, however: after the confirmation is clicked, an admin is notified.  The admin has to <em>verify</em> this person's identity in some fashion.  Only then will full access to the site be granted.  This is perhaps a bit silly and may be done away with in the future..</p>
+            </div>
+            <div class='span4'>
+                <strong>Source</strong>
+                <p>We're on <a href='https://github.com/aquaya/hawthorne'>Github</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

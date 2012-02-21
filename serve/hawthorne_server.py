@@ -66,7 +66,23 @@ def admin_required(f):
 '''
 @app.route('/')
 def home():
+    ''' home page, how fun
+    '''
     return flask.render_template('home.html')
+
+
+@app.route('/about')
+def about():
+    ''' show the about page
+    '''
+    return flask.render_template('about.html')
+
+
+@app.route('/help')
+def help():
+    ''' show the help page
+    '''
+    return flask.render_template('help.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
