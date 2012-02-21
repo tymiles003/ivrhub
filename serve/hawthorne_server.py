@@ -247,7 +247,6 @@ def directory(internal_id):
             if not user.verified:
                 # send email to user that they've been verified
                 # catch any email changes with by reloading the doc
-                print 'reloading'
                 user.reload()
                 _send_notification_of_verification(user)
             user.verified = True
@@ -273,8 +272,10 @@ def directory(internal_id):
             if not user:
                 flask.abort(404)
             user = user[0]
-            return flask.render_template('directory_single_user.html', user=user)
-
+            return flask.render_template('directory_single_user.html'
+                , user=user)
+        
+        # nobody in particular was specified; show em all
         users = User.objects()
         return flask.render_template('directory.html', users=users)
 
@@ -311,17 +312,56 @@ def profile():
         return flask.render_template('profile.html', user=user)
 
 
-@app.route('/forgot/', defaults={'code': None})
-@app.route('/forgot/<code>')
+@app.route('/forgot/', defaults={'code': None}, methods=['GET', 'POST'])
+@app.route('/forgot/<code>', methods=['GET', 'POST'])
 # logged-in decorator
 def forgot(code):
     ''' take input email address
     send password reset link
     '''
-    return flask.render_template('forgot.html')
+    if flask.request.method == 'POST':
+        if code:
+            user = User.objects(forgot_password_code=code)
+            if not user:
+                flask.abort(404)
+            user = user[0]
+
+            user.password_hash = bcrypt.generate_password_hash(
+                flask.request.form['password'])
+            user.save()
+
+            return flask.render_template('forgot_password_create_new.html'
+                , user=user, success='password successfully changed; you may \
+                now login')
 
 
-''' mongoengine classes
+        user = User.objects(email=flask.request.form['email'])
+        if not user:
+            return flask.render_template('forgot.html'
+                , error='email not found :/')
+        user = user[0]
+        user.forgot_password_code = _generate_random_string(34)
+        user.save()
+        #user.reload()
+
+        _send_forgot_password_link(user)
+        return flask.render_template('login.html'
+            , success='We\'ve sent an email to %s with information on how to \
+                reset your account\'s password.' % user.email)
+
+    elif flask.request.method == 'GET':
+        if code:
+            user = User.objects(forgot_password_code=code)
+            if not user:
+                flask.abort(404)
+            user = user[0]
+            return flask.render_template('forgot_password_create_new.html'
+                , user=user)
+        else:
+            return flask.render_template('forgot.html')
+
+
+''' mongoengine models
 '''
 class User(Document):
     ''' some are admins some are not
@@ -332,6 +372,7 @@ class User(Document):
     email = EmailField(required=True, unique=True, max_length=254)
     email_confirmation_code = StringField(required=True)
     email_confirmed = BooleanField(required=True)
+    forgot_password_code = StringField()
     last_login_time = DateTimeField(required=True)
     name = StringField()
     organization = StringField(required=True)
@@ -349,19 +390,35 @@ def _generate_random_string(length):
     return ''.join(
         map(lambda x: '0123456789abcdefghijklmnopqrstuvwxyz'[ord(x)%36]
         , os.urandom(length)))
+
+        
+def _send_forgot_password_link(user):
+    ''' user has requested password reset link
+    '''
+    body = '''
+        Hello!  Someone has recently requested a password reset for Hawthorne.  
+        If that was not you, please disregard this message.  
+        
+        If it was you, please click this link to choose a new password, thanks!
+
+         http://127.0.0.1:8000/forgot/%s
+         ''' % user.forgot_password_code
+
+    _send_email(user.email, 'Re: requested Hawthorne password reset', body)
     
 
 def _send_notification_of_verification(user):
     ''' email a user that they've been verified by an admin and now have full
     access to the site
     '''
-    print 'emailing..'
     body = '''
         Hello!  Your information has been verified by an administrator and you 
-        now have full access to Hawthorne.  Thanks!
+        now have full access to Hawthorne.
+        
+        Just wanted to let you know, thanks!
 
-         http://127.0.0.1:8000
-         '''
+        http://127.0.0.1:8000
+        '''
 
     _send_email(user.email, 'you now have access to Hawthorne', body)
 
@@ -420,7 +477,6 @@ def _send_email(recipient, subject, body):
         , subject
         , body
         , [recipient])
-    print result
     # need to catch errors in result
 
 
@@ -470,27 +526,27 @@ def init():
     '''
     initial_user = app.config['INITIAL_USER']
 
-    try:
-        default_admin = User(
-            admin_rights = True
-            , api_id = 'ID' + _generate_random_string(32)
-            , api_key = _generate_random_string(34)
-            , email = initial_user['email']
-            , email_confirmation_code = _generate_random_string(34)
-            , email_confirmed = False
-            , last_login_time = datetime.datetime.utcnow()
-            , name = initial_user['name']
-            , organization = initial_user['organization']
-            , password_hash = bcrypt.generate_password_hash(
-                initial_user['password'])
-            , registration_time = datetime.datetime.utcnow()
-            , verified = True
-        )
+    #try:
+    default_admin = User(
+        admin_rights = True
+        , api_id = 'ID' + _generate_random_string(32)
+        , api_key = _generate_random_string(34)
+        , email = initial_user['email']
+        , email_confirmation_code = _generate_random_string(34)
+        , email_confirmed = False
+        , last_login_time = datetime.datetime.utcnow()
+        , name = initial_user['name']
+        , organization = initial_user['organization']
+        , password_hash = bcrypt.generate_password_hash(
+            initial_user['password'])
+        , registration_time = datetime.datetime.utcnow()
+        , verified = True
+    )
 
-        default_admin.save()
-        print 'user %s created with specified password' % default_admin['email']
-    except:
-        print 'insertion failed; there may be a non-unique field'
+    default_admin.save()
+    print 'user %s created with specified password' % default_admin['email']
+    #except:
+    #    print 'insertion failed; there may be a non-unique field'
 
 
 if __name__ == '__main__':

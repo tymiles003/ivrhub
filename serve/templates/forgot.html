@@ -1,5 +1,65 @@
 {% extends "layout.html" %}
 
+{% block head %}
+{% endblock %}
+
 {% block body %}
-<h1>forgot something?</h1>
+<div class='row'>
+    <div class='offset3 span6'>
+        {% if error %}
+        <div class='alert alert-error fade in'>
+            <a class='close' data-dismiss='alert' href='#'>&times;</a>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form class='form-horizontal' action="{{ url_for('forgot') }}" method=post id='forgot_password_form'>
+            <fieldset> 
+                <legend>Forgotten Password</legend>
+                <div class='control-group'>
+                    <label class='control-label' for='email'>Email</label>
+                    <div class='controls'>
+                        <input type='text' class='input-xlarge' name='email' id='email'>
+                        <p class='help-block pull-right'>we'll send a password reset link to this address</p>
+                    </div>
+                </div>
+                <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+
+                <div class='form-actions'>
+                    <button type='submit' class='btn btn-primary'>Submit</button>
+                    <button type='reset' class='btn'>Cancel</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/happy.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-alert.js') }}"></script>
+<script>
+    var validators = {
+        email: function (val) {
+            return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(val);
+        }
+    };
+
+    $(function() {
+        // initial focus on email input
+        $('#email').focus();
+
+        $('#forgot_password_form').isHappy({
+            fields: {
+                '#email': {
+                    required: true
+                    , message: 'please enter your email'
+                    , test: validators.email
+                }
+            }
+        });
+
+    });
+</script>
 {% endblock %}
