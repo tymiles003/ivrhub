@@ -62,6 +62,17 @@ def admin_required(f):
     return decorated_function
 
 
+def require_not_logged_in(f):
+    ''' redirect if user is loggd in already
+    '''
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'email' in flask.session:
+            return flask.redirect(flask.url_for('dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 ''' routes
 '''
 @app.route('/')
@@ -84,8 +95,8 @@ def help():
     '''
     return flask.render_template('help.html')
 
-
 @app.route('/register', methods=['GET', 'POST'])
+@require_not_logged_in
 # redirect-if-logged-in decorator
 def register():
     ''' displays registration page
@@ -175,7 +186,7 @@ def verification_status():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-# redirect-if-logged-in decorator
+@require_not_logged_in
 def login():
     ''' displays standalone login page
     handles login requests
@@ -314,7 +325,7 @@ def profile():
 
 @app.route('/forgot/', defaults={'code': None}, methods=['GET', 'POST'])
 @app.route('/forgot/<code>', methods=['GET', 'POST'])
-# logged-in decorator
+@require_not_logged_in
 def forgot(code):
     ''' take input email address
     send password reset link
