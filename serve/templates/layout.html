@@ -17,7 +17,7 @@
                     <ul class='nav'>
                         <li><a href="{{ url_for('about') }}">About</a></li>
                         <li><a href="{{ url_for('help') }}">Help</a></li>
-                        <li><a href='#'>Demo</a></li>
+                        <li><a href="{{ url_for('demo') }}">Demo</a></li>
                         
                         {% if not session.email %}
                         <li><a href="{{url_for('register')}}">Register</a></li>

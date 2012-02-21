@@ -95,6 +95,14 @@ def help():
     '''
     return flask.render_template('help.html')
 
+
+@app.route('/demo')
+def demo():
+    ''' show the demo video
+    '''
+    return flask.render_template('demo.html')
+
+
 @app.route('/register', methods=['GET', 'POST'])
 @require_not_logged_in
 # redirect-if-logged-in decorator
