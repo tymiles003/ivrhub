@@ -5,8 +5,14 @@
     <h1>Hawthorne</h1>
     <p>a Flask skeleton built on top of MongoDB</p>
     <p>
-    <a class='btn btn-info btn-large' href="{{ url_for('about') }}">Learn More &nbsp; &raquo;</a>
-    <a class='btn btn-success btn-large' href="{{ url_for('register') }}">Sign Up &nbsp; &raquo;</a>
+        <a class='btn btn-info btn-large' href="{{ url_for('about') }}">Learn More &raquo;</a>
+        &nbsp;
+
+        {% if session.email %}
+        <a class='btn btn-success btn-large' href="{{ url_for('dashboard') }}">Dashboard &raquo;</a>
+        {% else %}
+        <a class='btn btn-success btn-large' href="{{ url_for('register') }}">Sign Up &raquo;</a>
+        {% endif %}
     </p>
 </div>
 {% endblock %}
