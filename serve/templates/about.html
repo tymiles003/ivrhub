@@ -12,17 +12,21 @@
         <div class='row'>
             <div class='span4'>
                 <strong>Roles</strong>
-                <p>There are two roles: admins and normals.  Admins can see things like the user directory.  They can also edit anyone's profile (though not their password).</p>
+                <p>There are two roles: <code>admins</code> and <code>normals</code>.  Admins can see things like the user directory.  They can also edit anyone's profile (though not their password).</p>
             </div>
             <div class='span4'>
                 <strong>Signup flow</strong>
-                <p>Users are asked to register and are sent the typical email with a confirmation link.  There is another hurdle, however: after the confirmation is clicked, an admin is notified.  The admin has to <em>verify</em> this person's identity in some fashion.  Only then will full access to the site be granted.  This is perhaps a bit silly and may be done away with in the future..</p>
+                <p>Users are asked to register and are sent the typical email with a confirmation link.  There is another hurdle, however: after the confirmation is clicked, an admin is notified.  The admin has to <em>verify</em> this person's identity and then toggle an entry in the webapp.  Only then will full access to the site be granted.  This is perhaps a bit silly and may be done away with in the future..</p>
             </div>
             <div class='span4'>
                 <strong>Source</strong>
                 <p>We're on <a href='https://github.com/aquaya/hawthorne'>Github</a>.</p>
             </div>
         </div>
+        <div class='row'>
+            <div class='span4'>
+                <strong>Forgotten password flow</strong>
+                <p>User visits <code>/forgot</code> and submits an email address.  If that address is known, send it a message with a link to <code>/forgot/&lt;code&gt;</code>.  This shows a two-input page asking for a new password.  Save it and log user in.</p>
     </div>
 </div>
 {% endblock %}

@@ -11,6 +11,11 @@
             <a class='close' data-dismiss='alert' href='#'>&times;</a>
             {{ error }}
         </div>
+        {% elif success %}
+        <div class='alert alert-info fade in'>
+            <a class='close' data-dismiss='alert' href='#'>&times;</a>
+            {{ success }}
+        </div>
         {% endif %}
 
         <form class='form-horizontal' action="{{ url_for('login') }}" method=post id='login_form'>
