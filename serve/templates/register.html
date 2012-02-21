@@ -66,6 +66,9 @@
 <script src="{{ url_for('static', filename='js/bootstrap-alert.js') }}"></script>
 <script>
     $(function() {
+        // initial focus on first input
+        $('#name').focus();
+
         $('#registration_form').isHappy({
             fields: {
                 '#name': {
