@@ -5,6 +5,11 @@
 
         <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap.css') }}">
 
+        <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+        <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
         {% block head %}
         {% endblock %}
 
@@ -18,7 +23,7 @@
                         <li><a href="{{ url_for('about') }}">About</a></li>
                         <li><a href="{{ url_for('help') }}">Help</a></li>
                         <li><a href="{{ url_for('demo') }}">Demo</a></li>
-                        
+
                         {% if not session.email %}
                         <li><a href="{{url_for('register')}}">Register</a></li>
                         {% endif %}
@@ -61,13 +66,13 @@
     {% block footer %}
     {% endblock %}
 
-    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    
-    <!-- cdn needs local fallback -->
+    <!-- jquery from cdn with local fallback -->
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <script>
+        if (typeof jQuery == 'undefined') {
+            document.write(unescape("%3Cscript src='{{ url_for('static', filename='js/jquery.min.js') }}' type='text/javascript'%3E%3C/script%3E"));
+        }
+    </script>
     <script src="{{ url_for('static', filename='js/bootstrap-dropdown.js') }}"></script>
 
     {% block js %}
