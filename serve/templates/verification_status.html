@@ -15,7 +15,9 @@
             <div class='span6'>
                 <h3>Verification status</h3>
                 {% if not user.email_confirmed %}
-                <p>Thanks for signing up!  We just sent a confirmation email to <code>{{ user.email }}</code>.  Click the link provided in that email so we know how to reach you.</p>
+                <p>Thanks for signing up!  We just sent a confirmation email to this address:</p>
+                <code>{{ user.email }}</code>
+                <p>Click the link provided in that email so we know how to reach you.</p>
                 {% endif %}
 
                 {% if not user.verified %}
