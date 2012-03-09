@@ -6,16 +6,6 @@
 {% block body %}
 <div class='row'>
     <div class='offset3 span6'>
-        {% if error %}
-        <div class='alert alert-warning'>
-            <p>{{ error }}</p>
-        </div>
-        {% elif success %}
-        <div class='alert alert-info'>
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
-
         <form class='form-horizontal' action="{{ url_for('directory', internal_id=user._id) }}" method=post id='profile_edit_form'>
             <fieldset>
                 <legend>Editing {{ user.name }}</legend>

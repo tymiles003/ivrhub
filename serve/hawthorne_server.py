@@ -105,7 +105,6 @@ def demo():
 
 @app.route('/register', methods=['GET', 'POST'])
 @require_not_logged_in
-# redirect-if-logged-in decorator
 def register():
     ''' displays registration page
     sends confirmation email to registrant
@@ -118,14 +117,15 @@ def register():
         # check that passwords match
         if flask.request.form['password'] != \
             flask.request.form['retype_password']:
-            return flask.render_template('register.html'
-                    , error='Your submitted passwords did not match.')
+            flask.flash('submitted passwords did not match', 'error')
+            return flask.render_template('register.html')
 
         # check that user email is unique
         duplicates = User.objects(email=flask.request.form['email'])
         if duplicates:
-            return flask.render_template('register.html'
-                , error='This email address is already registered.')
+            flask.flash('This email address has been registered already.'
+                , 'error')
+            return flask.render_template('register.html')
 
         # create the new user
         try:
@@ -146,8 +146,8 @@ def register():
                 , verified_by = None)
             new_user.save() 
         except:
-            return flask.render_template('register.html'
-                , error='There was an error in the form, sorry.')
+            flask.flash('There was an error in the form, sorry :/', 'error')
+            return flask.render_template('register.html')
         
         # seek email confirmation
         _send_confirmation_email(new_user)
@@ -206,15 +206,17 @@ def login():
         # find the user by their email
         user = User.objects(email=flask.request.form['email'])
         if not user:
-            return flask.render_template('login.html'
-                , error='That\'s not a valid email address or password.')
+            flask.flash('That\'s not a valid email address or password.'
+                , 'error')
+            return flask.render_template('login.html')
         
         user = user[0]
         # verify the password 
         if not bcrypt.check_password_hash(user.password_hash
             , flask.request.form['password']):
-            return flask.render_template('login.html'
-                , error='That\'s not a valid email address or password.')
+            flask.flash('That\'s not a valid email address or password.'
+                , 'error')
+            return flask.render_template('login.html')
 
         # they've made it through the gauntlet, log them in
         user.last_login_time = datetime.datetime.utcnow()
@@ -233,6 +235,7 @@ def logout():
     flask.session.pop('email', None)
     flask.session.pop('admin_rights', None)
 
+    flask.flash('adios!', 'info')
     return flask.redirect(flask.url_for('home'))
 
 
@@ -279,11 +282,13 @@ def directory(internal_id):
 
         try:
             user.save()
+            flask.flash('updates saved successfully', 'success')
             return flask.render_template('directory_single_user.html'
-                , success='updates saved successfully', user=user)
+                , user=user)
         except:
+            flask.flash('error saving changes, sorry /:')
             return flask.render_template('directory_single_user.html'
-                , error='error saving changes, sorry /:', user=user)
+                , user=user)
         
     if flask.request.method == 'GET':
         if internal_id:
@@ -320,12 +325,12 @@ def profile():
             # have to update the session in case the email was edited
             # might want to vet the new email with another confirmation step
             flask.session['email'] = flask.request.form['email']
-            message = 'updates saved successfully'
-            return flask.render_template('profile.html', success=message
-                , user=user)
+
+            flask.flash('updates saved successfully', 'success')
+            return flask.render_template('profile.html', user=user)
         except:
-            return flask.render_template('profile.html'
-                , error='error saving changes, sorry /:', user=user)
+            flask.flash('error saving changes, sorry /:', 'error')
+            return flask.render_template('profile.html', user=user)
     
     if flask.request.method == 'GET':
         return flask.render_template('profile.html', user=user)
@@ -349,24 +354,26 @@ def forgot(code):
                 flask.request.form['password'])
             user.save()
 
-            return flask.render_template('forgot_password_create_new.html'
-                , user=user, success='password successfully changed; you may \
-                now login')
+            flask.flash('password successfully changed; you may now login'
+                , 'success')
+            return flask.redirect(flask.url_for('home'))
 
 
         user = User.objects(email=flask.request.form['email'])
         if not user:
-            return flask.render_template('forgot.html'
-                , error='email not found :/')
+            flask.flash('email not found :/', 'error')
+            return flask.render_template('forgot.html')
+        
         user = user[0]
         user.forgot_password_code = _generate_random_string(34)
         user.save()
         #user.reload()
 
         _send_forgot_password_link(user)
-        return flask.render_template('login.html'
-            , success='We\'ve sent an email to %s with information on how to \
-                reset your account\'s password.' % user.email)
+
+        flask.flash('We\'ve sent an email to %s with information on how to \
+            reset your account\'s password.' % user.email)
+        return flask.render_template('login.html')
 
     elif flask.request.method == 'GET':
         if code:

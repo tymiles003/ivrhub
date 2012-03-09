@@ -1,82 +1,93 @@
 <!doctype html>
 <html>
-    <head>
-        <title>Hawthorne</title>
+  <head>
+    <title>Hawthorne</title>
 
-        <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap.css') }}">
 
-        <!-- HTML5 shim, for IE6-8 support of HTML elements -->
-        <!--[if lt IE 9]>
-        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-        {% block head %}
-        {% endblock %}
-
-    </head>
-    <body>
-        <div class='navbar'>
-            <div class='navbar-inner'>
-                <div class='container'>
-                    <a class='brand' href="{{url_for('home')}}">Hawthorne</a>
-                    <ul class='nav'>
-                        <li><a href="{{ url_for('about') }}">About</a></li>
-                        <li><a href="{{ url_for('help') }}">Help</a></li>
-                        <li><a href="{{ url_for('demo') }}">Demo</a></li>
-
-                        {% if not session.email %}
-                        <li><a href="{{url_for('register')}}">Register</a></li>
-                        {% endif %}
-                    </ul>
-                    <ul class='nav pull-right'>
-                        {% if session.email %}
-                        <li class='dropdown'>
-                        <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
-                            {{ session.email }} <b class='caret'></b>
-                        </a>
-                        <ul class='dropdown-menu'>
-                            <li><a href="#"><i class='icon-list-alt'></i> My Forms</a></li>
-                            <li><a href="#"><i class='icon-check'></i> View Submissions</a></li>
-                            <li><a href="#"><i class='icon-signal'></i> Analysis</a></li>
-                            <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Edit Profile</a></li>
-                            {% if session.admin_rights %}
-                            <li class='divider'></li>
-                            <li><a href="{{ url_for('directory') }}"><i class='icon-book'></i> Directory</a></li>
-                            {% endif %}
-
-                            <li class='divider'></li>
-                            <li><a href="{{ url_for('logout') }}"><i class='icon-off'></i> Logout</a></li>
-                        </ul>
-                        </li>
-                        {% else %}
-                        <li><a href="{{url_for('login')}}">Login</a></li>
-                        {% endif %}
-                    </ul>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-
-    <div class='container'>
-        {% block body %}
-        {% endblock %}
-    </div>
-
-    {% block footer %}
+    {% block head %}
     {% endblock %}
+
+  </head>
+  <body>
+    <div class='navbar'>
+      <div class='navbar-inner'>
+        <div class='container'>
+          <a class='brand' href="{{url_for('home')}}">Hawthorne</a>
+          <ul class='nav'>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('help') }}">Help</a></li>
+            <li><a href="{{ url_for('demo') }}">Demo</a></li>
+
+            {% if not session.email %}
+            <li><a href="{{url_for('register')}}">Register</a></li>
+            {% endif %}
+          </ul>
+          <ul class='nav pull-right'>
+            {% if session.email %}
+            <li class='dropdown'>
+            <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+              {{ session.email }} <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="#"><i class='icon-list-alt'></i> My Forms</a></li>
+              <li><a href="#"><i class='icon-check'></i> View Submissions</a></li>
+              <li><a href="#"><i class='icon-signal'></i> Analysis</a></li>
+              <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Edit Profile</a></li>
+              {% if session.admin_rights %}
+              <li class='divider'></li>
+              <li><a href="{{ url_for('directory') }}"><i class='icon-book'></i> Directory</a></li>
+              {% endif %}
+
+              <li class='divider'></li>
+              <li><a href="{{ url_for('logout') }}"><i class='icon-off'></i> Logout</a></li>
+            </ul>
+            </li>
+            {% else %}
+            <li><a href="{{url_for('login')}}">Login</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class='container'>                                                    
+      {% with flashed_messages = get_flashed_messages(with_categories=true) %}                                
+      {% if flashed_messages %}                                                
+      {% for category, message in flashed_messages %}                                                         
+      <div class='alert alert-{{ category }}'>                                 
+        <a class="close" data-dismiss="alert">&times;</a>                                                     
+        {{ message }}                                                                                         
+      </div>                                                                                                  
+      {% endfor %}                                                                                            
+      {% endif %}                                                                                             
+      {% endwith %}                                                                                           
+
+      {% block body %}                                                                                        
+      {% endblock %}                                                                                          
+
+      {% block footer %}
+      {% endblock %}
+
+    </div>
 
     <!-- jquery from cdn with local fallback -->
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
     <script>
-        if (typeof jQuery == 'undefined') {
-            document.write(unescape("%3Cscript src='{{ url_for('static', filename='js/jquery.min.js') }}' type='text/javascript'%3E%3C/script%3E"));
-        }
+      if (typeof jQuery == 'undefined') {
+        document.write(unescape("%3Cscript src='{{ url_for('static', filename='js/jquery.min.js') }}' type='text/javascript'%3E%3C/script%3E"));
+      }
     </script>
     <script src="{{ url_for('static', filename='js/bootstrap-dropdown.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-alert.js') }}"></script>
 
     {% block js %}
     {% endblock %}
 
-</body>
+  </body>
 </html>

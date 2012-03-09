@@ -6,13 +6,6 @@
 {% block body %}
 <div class='row'>
     <div class='offset3 span6'>
-        {% if error %}
-        <div class='alert alert-error fade in'>
-            <a class='close' data-dismiss='alert' href='#'>&times;</a>
-            {{ error }}
-        </div>
-        {% endif %}
-
         <form class='form-horizontal' action="{{ url_for('forgot') }}" method=post id='forgot_password_form'>
             <fieldset> 
                 <legend>Forgotten Password</legend>
@@ -38,7 +31,6 @@
 
 {% block js %}
 <script src="{{ url_for('static', filename='js/happy.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap-alert.js') }}"></script>
 <script>
     var validators = {
         email: function (val) {
