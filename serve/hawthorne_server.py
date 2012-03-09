@@ -63,7 +63,7 @@ def admin_required(f):
 
 
 def require_not_logged_in(f):
-    ''' redirect if user is loggd in already
+    ''' redirect if user is logged in already
     '''
     @wraps(f)
     def decorated_function(*args, **kwargs):
