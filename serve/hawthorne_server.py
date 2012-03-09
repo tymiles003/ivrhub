@@ -415,15 +415,19 @@ def _send_forgot_password_link(user):
     ''' user has requested password reset link
     '''
     body = '''
-        Hello!  Someone has recently requested a password reset for Hawthorne.  
+        Hello!  Someone has recently requested a password reset for %s.  
         If that was not you, please disregard this message.  
         
         If it was you, please click this link to choose a new password, thanks!
+        
+        %s/forgot/%s
+         ''' % (app.config['APP_NAME'], app.config['APP_ROOT'], 
+                 user.forgot_password_code)
 
-         http://127.0.0.1:8000/forgot/%s
-         ''' % user.forgot_password_code
-
-    _send_email(user.email, 'Re: requested Hawthorne password reset', body)
+    _send_email(
+        user.email
+        , 'Re: requested %s password reset' % app.config['APP_NAME']
+        , body)
     
 
 def _send_notification_of_verification(user):
@@ -432,14 +436,17 @@ def _send_notification_of_verification(user):
     '''
     body = '''
         Hello!  Your information has been verified by an administrator and you 
-        now have full access to Hawthorne.
+        now have full access to %s.
         
         Just wanted to let you know, thanks!
 
-        http://127.0.0.1:8000
-        '''
+        %s
+        ''' % (app.config['APP_NAME'], app.config['APP_ROOT'])
 
-    _send_email(user.email, 'you now have access to Hawthorne', body)
+    _send_email(
+        user.email
+        , 'you now have access to %s' % app.config['APP_NAME']
+        , body)
 
 
 def _send_admin_verification(user):
@@ -456,14 +463,17 @@ def _send_admin_verification(user):
         Click the following link to edit the verification status of this
         person.
 
-        http://127.0.0.1:8000/directory/%s
+        %s/directory/%s
 
         Thanks!
-        ''' % (user.name, user.email, user.organization, user._id)
+        ''' % (user.name, user.email, user.organization
+                , app.config['APP_ROOT'], user._id)
 
     # send to the AWS verified sender..should probably use a manager's email
-    _send_email(app.config['AWS']['verified_sender']
-        , 'Hawthorne -- %s needs to be verified' % user.name, body)
+    _send_email(
+        app.config['AWS']['verified_sender']
+        , '%s -- %s needs to be verified' % (app.config['APP_NAME'], user.name)
+        , body)
 
 
 def _send_confirmation_email(user):
@@ -471,17 +481,21 @@ def _send_confirmation_email(user):
     '''
     body = '''
         Hello, this email was recently used to sign up for an account with 
-        Hawthorne.  If it was you that signed up for this account, please click
+        %s.  If it was you that signed up for this account, please click
         the link below to confirm your email address.
         
         If you did not sign up for this account, please disregard this message.
-
-        http://127.0.0.1:8000/confirm_email/%s
+        
+        %s/confirm_email/%s
 
         Thanks!
-        ''' % user.email_confirmation_code
+        ''' % (app.config['APP_NAME'], app.config['APP_ROOT']
+                , user.email_confirmation_code)
 
-    _send_email(user.email, 'Hawthorne email confirmation', body)
+    _send_email(
+        user.email
+        , '%s email confirmation' % app.config['APP_NAME']
+        , body)
 
 
 def _send_email(recipient, subject, body):

@@ -16,6 +16,10 @@ SECRET_KEY = 'keep it secret, keep it safe'
 APP_IP = '127.0.0.1'
 APP_PORT = 8000
 
+# app name and URL root, used in emails
+APP_NAME = 'Hawthorne'
+APP_ROOT = 'http://127.0.0.1:8000'
+
 
 # info on your local mongo instance
 MONGO_CONFIG = {
