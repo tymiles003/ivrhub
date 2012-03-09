@@ -557,9 +557,10 @@ app.jinja_env.globals['csrf_token'] = _generate_csrf_token
 ''' initialization
 '''
 def init():
-    ''' adds a default admin to the system
+    ''' adds a default admin to the system based on your settings
     usage:
-        $ /path/to/virtualenv/bin/python
+        $ /path/to/venv/bin/python
+        $ cd serve
         >> from hawthorne_server import init
         >> init()
         user bruce@wayneindustries created with specified password
