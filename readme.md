@@ -1,20 +1,12 @@
-flask app for accepting form data
-
-backed by mongo
-
+flask app skeleton backed by mongodb
 
 ### Requirements
-use virtualenv and pip to install
+use virtualenv and pip
 
-    flask
-    py-bcrypt
-    flask-bcrypt
-    pymongo
-    mongoengine
-    boto
+    $ virtualenv /path/to/venv
+    $ pip install -r requirements.txt -E /path/to/venv
 
 after cloning, get the bootstrap and happy.js repos:
     
-    submodule init()
-    git submodule update()
-
+    $ git submodule init
+    $ git submodule update
