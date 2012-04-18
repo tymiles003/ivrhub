@@ -25,6 +25,30 @@
         border-radius: 0px;
       }
 
+      /* begin Martin Bean's sticky footer styles: http://www.martinbean.co.uk/bootstrap-sticky-footer/
+      */
+      html, body {
+        height: 100%;
+      }
+
+      footer {
+        padding: 17px 0 18px 0;
+        border-top: 1px solid #eee;
+      }
+
+      .wrapper {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        margin: 0 auto -63px;
+      }
+
+      .push {
+        height: 63px;
+      }
+      /* end Martin Bean's sticky footer styles
+      */
+
     </style>
 
     {% block head %}
@@ -32,66 +56,78 @@
 
   </head>
   <body>
-    <div class='navbar'>
-      <div class='navbar-inner'>
-        <div class='container'>
-          <a class='brand' href="{{url_for('home')}}">Hawthorne</a>
-          <ul class='nav'>
-            <li><a href="{{ url_for('about') }}">About</a></li>
-            <li><a href="{{ url_for('help') }}">Help</a></li>
-            <li><a href="{{ url_for('demo') }}">Demo</a></li>
+    <div class='wrapper'>
+      <div class='navbar'>
+        <div class='navbar-inner'>
+          <div class='container'>
+            <a class='brand' href="{{url_for('home')}}">Hawthorne</a>
+            <ul class='nav'>
+              <li><a href="{{ url_for('about') }}">About</a></li>
+              <li><a href="{{ url_for('help') }}">Help</a></li>
+              <li><a href="{{ url_for('demo') }}">Demo</a></li>
 
-            {% if not session.email %}
-            <li><a href="{{url_for('register')}}">Register</a></li>
-            {% endif %}
-          </ul>
-          <ul class='nav pull-right'>
-            {% if session.email %}
-            <li class='dropdown'>
-            <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
-              {{ session.email }} <b class='caret'></b>
-            </a>
-            <ul class='dropdown-menu'>
-              <li><a href="#"><i class='icon-list-alt'></i> My Forms</a></li>
-              <li><a href="#"><i class='icon-check'></i> View Submissions</a></li>
-              <li><a href="#"><i class='icon-signal'></i> Analysis</a></li>
-              <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Edit Profile</a></li>
-              {% if session.admin_rights %}
-              <li class='divider'></li>
-              <li><a href="{{ url_for('directory') }}"><i class='icon-book'></i> Directory</a></li>
+              {% if not session.email %}
+              <li><a href="{{url_for('register')}}">Register</a></li>
               {% endif %}
-
-              <li class='divider'></li>
-              <li><a href="{{ url_for('logout') }}"><i class='icon-off'></i> Logout</a></li>
             </ul>
-            </li>
-            {% else %}
-            <li><a href="{{url_for('login')}}">Login</a></li>
-            {% endif %}
-          </ul>
+            <ul class='nav pull-right'>
+              {% if session.email %}
+              <li class='dropdown'>
+              <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+                {{ session.email }} <b class='caret'></b>
+              </a>
+              <ul class='dropdown-menu'>
+                <li><a href="#"><i class='icon-list-alt'></i> My Forms</a></li>
+                <li><a href="#"><i class='icon-check'></i> View Submissions</a></li>
+                <li><a href="#"><i class='icon-signal'></i> Analysis</a></li>
+                <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Edit Profile</a></li>
+                {% if session.admin_rights %}
+                <li class='divider'></li>
+                <li><a href="{{ url_for('directory') }}"><i class='icon-book'></i> Directory</a></li>
+                {% endif %}
+
+                <li class='divider'></li>
+                <li><a href="{{ url_for('logout') }}"><i class='icon-off'></i> Logout</a></li>
+              </ul>
+              </li>
+              {% else %}
+              <li><a href="{{url_for('login')}}">Login</a></li>
+              {% endif %}
+            </ul>
+          </div> <!--/container-->
+        </div> <!--/navbar-inner-->
+      </div> <!--/navbar-->
+
+      <div class='container'>
+        {% with flashed_messages = get_flashed_messages(with_categories=true) %}
+        {% if flashed_messages %}
+        {% for category, message in flashed_messages %}
+        <div class='alert alert-{{ category }}'>
+          <a class="close" data-dismiss="alert">&times;</a>
+          {{ message }}
         </div>
-      </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block body %}
+        {% endblock %}
+      </div> <!--/container-->
+
+      <div class='push'><!-- heave-ho, gotta move that footer --></div>
+
+    </div> <!--/wrapper-->
+
+
+    <footer>
+    <div class='container'>
+      <p class='pull-right'>
+      built by <a href='http://aquaya.org' target=_blank>Aquaya</a>
+      </p>
     </div>
+    </footer>
 
-    <div class='container'>                                                    
-      {% with flashed_messages = get_flashed_messages(with_categories=true) %}                                
-      {% if flashed_messages %}                                                
-      {% for category, message in flashed_messages %}                                                         
-      <div class='alert alert-{{ category }}'>                                 
-        <a class="close" data-dismiss="alert">&times;</a>                                                     
-        {{ message }}                                                                                         
-      </div>                                                                                                  
-      {% endfor %}                                                                                            
-      {% endif %}                                                                                             
-      {% endwith %}                                                                                           
 
-      {% block body %}                                                                                        
-      {% endblock %}                                                                                          
-
-      {% block footer %}
-      {% endblock %}
-
-    </div>
 
     <!-- jquery from cdn with local fallback -->
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
