@@ -1,15 +1,38 @@
 {% extends "layout.html" %}
 
+{% block head %}
+<style>
+    h3 i {
+        margin: 3px 8px 0 0;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<div class='page-header'>
-    <h1>My Forms <small><a href="#">create a new form</a></small></h1>
+<h3 class='section-name'>Dashboard</h3>
+<div class='row'>
+    <div class='span12'>
+        <div class='row'>
+
+            <div class='span4 well'>
+                <h3><i class='icon-list-alt'></i>Forms</h3>
+                <p class='note'>view your forms</p>
+            </div>
+
+        </div>
+    </div>
+    
+    
+    <div class='span12'>
+        <div class='row'>
+
+            <div class='span4 well'>
+                <h3><i class='icon-signal'></i>Analysis</h3>
+                <p class='note'>do some analysis</p>
+            </div>
+
+        </div>
+    </div>
 </div>
 
-<div class='page-header'>
-    <h1>View Submissions <small>recent inputs</small></h1>
-</div>
-
-<div class='page-header'>
-    <h1>Analysis <small>create graphs and export data</small></h1>
-</div>
 {% endblock %}
