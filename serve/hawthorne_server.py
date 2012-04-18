@@ -75,6 +75,22 @@ def require_not_logged_in(f):
     return decorated_function
 
 
+''' error pages
+'''
+@app.errorhandler(404)
+def page_not_found(error):
+    ''' replaces stock 404 page
+    '''
+    return render_template('error_404.html'), 404
+
+
+@app.errorhandler(500)
+def server_error(error):
+    ''' replaces stock 500 page
+    '''
+    return render_template('error_500.html'), 500
+
+
 ''' routes
 '''
 @app.route('/')
