@@ -160,7 +160,7 @@ def register():
         return flask.redirect(flask.url_for('verification_status'))
 
 
-@app.route('/confirm_email/<code>')
+@app.route('/confirm-email/<code>')
 def confirm_email(code):
     ''' click this link to confirm your email
     '''
@@ -183,7 +183,7 @@ def confirm_email(code):
     return flask.redirect(flask.url_for('verification_status'))
 
 
-@app.route('/verification_status')
+@app.route('/verification-status')
 @login_required
 def verification_status():
     ''' shows verification status
