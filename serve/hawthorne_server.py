@@ -1,19 +1,21 @@
 #!/usr/bin/env python
 '''
 hawthorne_server.py
-data entry management
+a flask skeleton
 '''
 import datetime
 from functools import wraps
 import os
+import urlparse
 
 import boto
-import flask
+from flask import (Flask, session, redirect, render_template, abort, url_for
+    , request, flash)
 from flaskext.bcrypt import Bcrypt
 from mongoengine import *
 
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 app.config.from_envvar('HAWTHORNE_SETTINGS')
 bcrypt = Bcrypt(app)
 
@@ -28,8 +30,8 @@ connect(app.config['MONGO_CONFIG']['db_name']
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'email' not in flask.session:
-            return flask.redirect(flask.url_for('login'))
+        if 'email' not in session:
+            return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -38,12 +40,12 @@ def verification_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         # check that someone is logged in
-        if 'email' not in flask.session:
-            return flask.redirect(flask.url_for('login'))
+        if 'email' not in session:
+            return redirect(url_for('login'))
         # check verification
-        user = User.objects(email=flask.session['email'])[0]
+        user = User.objects(email=session['email'])[0]
         if not user.verified:
-            return flask.redirect(flask.url_for('verification_status'))
+            return redirect(url_for('verification_status'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -52,12 +54,12 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         # check that someone is logged in
-        if 'email' not in flask.session:
-            return flask.abort(404)
+        if 'email' not in session:
+            return abort(404)
         # check admin status
-        user = User.objects(email=flask.session['email'])[0]
+        user = User.objects(email=session['email'])[0]
         if not user.admin_rights:
-            return flask.redirect(flask.url_for('home'))
+            return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -67,8 +69,8 @@ def require_not_logged_in(f):
     '''
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'email' in flask.session:
-            return flask.redirect(flask.url_for('dashboard'))
+        if 'email' in session:
+            return redirect(url_for('dashboard'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -79,28 +81,28 @@ def require_not_logged_in(f):
 def home():
     ''' home page, how fun
     '''
-    return flask.render_template('home.html')
+    return render_template('home.html')
 
 
 @app.route('/about')
 def about():
     ''' show the about page
     '''
-    return flask.render_template('about.html')
+    return render_template('about.html')
 
 
 @app.route('/help')
 def help():
     ''' show the help page
     '''
-    return flask.render_template('help.html')
+    return render_template('help.html')
 
 
 @app.route('/demo')
 def demo():
     ''' show the demo video
     '''
-    return flask.render_template('demo.html')
+    return render_template('demo.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -110,22 +112,22 @@ def register():
     sends confirmation email to registrant
     sends notification email to admin
     '''
-    if flask.request.method == 'GET':
-        return flask.render_template('register.html')
+    if request.method == 'GET':
+        return render_template('register.html')
 
-    elif flask.request.method == 'POST':
+    elif request.method == 'POST':
         # check that passwords match
-        if flask.request.form['password'] != \
-            flask.request.form['retype_password']:
-            flask.flash('submitted passwords did not match', 'error')
-            return flask.render_template('register.html')
+        if request.form['password'] != \
+            request.form['retype_password']:
+            flash('submitted passwords did not match', 'error')
+            return render_template('register.html')
 
         # check that user email is unique
-        duplicates = User.objects(email=flask.request.form['email'])
+        duplicates = User.objects(email=request.form['email'])
         if duplicates:
-            flask.flash('This email address has been registered already.'
+            flash('This email address has been registered already.'
                 , 'error')
-            return flask.render_template('register.html')
+            return render_template('register.html')
 
         # create the new user
         try:
@@ -133,31 +135,31 @@ def register():
                 admin_rights = False
                 , api_id = 'ID' + _generate_random_string(32)
                 , api_key = _generate_random_string(34)
-                , email = flask.request.form['email']
+                , email = request.form['email']
                 , email_confirmation_code = _generate_random_string(34)
                 , email_confirmed = False
                 , last_login_time = datetime.datetime.utcnow()
-                , name = flask.request.form['name']
-                , organization = flask.request.form['organization']
+                , name = request.form['name']
+                , organization = request.form['organization']
                 , password_hash = bcrypt.generate_password_hash(
-                    flask.request.form['password'])
+                    request.form['password'])
                 , registration_time = datetime.datetime.utcnow()
                 , verified = False
                 , verified_by = None)
             new_user.save() 
         except:
-            flask.flash('There was an error in the form, sorry :/', 'error')
-            return flask.render_template('register.html')
+            flash('There was an error in the form, sorry :/', 'error')
+            return render_template('register.html')
         
         # seek email confirmation
         _send_confirmation_email(new_user)
 
         # log the user in  
-        flask.session['email'] = new_user.email
-        flask.session['admin_rights'] = new_user.admin_rights
+        session['email'] = new_user.email
+        session['admin_rights'] = new_user.admin_rights
 
         # redirect to a holding area
-        return flask.redirect(flask.url_for('verification_status'))
+        return redirect(url_for('verification_status'))
 
 
 @app.route('/confirm-email/<code>')
@@ -166,7 +168,7 @@ def confirm_email(code):
     '''
     user = User.objects(email_confirmation_code=code)
     if not user:
-        return flask.redirect(flask.url_for('home'))
+        return redirect(url_for('home'))
     # save their email confirmation status
     user = user[0]
     user.email_confirmed = True
@@ -174,13 +176,13 @@ def confirm_email(code):
     # log the user in (controversy!)
     user.last_login_time = datetime.datetime.utcnow()
     user.save()
-    flask.session['email'] = user.email
+    session['email'] = user.email
 
     # email an admin for verification
     _send_admin_verification(user)
         
     # redirect to a holding area
-    return flask.redirect(flask.url_for('verification_status'))
+    return redirect(url_for('verification_status'))
 
 
 @app.route('/verification-status')
@@ -188,9 +190,9 @@ def confirm_email(code):
 def verification_status():
     ''' shows verification status
     '''
-    user = User.objects(email=flask.session['email'])[0]
+    user = User.objects(email=session['email'])[0]
     # if verified/confirmed, redirect to dash
-    return flask.render_template('verification_status.html', user=user)
+    return render_template('verification_status.html', user=user)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -199,32 +201,32 @@ def login():
     ''' displays standalone login page
     handles login requests
     '''
-    if flask.request.method == 'GET':
-        return flask.render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
 
-    elif flask.request.method == 'POST':
+    elif request.method == 'POST':
         # find the user by their email
-        user = User.objects(email=flask.request.form['email'])
+        user = User.objects(email=request.form['email'])
         if not user:
-            flask.flash('That\'s not a valid email address or password.'
+            flash('That\'s not a valid email address or password.'
                 , 'error')
-            return flask.render_template('login.html')
+            return render_template('login.html')
         
         user = user[0]
         # verify the password 
         if not bcrypt.check_password_hash(user.password_hash
-            , flask.request.form['password']):
-            flask.flash('That\'s not a valid email address or password.'
+            , request.form['password']):
+            flash('That\'s not a valid email address or password.'
                 , 'error')
-            return flask.render_template('login.html')
+            return render_template('login.html')
 
         # they've made it through the gauntlet, log them in
         user.last_login_time = datetime.datetime.utcnow()
         user.save()
-        flask.session['email'] = flask.request.form['email']
-        flask.session['admin_rights'] = user.admin_rights
+        session['email'] = request.form['email']
+        session['admin_rights'] = user.admin_rights
 
-        return flask.redirect(flask.url_for('dashboard'))
+        return redirect(url_for('dashboard'))
 
 
 @app.route('/logout')
@@ -232,11 +234,11 @@ def logout():
     ''' blow away the session
     redirect home
     '''
-    flask.session.pop('email', None)
-    flask.session.pop('admin_rights', None)
+    session.pop('email', None)
+    session.pop('admin_rights', None)
 
-    flask.flash('adios!', 'info')
-    return flask.redirect(flask.url_for('home'))
+    flash('adios!', 'info')
+    return redirect(url_for('home'))
 
 
 @app.route('/dashboard')
@@ -244,7 +246,7 @@ def logout():
 def dashboard():
     ''' show the dashboard
     '''
-    return flask.render_template('dashboard.html')
+    return render_template('dashboard.html')
 
 
 @app.route('/directory/', defaults={'internal_id': None})
@@ -254,17 +256,17 @@ def directory(internal_id):
     ''' show the users and their verification/confirmation status
     if there's an email included in the route, render that profile for editing
     '''
-    if flask.request.method == 'POST':
+    if request.method == 'POST':
         user = User.objects(id=internal_id)
         if not user:
-            flask.abort(404)
+            abort(404)
         user = user[0]
 
-        user.name = flask.request.form['name']
-        user.email = flask.request.form['email']
-        user.organization = flask.request.form['organization']
+        user.name = request.form['name']
+        user.email = request.form['email']
+        user.organization = request.form['organization']
         
-        if flask.request.form['verification'] == 'verified':
+        if request.form['verification'] == 'verified':
             # check to see if the verification status has changed
             if not user.verified:
                 # send email to user that they've been verified
@@ -272,36 +274,36 @@ def directory(internal_id):
                 user.reload()
                 _send_notification_of_verification(user)
             user.verified = True
-        elif flask.request.form['verification'] == 'unverified':
+        elif request.form['verification'] == 'unverified':
             user.verified = False
         
-        if flask.request.form['admin'] == 'admin':
+        if request.form['admin'] == 'admin':
             user.admin_rights = True
-        elif flask.request.form['admin'] == 'normal':
+        elif request.form['admin'] == 'normal':
             user.admin_rights = False
 
         try:
             user.save()
-            flask.flash('updates saved successfully', 'success')
-            return flask.render_template('directory_single_user.html'
+            flash('updates saved successfully', 'success')
+            return render_template('directory_single_user.html'
                 , user=user)
         except:
-            flask.flash('error saving changes, sorry /:')
-            return flask.render_template('directory_single_user.html'
+            flash('error saving changes, sorry /:')
+            return render_template('directory_single_user.html'
                 , user=user)
         
-    if flask.request.method == 'GET':
+    if request.method == 'GET':
         if internal_id:
             user = User.objects(id=internal_id)
             if not user:
-                flask.abort(404)
+                abort(404)
             user = user[0]
-            return flask.render_template('directory_single_user.html'
+            return render_template('directory_single_user.html'
                 , user=user)
         
         # nobody in particular was specified; show em all
         users = User.objects()
-        return flask.render_template('directory.html', users=users)
+        return render_template('directory.html', users=users)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -310,30 +312,30 @@ def profile():
     ''' viewing/editing ones own profile
     note that admins can view/edit any profile at /directory
     '''
-    user = User.objects(email=flask.session['email'])
+    user = User.objects(email=session['email'])
     if not user:  # uh, what?
-        flask.abort(404)
+        abort(404)
     user = user[0]
 
-    if flask.request.method == 'POST':
-        user.name = flask.request.form['name']
-        user.email = flask.request.form['email']
-        user.organization = flask.request.form['organization']
+    if request.method == 'POST':
+        user.name = request.form['name']
+        user.email = request.form['email']
+        user.organization = request.form['organization']
 
         try:
             user.save()
             # have to update the session in case the email was edited
             # might want to vet the new email with another confirmation step
-            flask.session['email'] = flask.request.form['email']
+            session['email'] = request.form['email']
 
-            flask.flash('updates saved successfully', 'success')
-            return flask.render_template('profile.html', user=user)
+            flash('updates saved successfully', 'success')
+            return render_template('profile.html', user=user)
         except:
-            flask.flash('error saving changes, sorry /:', 'error')
-            return flask.render_template('profile.html', user=user)
+            flash('error saving changes, sorry /:', 'error')
+            return render_template('profile.html', user=user)
     
-    if flask.request.method == 'GET':
-        return flask.render_template('profile.html', user=user)
+    if request.method == 'GET':
+        return render_template('profile.html', user=user)
 
 
 @app.route('/forgot/', defaults={'code': None}, methods=['GET', 'POST'])
@@ -343,26 +345,26 @@ def forgot(code):
     ''' take input email address
     send password reset link
     '''
-    if flask.request.method == 'POST':
+    if request.method == 'POST':
         if code:
             user = User.objects(forgot_password_code=code)
             if not user:
-                flask.abort(404)
+                abort(404)
             user = user[0]
 
             user.password_hash = bcrypt.generate_password_hash(
-                flask.request.form['password'])
+                request.form['password'])
             user.save()
 
-            flask.flash('password successfully changed; you may now login'
+            flash('password successfully changed; you may now login'
                 , 'success')
-            return flask.redirect(flask.url_for('home'))
+            return redirect(url_for('home'))
 
 
-        user = User.objects(email=flask.request.form['email'])
+        user = User.objects(email=request.form['email'])
         if not user:
-            flask.flash('email not found :/', 'error')
-            return flask.render_template('forgot.html')
+            flash('email not found :/', 'error')
+            return render_template('forgot.html')
         
         user = user[0]
         user.forgot_password_code = _generate_random_string(34)
@@ -371,20 +373,20 @@ def forgot(code):
 
         _send_forgot_password_link(user)
 
-        flask.flash('We\'ve sent an email to %s with information on how to \
+        flash('We\'ve sent an email to %s with information on how to \
             reset your account\'s password.' % user.email)
-        return flask.render_template('login.html')
+        return render_template('login.html')
 
-    elif flask.request.method == 'GET':
+    elif request.method == 'GET':
         if code:
             user = User.objects(forgot_password_code=code)
             if not user:
-                flask.abort(404)
+                abort(404)
             user = user[0]
-            return flask.render_template('forgot_password_create_new.html'
+            return render_template('forgot_password_create_new.html'
                 , user=user)
         else:
-            return flask.render_template('forgot.html')
+            return render_template('forgot.html')
 
 
 ''' mongoengine models
@@ -421,18 +423,19 @@ def _generate_random_string(length):
 def _send_forgot_password_link(user):
     ''' user has requested password reset link
     '''
+    forgot_url = urlparse.urljoin(app.config['APP_ROOT']
+        , url_for('forgot_password', code=user.forgot_password_code))
+
     body = '''
         Hello!  Someone has recently requested a password reset for %s.  
         If that was not you, please disregard this message.  
         
         If it was you, please click this link to choose a new password, thanks!
         
-        %s/forgot/%s
-         ''' % (app.config['APP_NAME'], app.config['APP_ROOT'], 
-                 user.forgot_password_code)
+        %s
+         ''' % (app.config['APP_NAME'], forgot_url)
 
-    _send_email(
-        user.email
+    _send_email(user.email
         , 'Re: requested %s password reset' % app.config['APP_NAME']
         , body)
     
@@ -450,8 +453,7 @@ def _send_notification_of_verification(user):
         %s
         ''' % (app.config['APP_NAME'], app.config['APP_ROOT'])
 
-    _send_email(
-        user.email
+    _send_email(user.email
         , 'you now have access to %s' % app.config['APP_NAME']
         , body)
 
@@ -459,6 +461,9 @@ def _send_notification_of_verification(user):
 def _send_admin_verification(user):
     ''' email to an admin indicating that there a user needs verification
     '''
+    directory_url = urlparse.urljoin(app.config['APP_ROOT']
+        , url_for('directory', internal_id=user._id))
+
     body = '''
         Howdy!  Someone new has confirmed his or her email address and now 
         needs to be verified by an admin.  Here are the details:
@@ -470,22 +475,24 @@ def _send_admin_verification(user):
         Click the following link to edit the verification status of this
         person.
 
-        %s/directory/%s
+        %s
 
         Thanks!
-        ''' % (user.name, user.email, user.organization
-                , app.config['APP_ROOT'], user._id)
+        ''' % (user.name, user.email, user.organization, directory_url)
 
-    # send to the AWS verified sender..should probably use a manager's email
-    _send_email(
-        app.config['AWS']['verified_sender']
-        , '%s -- %s needs to be verified' % (app.config['APP_NAME'], user.name)
+    # send to the AWS verified sender
+    # ..should probably use a manager's email instead
+    _send_email( app.config['AWS']['verified_sender']
+        , '%s | %s needs to be verified' % (app.config['APP_NAME'], user.name)
         , body)
 
 
 def _send_confirmation_email(user):
     ''' sends an email to a newly-registered user with a confirmation code
     '''
+    confirmation_url = urlparse.urljoin(app.config['APP_ROOT']
+        , url_for('confirm_email', code=user.email_confirmation_code))
+
     body = '''
         Hello, this email was recently used to sign up for an account with 
         %s.  If it was you that signed up for this account, please click
@@ -493,14 +500,12 @@ def _send_confirmation_email(user):
         
         If you did not sign up for this account, please disregard this message.
         
-        %s/confirm_email/%s
+        %s
 
         Thanks!
-        ''' % (app.config['APP_NAME'], app.config['APP_ROOT']
-                , user.email_confirmation_code)
+        ''' % (app.config['APP_NAME'], confirmation_url)
 
-    _send_email(
-        user.email
+    _send_email( user.email
         , '%s email confirmation' % app.config['APP_NAME']
         , body)
 
@@ -541,15 +546,15 @@ def _format_datetime(dt, formatting='medium'):
 def csrf_protect():
     ''' CSRF protection via http://flask.pocoo.org/snippets/3/
     '''
-    if flask.request.method == 'POST':
-        token = flask.session.pop('_csrf_token', None)
-        if not token or token != flask.request.form.get('_csrf_token'):
-            flask.abort(403)
+    if request.method == 'POST':
+        token = session.pop('_csrf_token', None)
+        if not token or token != request.form.get('_csrf_token'):
+            abort(403)
 
 def _generate_csrf_token():
-    if '_csrf_token' not in flask.session:
-        flask.session['_csrf_token'] = _generate_random_string(24)
-    return flask.session['_csrf_token']
+    if '_csrf_token' not in session:
+        session['_csrf_token'] = _generate_random_string(24)
+    return session['_csrf_token']
 
 app.jinja_env.globals['csrf_token'] = _generate_csrf_token
 
