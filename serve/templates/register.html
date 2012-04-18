@@ -65,24 +65,24 @@
             fields: {
                 '#name': {
                     required: true
-                    , message: 'please enter your name'
+                    , message: ''
                 }
                 , '#email': {
                     required: true
-                    , message: 'please enter a valid email address'
+                    , message: ''
                     , test: happy.email
                 }
                 , '#organization': {
                     required: true
-                    , message: 'please enter your organization'
+                    , message: ''
                 }
                 , '#password': {
                     required: true
-                    , message: 'please submit a password'
+                    , message: ''
                 }
                 , '#retype_password': {
                     required: true
-                    , message: 'please retype your password'
+                    , message: ''
                     , test: happy.equal('#password')
                 }
             }
