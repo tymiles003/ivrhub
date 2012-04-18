@@ -28,6 +28,11 @@ MONGO_CONFIG = {
     , 'port': 27017
 }
 
+
+# add a google analytics account id if you'd like to track page interaction
+GOOGLE_ANALYTICS_ID = 'UA-12345678-9'
+
+
 # amazon web services credentials
 # you must verify a sender and seek production access via AWS SES
 AWS = {
