@@ -16,9 +16,37 @@ def logged_in_as_admin(step):
 @step('I login with "(.*)" and "(.*)" appended to the default credentials')
 def login_with_parameters_appended_to_default_credentials(step, a, b):
     response = world.app.post('/login'
-        , data=dict(email=app.config['INITIAL_USER']['email'] + a
-            , password=app.config['INITIAL_USER']['password'] + b)
-        , follow_redirects=True)
+        , data=dict(
+            email=app.config['INITIAL_USER']['email'] + a
+            , password=app.config['INITIAL_USER']['password'] + b
+        ), follow_redirects=True)
+    world.response_code = response.status_code
+    world.response_data = response.data
+
+
+@step('I register with the email address "(.*)"')
+def register_with_email_address(step, address):
+    if address == 'default':
+        email = app.config['INITIAL_USER']['email']
+
+    response = world.app.post('/register'
+        , data=dict(
+            email=email
+            , password=app.config['INITIAL_USER']['password']
+            , retype_password=app.config['INITIAL_USER']['password']
+        ), follow_redirects=True)
+    world.response_code = response.status_code
+    world.response_data = response.data
+
+
+@step('I register with passwords that do not match')
+def register_with_passwords_that_do_not_match(step):
+    response = world.app.post('/register'
+        , data=dict(
+            email=app.config['INITIAL_USER']['password']
+            , password='s3cr3t'
+            , retype_password='h1dd3n'
+        ), follow_redirects=True)
     world.response_code = response.status_code
     world.response_data = response.data
 
