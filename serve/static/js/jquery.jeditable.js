@@ -1,0 +1,1 @@
+../jeditable/jquery.jeditable.js
