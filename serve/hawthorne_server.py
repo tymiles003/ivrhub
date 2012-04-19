@@ -587,9 +587,14 @@ def init():
         >> init()
         user bruce@wayneindustries created with specified password
     '''
+    # initialize the mongoengine connection
+    # repeated to ensure any config changes from testing are pulled in
+    connect(app.config['MONGO_CONFIG']['db_name']
+        , host=app.config['MONGO_CONFIG']['host']
+        , port=int(app.config['MONGO_CONFIG']['port']))
+
     initial_user = app.config['INITIAL_USER']
 
-    #try:
     default_admin = User(
         admin_rights = True
         , api_id = 'ID' + _generate_random_string(32)
@@ -608,8 +613,6 @@ def init():
 
     default_admin.save()
     print 'user %s created with specified password' % default_admin['email']
-    #except:
-    #    print 'insertion failed; there may be a non-unique field'
 
 
 if __name__ == '__main__':
