@@ -136,14 +136,14 @@ def register():
         if request.form['password'] != \
             request.form['retype_password']:
             flash('submitted passwords did not match', 'error')
-            return render_template('register.html')
+            return redirect(url_for('register'))
 
         # check that user email is unique
         duplicates = User.objects(email=request.form['email'])
         if duplicates:
             flash('This email address has been registered already.'
                 , 'error')
-            return render_template('register.html')
+            return redirect(url_for('register'))
 
         # create the new user
         try:
@@ -165,7 +165,7 @@ def register():
             new_user.save() 
         except:
             flash('There was an error in the form, sorry :/', 'error')
-            return render_template('register.html')
+            return redirect(url_for('register'))
         
         # seek email confirmation
         _send_confirmation_email(new_user)
@@ -226,7 +226,7 @@ def login():
         if not user:
             flash('That\'s not a valid email address or password.'
                 , 'error')
-            return render_template('login.html')
+            return redirect(url_for('login'))
         
         user = user[0]
         # verify the password 
@@ -234,7 +234,7 @@ def login():
             , request.form['password']):
             flash('That\'s not a valid email address or password.'
                 , 'error')
-            return render_template('login.html')
+            return redirect(url_for('login'))
 
         # they've made it through the gauntlet, log them in
         user.last_login_time = datetime.datetime.utcnow()
@@ -381,7 +381,7 @@ def forgot(code):
         user = User.objects(email=request.form['email'])
         if not user:
             flash('email not found :/', 'error')
-            return render_template('forgot.html')
+            return redirect(url_for('forgot'))
         
         user = user[0]
         user.forgot_password_code = _generate_random_string(34)
@@ -392,7 +392,7 @@ def forgot(code):
 
         flash('We\'ve sent an email to %s with information on how to \
             reset your account\'s password.' % user.email)
-        return render_template('login.html')
+        return redirect(url_for('home'))
 
     elif request.method == 'GET':
         if code:
