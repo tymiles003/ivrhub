@@ -1,8 +1,16 @@
+from serve.hawthorne_server import app
 from lettuce import *
 
 @step('I am not logged in')
 def not_logged_in(step):
     world.app.get('logout', follow_redirects=True)
+
+
+@step('I am logged in as an admin')
+def logged_in_as_admin(step):
+    response = world.app.post('/login', data=dict(
+        email=app.config['INITIAL_USER']['email']
+        , password=app.config['INITIAL_USER']['password']))
 
 
 @step('I go to the address "(.*)"')

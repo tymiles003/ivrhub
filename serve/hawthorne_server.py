@@ -566,7 +566,8 @@ def csrf_protect():
     if request.method == 'POST':
         token = session.pop('_csrf_token', None)
         if not token or token != request.form.get('_csrf_token'):
-            abort(403)
+            if not app.config['TESTING']:
+                abort(403)
 
 def _generate_csrf_token():
     if '_csrf_token' not in session:
