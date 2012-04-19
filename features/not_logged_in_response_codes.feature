@@ -1,10 +1,11 @@
-Feature: Proper response codes
+Feature: Proper response codes when not logged in
     In order to try the testing setup
     As a beginner
-    We'll see if routes return the correct response codes
+    We'll see if routes return the correct response codes when not logged in
 
-    Scenario Outline: Response codes
+    Scenario Outline: Response codes when not logged in
         Given I have the route <route>
+        And I am not logged in
         When I go to the address
         Then I get the response code <code> and the page contains <data>
 
