@@ -8,7 +8,7 @@ def not_logged_in(step):
 
 @step('I am logged in as an admin')
 def logged_in_as_admin(step):
-    response = world.app.post('/login', data=dict(
+    world.app.post('/login', data=dict(
         email=app.config['INITIAL_USER']['email']
         , password=app.config['INITIAL_USER']['password']))
 
