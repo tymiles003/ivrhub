@@ -554,6 +554,8 @@ def _format_datetime(dt, formatting='medium'):
         return dt.strftime('%B %d, %Y at %H:%M:%S')
     if formatting == 'full-day':
         return dt.strftime('%A %B %d, %Y')
+    if formatting == 'short-date-with-time':
+        return dt.strftime('%m/%d/%y %H:%M:%S')
     if formatting == 'day-month-year':
         return dt.strftime('%B %d, %Y')
     if formatting == 'hours-minutes-seconds':
