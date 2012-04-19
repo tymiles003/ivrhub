@@ -250,10 +250,11 @@ def logout():
     ''' blow away the session
     redirect home
     '''
-    session.pop('email', None)
-    session.pop('admin_rights', None)
+    if 'email' in session:
+        session.pop('email', None)
+        session.pop('admin_rights', None)
 
-    flash('adios!', 'info')
+        flash('adios!', 'info')
     return redirect(url_for('home'))
 
 
