@@ -4,3 +4,6 @@
 [submodule "serve/static/happy"]
 	path = serve/static/happy
 	url = git@github.com:yosemitebandit/Happy.js.git
+[submodule "serve/static/jeditable"]
+	path = serve/static/jeditable
+	url = git://github.com/tuupola/jquery_jeditable.git
