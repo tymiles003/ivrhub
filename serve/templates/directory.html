@@ -20,9 +20,9 @@
                     <th>Organization</th>
                     <th>Date Registered</th>
                     <th>Last Login</th>
-                    <th>Email Confirmed</th>
-                    <th>Identity Verified</th>
-                    <th>Admin Rights</th>
+                    <th style='text-align: center'>Email Confirmed</th>
+                    <th style='text-align: center'>Identity Verified</th>
+                    <th style='text-align: center'>Admin</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,21 +33,21 @@
                     <td>{{ user.organization }}</td>
                     <td>{{ user.registration_time | _format_datetime('medium') }}</td>
                     <td>{{ user.last_login_time | _format_datetime('medium') }}</td>
-                    <td>
+                    <td style='text-align: center'>
                         {% if user.email_confirmed %}
                         <button class='btn btn-info small' disabled><i class='icon-ok'></i></button>
                         {% else %}
                         <button class='btn btn-warning small' disabled><i class='icon-remove'></i></button>
                         {% endif %}
                     </td>
-                    <td>
+                    <td style='text-align: center'>
                         {% if user.verified %}
                         <button class='btn btn-info small' disabled><i class='icon-ok'></i></button>
                         {% else %}
                         <button class='btn btn-warning small' disabled><i class='icon-remove'></i></button>
                         {% endif %}
                     </td>
-                    <td>
+                    <td style='text-align: center'>
                         {% if user.admin_rights %}
                         <button class='btn btn-info small' disabled><i class='icon-ok'></i></button>
                         {% else %}
