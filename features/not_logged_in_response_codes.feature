@@ -4,9 +4,8 @@ Feature: Proper response codes when not logged in
     We'll see if routes return the correct response codes when not logged in
 
     Scenario Outline: Response codes when not logged in
-        Given I have the route <route>
-        And I am not logged in
-        When I go to the address
+        Given I am not logged in
+        When I go to the address <route>
         Then I get the response code <code> and the page contains <data>
 
     Examples:

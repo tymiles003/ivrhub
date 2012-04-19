@@ -1,19 +1,13 @@
 from lettuce import *
 
-@step('I have the route "(.*)"')
-def have_the_route(step, route):
-    route = str(route)
-    world.route = route
-
-
 @step('I am not logged in')
 def not_logged_in(step):
     world.app.get('logout', follow_redirects=True)
 
 
-@step('I go to the address')
-def go_to_the_address(step):
-    response= world.app.get(world.route, follow_redirects=True)
+@step('I go to the address "(.*)"')
+def go_to_the_address(step, route):
+    response= world.app.get(route, follow_redirects=True)
     world.response_code = response.status_code
     world.response_data = response.data
 
