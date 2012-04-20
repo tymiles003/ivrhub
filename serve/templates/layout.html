@@ -89,9 +89,9 @@
               <ul class='dropdown-menu'>
                 <li><a href="#"><i class='icon-list-alt'></i> Forms</a></li>
                 <li><a href="#"><i class='icon-signal'></i> Analysis</a></li>
-                <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Edit Profile</a></li>
-                {% if session.admin_rights %}
                 <li class='divider'></li>
+                <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Profile</a></li>
+                {% if session.admin_rights %}
                 <li><a href="{{ url_for('directory') }}"><i class='icon-book'></i> Directory</a></li>
                 {% endif %}
 
