@@ -47,15 +47,14 @@
 
 <script>
     $(function() {
+
         $('.edit').editable(function(value, settings) {
-            // gather up all the user data
+            // gather up the user data
             var form_data = {
                 _csrf_token: '{{ csrf_token() }}'
             };
             var key = $(this).attr('data-id');
             form_data[key] = value;
-
-            console.log(form_data);
 
             // send to url
             $.ajax({
@@ -63,9 +62,11 @@
                 , url: '{{ url_for("profile") }}'
                 , data: form_data
                 , success: function(data) {
+                    console.log('yay')
                     console.log(data);
                 }
                 , error: function(data) {
+                    console.log('boo')
                     console.log(data);
                 }
             });
@@ -74,6 +75,9 @@
             return value
         }, {
             submit: '<button type="submit" class="btn btn-primary edit-in-place-save">Save</button>'
+            , onerror: function() {
+                console.log('balls');
+            }
         });
 
     });

@@ -333,16 +333,19 @@ def profile():
 
     if request.method == 'POST':
         ''' ajax requests
-        ..need to add validation
+        need to add validation
         '''
         if request.form.get('name', None):
             user.name = request.form['name']
         
-        if request.form.get('email', None):
+        elif request.form.get('email', None):
             user.email = request.form['email']
         
-        if request.form.get('organization', None):
+        elif request.form.get('organization', None):
             user.organization = request.form['organization']
+
+        else:
+            abort(400)
 
         try:
             user.save()
