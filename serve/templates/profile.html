@@ -13,7 +13,7 @@
     <div class='span12'>
         <div class='row'>
             <div class='span3'>
-                <h2 class='section-name edit'>{{ user.name }}</h2>
+                <h2 class='section-name edit' data-id='name'>{{ user.name }}</h2>
             </div>
         </div>
     </div>
@@ -23,12 +23,12 @@
         <div class='row'>
             <div class='span3'>
                 <h4>Email address</h4>
-                <p class='edit'>{{ user.email }}</p>
+                <p class='edit' data-id='email'>{{ user.email }}</p>
             </div>
             
             <div class='span3'>
                 <h4>Organization</h4>
-                <p class='edit'>{{ user.organization }}</p>
+                <p class='edit' data-id='organization'>{{ user.organization }}</p>
             </div>
             
             <div class='span3'>
@@ -48,21 +48,29 @@
 <script>
     $(function() {
         $('.edit').editable(function(value, settings) {
+            // gather up all the user data
+            var form_data = {
+                _csrf_token: '{{ csrf_token() }}'
+            };
+            var key = $(this).attr('data-id');
+            form_data[key] = value;
+
+            console.log(form_data);
+
             // send to url
             $.ajax({
                 type: 'post'
                 , url: '{{ url_for("profile") }}'
-                , data: 'data'
+                , data: form_data
                 , success: function(data) {
-                    console.log('nice')
+                    console.log(data);
                 }
                 , error: function(data) {
-                    console.log('boo')
+                    console.log(data);
                 }
             });
 
             // modify button
-            console.log(value);
             return value
         }, {
             submit: '<button type="submit" class="btn btn-primary edit-in-place-save">Save</button>'

@@ -10,7 +10,7 @@ import urlparse
 
 import boto
 from flask import (Flask, session, redirect, render_template, abort, url_for
-    , request, flash)
+    , request, flash, jsonify)
 from flaskext.bcrypt import Bcrypt
 from mongoengine import *
 
@@ -329,27 +329,31 @@ def profile():
     ''' viewing/editing ones own profile
     note that admins can view/edit any profile at /directory
     '''
-    user = User.objects(email=session['email'])
-    if not user:  # uh, what?
-        abort(404)
-    user = user[0]
+    user = User.objects(email=session['email'])[0]
 
     if request.method == 'POST':
-        user.name = request.form['name']
-        user.email = request.form['email']
-        user.organization = request.form['organization']
+        ''' ajax requests
+        ..need to add validation
+        '''
+        if request.form.get('name', None):
+            user.name = request.form['name']
+        
+        if request.form.get('email', None):
+            user.email = request.form['email']
+        
+        if request.form.get('organization', None):
+            user.organization = request.form['organization']
 
         try:
             user.save()
             # have to update the session in case the email was edited
             # might want to vet the new email with another confirmation step
-            session['email'] = request.form['email']
+            if request.form.get('email', None):
+                session['email'] = request.form['email']
 
-            flash('updates saved successfully', 'success')
-            return render_template('profile.html', user=user)
+            return jsonify({'status': 'success'})
         except:
-            flash('error saving changes, sorry /:', 'error')
-            return render_template('profile.html', user=user)
+            return jsonify({'status': 'error'})
     
     if request.method == 'GET':
         return render_template('profile.html', user=user)
