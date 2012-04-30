@@ -33,17 +33,17 @@
                         <tr>
                             <td>Email confirmed</td>
                             {% if user.email_confirmed %}
-                            <td><button class='btn btn-info small' disabled><i class='icon-ok'></i></button></td>
+                            <td style='text-align: center'><button class='btn btn-info small' disabled><i class='icon-ok'></i></button></td>
                             {% else %}
-                            <td><button class='btn btn-warning small' disabled><i class='icon-remove'></i></button></td>
+                            <td style='text-align: center'><button class='btn btn-warning small' disabled><i class='icon-remove'></i></button></td>
                             {% endif %}
                         </tr>
                         <tr>
                             <td>Identity verified</td>
                             {% if user.verified %}
-                            <td><button class='btn btn-info small' disabled><i class='icon-ok'></i></button></td>
+                            <td style='text-align: center'><button class='btn btn-info small' disabled><i class='icon-ok'></i></button></td>
                             {% else %}
-                            <td><button class='btn btn-warning small' disabled><i class='icon-remove'></i></button></td>
+                            <td style='text-align: center'><button class='btn btn-warning small' disabled><i class='icon-remove'></i></button></td>
                             {% endif %}
                         </tr>
                     </tbody>
