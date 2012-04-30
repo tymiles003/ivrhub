@@ -8,6 +8,13 @@ def setup_flask_test_client():
 
     # setup test db by modifying db name from config
     app.config['MONGO_CONFIG']['db_name'] += '_testing'
+    
+    # make sure it doesn't already exists
+    # teardown's not cleaning up properly, it seems..
+    connection = Connection(app.config['MONGO_CONFIG']['host']
+        , app.config['MONGO_CONFIG']['port'])
+    connection.drop_database(app.config['MONGO_CONFIG']['db_name'])
+
     # populate the db
     init()
     
