@@ -41,5 +41,6 @@ Feature: Proper response codes when in various states of logged-in-edness
             | "login"      | 200  | "Dashboard" |
             | "logout"     | 200  | "a Flask skeleton" |
             | "dashboard"  | 200  | "Dashboard" |
-            | "profile"    | 200  | "Editing" |
+            | "profile"    | 200  | "edit" |
+            | "profile?edit=true"    | 200  | "Modify" |
             | "directory"  | 200  | "Member Directory" |
