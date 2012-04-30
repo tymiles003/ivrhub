@@ -332,9 +332,38 @@ def profile():
     user = User.objects(email=session['email'])[0]
 
     if request.method == 'POST':
-        user.name = request.form.get('name', '')
-        user.organization = request.form.get('organization', '')
+        profile_form_type = request.form.get('profile_form_type', '')
+        if profile_form_type == 'info':
+            user.name = request.form.get('name', '')
+            user.organization = request.form.get('organization', '')
         
+        elif profile_form_type == 'password':
+            # check that the current password is correct
+            if not bcrypt.check_password_hash(user.password_hash
+                , request.form['current_password']):
+                flash('incorrect password', 'error')
+                return redirect(url_for('profile', edit='true'))
+
+            # submitted passwords are the same?
+            if request.form['new_password'] != request.form['verify_password']:
+                flash('new passwords do not match', 'error')
+                return redirect(url_for('profile', edit='true'))
+
+            # looking good; update the password
+            user.password_hash = bcrypt.generate_password_hash(
+                request.form['new_password'])
+
+        elif profile_form_type == 'delete_account':
+            # delete the user, wipe the session
+            user.delete()
+            session.pop('email', None)
+            session.pop('admin_rights', None)
+            return redirect(url_for('home'))
+        
+        else:
+            # bad 'profile_form_type'
+            abort(404)
+       
         try:
             user.save()
             flash('changes saved successfully', 'success')
@@ -342,7 +371,8 @@ def profile():
         except:
             flash('error saving changes, sorry /:')
             return redirect(url_for('profile'))
-    
+   
+
     if request.method == 'GET':
         if request.args.get('edit', '') == 'true':
             return render_template('profile_edit.html', user=user)
@@ -352,7 +382,6 @@ def profile():
 
 @app.route('/forgot/', defaults={'code': None}, methods=['GET', 'POST'])
 @app.route('/forgot/<code>', methods=['GET', 'POST'])
-@require_not_logged_in
 def forgot(code):
     ''' take input email address
     send password reset link

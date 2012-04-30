@@ -2,57 +2,154 @@
 
 {% block body %}
 <div class='row'>
-    <div class='span6'>
-        <form class='form-horizontal' action="{{ url_for('profile') }}" method=post id='edit_profile_form'>
-            <fieldset>
-                <legend>Editing "{{ user.name }}"
-                    <a class='pull-right btn btn-small btn-danger'>Delete profile</a>
-                </legend>
-                <div class='control-group'>
-                    <label class='control-label' for='name'>Name</label>
-                    <div class='controls'>
-                        <input type='text' class='span3' name='name' id='name' value={{ user.name }}>
-                    </div>
-                </div>
-                <div class='control-group'>
-                    <label class='control-label' for='email'>Email</label>
-                    <div class='controls'>
-                        <input type='text' class='span3' name='email' id='email' disabled value={{ user.email }}>
-                        <p class='help-block'>contact support if you need to alter your email address</p>
-                    </div>
-                </div>
-                <div class='control-group'>
-                    <label class='control-label' for='organization'>Organization</label>
-                    <div class='controls'>
-                        <input type='text' class='span3' name='organization' id='organization' value={{ user.organization }}>
-                    </div>
-                </div>
-                <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+    <div class='offset3 span6'>
 
-                <div class='form-actions'>
-                    <button type='submit' class='btn btn-success'>Save</button>
-                    <a class='btn' href="{{ url_for('profile') }}">Cancel</a>
-                </div>
-            </fieldset>
-        </form>
-    </div>
+        <ul id='profileTab' class='nav nav-tabs'>
+            <li class='active'><a href='#info' data-toggle='tab'>Info</a></li>
+            <li><a href='#password' data-toggle='tab'>Password</a></li>
+            <li><a href='#account' data-toggle='tab'>Account</a></li>
+        </ul>
 
-    <div class='offset1 span3'>
+        <div id='profileTabContent' class='tab-content'>
+            <div class='tab-pane active' id='info'>
+                <h3>Modify your profile information</h3>
+                <br />
+                <form class='form-horizontal' action="{{ url_for('profile') }}" method=post id='edit_profile_info_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='name'>Name</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='name' id='name' value={{ user.name }}>
+                            </div>
+                        </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='email'>Email</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='email' id='email' disabled value={{ user.email }}>
+                                <p class='help-block'>contact support if you need to alter your email address</p>
+                            </div>
+                        </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='organization'>Organization</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='organization' id='organization' value={{ user.organization }}>
+                            </div>
+                        </div>
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        
+                        <input name=profile_form_type type=hidden value="info">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save</button>
+                            <a class='btn' href="{{ url_for('profile') }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+
+            <div class='tab-pane' id='password'>
+                <h3>Change your password</h3>
+                <br />
+                <form class='form-horizontal' action="{{ url_for('profile') }}" method=post id='edit_profile_password_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='current_password'>Current password</label>
+                            <div class='controls'>
+                                <input type='password' class='span3' name='current_password' id='current_password'>
+                                <p class='help-block'><a class='help-block' href="{{ url_for('forgot') }}">forgot your password?</a></p>
+                            </div>
+                        </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='new_password'>New password</label>
+                            <div class='controls'>
+                                <input type='password' class='span3' name='new_password' id='new_password'>
+                            </div>
+                        </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='verify_password'>Verify password</label>
+                            <div class='controls'>
+                                <input type='password' class='span3' name='verify_password' id='verify_password'>
+                            </div>
+                        </div>
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        
+                        <input name=profile_form_type type=hidden value="password">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Change Password</button>
+                            <a class='btn' href="{{ url_for('profile') }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+
+
+            
+            <div class='tab-pane' id='account'>
+                <h3>Delete your account
+                    <small>(this cannot be undone!)</small>
+                </h3>
+                <br />
+
+                <div class='modal hide' id='delete_account_modal'>
+                    <div class='modal-header'>
+                        <button class='close' data-dismiss='modal'>×</button>
+                        <h3>Delete account</h3>
+                    </div>
+
+                    <div class='modal-body'>
+                        <p>This will delete your account on this site.</p>
+                        <p>This operation <strong>cannot be undone.</strong></p>
+                    </div>
+                    
+                    <div class='modal-footer'>
+                        <form action="{{ url_for('profile') }}" method=post id='edit_profile_account_form'>
+                            <a href='#' class='btn' data-dismiss='modal'>Cancel</a>
+
+                            <input name=profile_form_type type=hidden value="delete_account">
+                            
+                            <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                            <button type='submit' class='btn btn-danger'>Delete my account</button>
+                        </form>
+                    </div>
+                </div><!-- /.modal -->
+
+                <a class='btn btn-danger' data-toggle='modal' href='#delete_account_modal'>Delete account</a>
+            </div>
+
+        
+        </div>
     </div>
+    
 </div>
+
 
 {% endblock %}
 
 {% block js %}
 <script src="{{ url_for('static', filename='js/bootstrap-modal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-tab.js') }}"></script>
 <script src="{{ url_for('static', filename='js/happy.js') }}"></script>
 <script src="{{ url_for('static', filename='js/happy.methods.js') }}"></script>
 <script>
     $(function() {
+
+        // tabs
+        $('#profileTab a').click(function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        // modal
+        $('#delete_account_modal').modal({
+            show: false
+        });
+
+
         // initial focus on first input
         $('#name').focus();
 
-        $('#edit_profile_form').isHappy({
+        $('#edit_profile_info_form').isHappy({
             fields: {
                 '#name': {
                     required: true
@@ -66,6 +163,24 @@
                 , '#organization': {
                     required: true
                     , message: ''
+                }
+            }
+        });
+        
+        $('#edit_profile_password_form').isHappy({
+            fields: {
+                '#current_password': {
+                    required: true
+                    , message: ''
+                }
+                , '#new_password': {
+                    required: true
+                    , message: ''
+                }
+                , '#verify_password': {
+                    required: true
+                    , message: 'your passwords must match!'
+                    , test: happy.equal('#new_password')
                 }
             }
         });
