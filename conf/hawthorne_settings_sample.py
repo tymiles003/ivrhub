@@ -50,3 +50,12 @@ INITIAL_USER = {
     , 'organization': 'The Daily Bugle'
     , 'password': 'ven0msuck5'
 }
+
+
+# create a gmail account you can access for testing
+TEST_USER = {
+    'email': 'thebat@gmail.com'
+    , 'name': 'Bruce Wayne'
+    , 'organization': 'Wayne Industries'
+    , 'password': 'c4p3d-crus4d3r'
+}
