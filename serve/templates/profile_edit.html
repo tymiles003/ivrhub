@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class='row'>
+    <div class='span6'>
+        <form class='form-horizontal' action="{{ url_for('profile') }}" method=post id='edit_profile_form'>
+            <fieldset>
+                <legend>Editing "{{ user.name }}"
+                    <a class='pull-right btn btn-small btn-danger'>Delete profile</a>
+                </legend>
+                <div class='control-group'>
+                    <label class='control-label' for='name'>Name</label>
+                    <div class='controls'>
+                        <input type='text' class='span3' name='name' id='name' value={{ user.name }}>
+                    </div>
+                </div>
+                <div class='control-group'>
+                    <label class='control-label' for='email'>Email</label>
+                    <div class='controls'>
+                        <input type='text' class='span3' name='email' id='email' disabled value={{ user.email }}>
+                        <p class='help-block'>contact support if you need to alter your email address</p>
+                    </div>
+                </div>
+                <div class='control-group'>
+                    <label class='control-label' for='organization'>Organization</label>
+                    <div class='controls'>
+                        <input type='text' class='span3' name='organization' id='organization' value={{ user.organization }}>
+                    </div>
+                </div>
+                <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+
+                <div class='form-actions'>
+                    <button type='submit' class='btn btn-success'>Save</button>
+                    <a class='btn' href="{{ url_for('profile') }}">Cancel</a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class='offset1 span3'>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/bootstrap-modal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.methods.js') }}"></script>
+<script>
+    $(function() {
+        // initial focus on first input
+        $('#name').focus();
+
+        $('#edit_profile_form').isHappy({
+            fields: {
+                '#name': {
+                    required: true
+                    , message: ''
+                }
+                , '#email': {
+                    required: true
+                    , message: ''
+                    , test: happy.email
+                }
+                , '#organization': {
+                    required: true
+                    , message: ''
+                }
+            }
+        });
+
+    });
+</script>
+{% endblock %}

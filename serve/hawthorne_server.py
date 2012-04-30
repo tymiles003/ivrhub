@@ -332,34 +332,22 @@ def profile():
     user = User.objects(email=session['email'])[0]
 
     if request.method == 'POST':
-        ''' ajax requests
-        need to add validation
-        '''
-        if request.form.get('name', None):
-            user.name = request.form['name']
+        user.name = request.form.get('name', '')
+        user.organization = request.form.get('organization', '')
         
-        elif request.form.get('email', None):
-            user.email = request.form['email']
-        
-        elif request.form.get('organization', None):
-            user.organization = request.form['organization']
-
-        else:
-            abort(400)
-
         try:
             user.save()
-            # have to update the session in case the email was edited
-            # might want to vet the new email with another confirmation step
-            if request.form.get('email', None):
-                session['email'] = request.form['email']
-
-            return jsonify({'status': 'success'})
+            flash('changes saved successfully', 'success')
+            return redirect(url_for('profile'))
         except:
-            return jsonify({'status': 'error'})
+            flash('error saving changes, sorry /:')
+            return redirect(url_for('profile'))
     
     if request.method == 'GET':
-        return render_template('profile.html', user=user)
+        if request.args.get('edit', '') == 'true':
+            return render_template('profile_edit.html', user=user)
+        else:
+            return render_template('profile.html', user=user)
 
 
 @app.route('/forgot/', defaults={'code': None}, methods=['GET', 'POST'])

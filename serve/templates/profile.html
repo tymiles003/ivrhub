@@ -1,85 +1,32 @@
 {% extends "layout.html" %}
 
-{% block head %}
-<style>
-    input {
-    }
-
-</style>
-{% endblock %}
-
 {% block body %}
 <div class='row'>
     <div class='span12'>
-        <div class='row'>
-            <div class='span3'>
-                <h2 class='section-name edit' data-id='name'>{{ user.name }}</h2>
-            </div>
-        </div>
-    </div>
+        <h2 class='section-name'>{{ user.name }}
+            <small>
+                (<a href="{{ url_for('profile', edit='true') }}">edit</a>)
+        </small>
+    </h2>
 
-    <div class='span12'>
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>Email address</th>
+                    <th>Organization</th>
+                    <th>Member since</th>
+                </tr>
+            </thead>
 
-        <div class='row'>
-            <div class='span3'>
-                <h4>Email address</h4>
-                <p class='edit' data-id='email'>{{ user.email }}</p>
-            </div>
-            
-            <div class='span3'>
-                <h4>Organization</h4>
-                <p class='edit' data-id='organization'>{{ user.organization }}</p>
-            </div>
-            
-            <div class='span3'>
-                <h4>Member since</h4>
-                <p>{{ user.registration_time|_format_datetime('day-month-year') }}</p>
-            </div>
-        </div>
-
+            <tbody>
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.organization }}</td>
+                    <td>{{ user.registration_time|_format_datetime('day-month-year') }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
-{% endblock %}
-
-{% block js %}
-<script src="{{ url_for('static', filename='js/jquery.jeditable.js') }}"></script>
-
-<script>
-    $(function() {
-
-        $('.edit').editable(function(value, settings) {
-            // gather up the user data
-            var form_data = {
-                _csrf_token: '{{ csrf_token() }}'
-            };
-            var key = $(this).attr('data-id');
-            form_data[key] = value;
-
-            // send to url
-            $.ajax({
-                type: 'post'
-                , url: '{{ url_for("profile") }}'
-                , data: form_data
-                , success: function(data) {
-                    console.log('yay')
-                    console.log(data);
-                }
-                , error: function(data) {
-                    console.log('boo')
-                    console.log(data);
-                }
-            });
-
-            // modify button
-            return value
-        }, {
-            submit: '<button type="submit" class="btn btn-primary edit-in-place-save">Save</button>'
-            , onerror: function() {
-                console.log('balls');
-            }
-        });
-
-    });
-</script>
 {% endblock %}
