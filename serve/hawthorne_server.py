@@ -274,48 +274,58 @@ def directory(internal_id):
     if there's an email included in the route, render that profile for editing
     '''
     if request.method == 'POST':
-        user = User.objects(id=internal_id)
-        if not user:
+        users = User.objects(id=internal_id)
+        if not users:
             abort(404)
-        user = user[0]
+        user = users[0]
 
-        user.name = request.form['name']
-        user.email = request.form['email']
-        user.organization = request.form['organization']
+        profile_form_type = request.form.get('profile_form_type', '')
+        if profile_form_type == 'info':
+            user.name = request.form.get('name', '')
+            user.email = request.form.get('email', '')
+            user.organization = request.form.get('organization', '')
         
-        if request.form['verification'] == 'verified':
-            # check to see if the verification status has changed
-            if not user.verified:
-                # send email to user that they've been verified
-                # catch any email changes with by reloading the doc
-                user.reload()
-                _send_notification_of_verification(user)
-            user.verified = True
-        elif request.form['verification'] == 'unverified':
-            user.verified = False
+            if request.form['verification'] == 'verified':
+                # check to see if the verification status has changed
+                if not user.verified:
+                    # send email to user that they've been verified
+                    # will fail if email has also been changed..
+                    _send_notification_of_verification(user)
+                user.verified = True
+            elif request.form['verification'] == 'unverified':
+                user.verified = False
+            
+            if request.form['admin'] == 'admin':
+                user.admin_rights = True
+            elif request.form['admin'] == 'normal':
+                user.admin_rights = False
         
-        if request.form['admin'] == 'admin':
-            user.admin_rights = True
-        elif request.form['admin'] == 'normal':
-            user.admin_rights = False
-
+        elif profile_form_type == 'account':
+            # delete the user
+            user.delete()
+            flash('user deleted', 'success')
+            return redirect(url_for('directory'))
+        
+        else:
+            # bad 'profile_form_type'
+            abort(404)
+       
         try:
             user.save()
-            flash('updates saved successfully', 'success')
-            return render_template('directory_single_user.html'
-                , user=user)
+            flash('changes saved successfully', 'success')
         except:
             flash('error saving changes, sorry /:')
-            return render_template('directory_single_user.html'
-                , user=user)
         
+        return redirect(url_for('directory', internal_id=user.id))
+
+    
     if request.method == 'GET':
         if internal_id:
             user = User.objects(id=internal_id)
             if not user:
                 abort(404)
             user = user[0]
-            return render_template('directory_single_user.html'
+            return render_template('directory_edit.html'
                 , user=user)
         
         # nobody in particular was specified; show em all
@@ -353,11 +363,13 @@ def profile():
             user.password_hash = bcrypt.generate_password_hash(
                 request.form['new_password'])
 
-        elif profile_form_type == 'delete_account':
+        elif profile_form_type == 'account':
             # delete the user, wipe the session
             user.delete()
             session.pop('email', None)
             session.pop('admin_rights', None)
+
+            flash('account deleted successfully', 'success')
             return redirect(url_for('home'))
         
         else:
