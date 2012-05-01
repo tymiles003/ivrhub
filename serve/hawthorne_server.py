@@ -336,8 +336,8 @@ def directory(internal_id):
                     app.logger.info('%s verified %s' % (session['email']
                         , request.form['email']))
                     # send email to user that they've been verified
-                    # will fail if email has also been changed..
-                    _send_notification_of_verification(user)
+                    _send_notification_of_verification(user
+                        , request.form.get('email', ''))
                 user.verified = True
 
             elif request.form['verification'] == 'unverified':
@@ -555,22 +555,26 @@ def _send_forgot_password_link(user):
         , body)
     
 
-def _send_notification_of_verification(user):
+def _send_notification_of_verification(user, email):
     ''' email a user that they've been verified by an admin and now have full
     access to the site
     '''
-    body = '''
-        Hello!  Your information has been verified by an administrator and you 
-        now have full access to %s.
-        
-        Just wanted to let you know, thanks!
+    if not email:
+        app.logger.error('no verification email specified for %s.  \
+            email on record is %s' % (user.name, user.email))
+    else:
+        body = '''
+            Hello!  Your information has been verified by an administrator and
+            you now have full access to %s.
+            
+            Just wanted to let you know, thanks!
 
-        %s
-        ''' % (app.config['APP_NAME'], app.config['APP_ROOT'])
+            %s
+            ''' % (app.config['APP_NAME'], app.config['APP_ROOT'])
 
-    _send_email(user.email
-        , 'you now have access to %s' % app.config['APP_NAME']
-        , body)
+        _send_email(user.email
+            , 'you now have access to %s' % app.config['APP_NAME']
+            , body)
 
 
 def _send_admin_verification(user):
