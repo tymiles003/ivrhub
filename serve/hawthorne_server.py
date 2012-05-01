@@ -427,6 +427,7 @@ def profile():
 
         elif profile_form_type == 'account':
             # delete the user, wipe the session
+            app.logger.info('%s deleted his account' % session['email'])
             user.delete()
             session.pop('email', None)
             session.pop('admin_rights', None)
@@ -471,6 +472,7 @@ def forgot(code):
                 request.form['password'])
             user.save()
 
+            app.logger.info('%s changed his password' % user.email)
             flash('password successfully changed; you may now login'
                 , 'success')
             return redirect(url_for('home'))
@@ -478,6 +480,8 @@ def forgot(code):
 
         user = User.objects(email=request.form['email'])
         if not user:
+            app.logger.info('someone tried to reset %s but that is not in the \
+                system' % request.form['email'])
             flash('email not found :/', 'error')
             return redirect(url_for('forgot'))
         
@@ -487,6 +491,9 @@ def forgot(code):
         #user.reload()
 
         _send_forgot_password_link(user)
+        
+        app.logger.info('%s requested a forgotten password code' % \
+            request.form['email'])
 
         flash('We\'ve sent an email to %s with information on how to \
             reset your account\'s password.' % user.email)
@@ -496,6 +503,7 @@ def forgot(code):
         if code:
             user = User.objects(forgot_password_code=code)
             if not user:
+                app.logger.info('someone tried a bad password reset code')
                 abort(404)
             user = user[0]
             return render_template('forgot_password_create_new.html'
@@ -671,6 +679,7 @@ def csrf_protect():
         token = session.pop('_csrf_token', None)
         if not token or token != request.form.get('_csrf_token'):
             if not app.config['TESTING']:
+                app.logger.error('bad CSRF token')
                 abort(403)
 
 def _generate_csrf_token():
