@@ -16,7 +16,7 @@ def setup_flask_test_client():
     connection.drop_database(app.config['MONGO_CONFIG']['db_name'])
 
     # populate the db
-    views.initialize_database()
+    views.seed()
     
     world.app = app.test_client()
 

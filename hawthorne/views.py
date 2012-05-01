@@ -12,8 +12,13 @@ from mongoengine import *
 from hawthorne import app
 bcrypt = Bcrypt(app)
 
+# mongoengine models
 from models import *
+# db initialization
+from seed import *
+# util functions, mostly SES
 import utilities
+# boring routes
 from vanilla_views import *
 
 
@@ -488,44 +493,3 @@ def _generate_csrf_token():
     return session['_csrf_token']
 
 app.jinja_env.globals['csrf_token'] = _generate_csrf_token
-
-
-
-''' initialization
-'''
-def initialize_database():
-    ''' adds a default admin to the system based on your settings
-    usage:
-        $ . /path/to/venv/bin/activate
-        $ cd /path/to/hawthorne
-        $ python
-        >> import hawthorne
-        >> hawthorne.views.initialize_database()
-        user bruce@wayneindustries created with specified password
-    '''
-    # initialize the mongoengine connection
-    # repeated to ensure any config changes from testing are pulled in
-    connect(app.config['MONGO_CONFIG']['db_name']
-        , host=app.config['MONGO_CONFIG']['host']
-        , port=int(app.config['MONGO_CONFIG']['port']))
-
-    initial_user = app.config['INITIAL_USER']
-
-    default_admin = User(
-        admin_rights = True
-        , api_id = 'ID' + utilities.generate_random_string(32)
-        , api_key = utilities.generate_random_string(34)
-        , email = initial_user['email']
-        , email_confirmation_code = utilities.generate_random_string(34)
-        , email_confirmed = False
-        , last_login_time = datetime.datetime.utcnow()
-        , name = initial_user['name']
-        , organization = initial_user['organization']
-        , password_hash = bcrypt.generate_password_hash(
-            initial_user['password'])
-        , registration_time = datetime.datetime.utcnow()
-        , verified = True
-    )
-
-    default_admin.save()
-    print 'user %s created with specified password' % default_admin['email']
