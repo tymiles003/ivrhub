@@ -5,6 +5,7 @@ a flask skeleton
 '''
 import datetime
 from functools import wraps
+import logging
 import os
 import urlparse
 
@@ -19,10 +20,23 @@ app = Flask(__name__)
 app.config.from_envvar('HAWTHORNE_SETTINGS')
 bcrypt = Bcrypt(app)
 
+
+# attach the file logger
+if not app.config['TESTING']:
+    file_handler = logging.handlers.RotatingFileHandler(app.config['LOG_FILE'])
+    file_handler.setLevel(app.config['LOG_LEVEL'])
+    file_handler.setFormatter(logging.Formatter(
+        '%(asctime)s %(levelname)s: %(message)s '
+        '[in %(pathname)s:%(lineno)d]'
+    ))
+    app.logger.addHandler(file_handler)
+
+
 # initialize the mongoengine connection
 connect(app.config['MONGO_CONFIG']['db_name']
     , host=app.config['MONGO_CONFIG']['host']
-    , port=int(app.config['MONGO_CONFIG']['port']))
+    , port=int(app.config['MONGO_CONFIG']['port'])
+)
 
 
 ''' decorators
@@ -31,6 +45,8 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'email' not in session:
+            app.logger.info('someone tried to access %s, a login-only page' % \
+                request.url)
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -41,10 +57,14 @@ def verification_required(f):
     def decorated_function(*args, **kwargs):
         # check that someone is logged in
         if 'email' not in session:
+            app.logger.info('someone tried to access %s, a login-only page' % \
+                request.url)
             return redirect(url_for('login'))
         # check verification
         user = User.objects(email=session['email'])[0]
         if not user.verified:
+            app.logger.info('%s tried to access %s, a verified-only page' % (
+                session['email'], request.url))
             return redirect(url_for('verification_status'))
         return f(*args, **kwargs)
     return decorated_function
@@ -55,10 +75,14 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         # check that someone is logged in
         if 'email' not in session:
+            app.logger.info('someone tried to access %s, a login-only page' % \
+                request.url)
             return abort(404)
         # check admin status
         user = User.objects(email=session['email'])[0]
         if not user.admin_rights:
+            app.logger.info('%s tried to access %s, an admin-only page' % (
+                session['email'], request.url))
             return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function

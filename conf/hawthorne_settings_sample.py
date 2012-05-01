@@ -5,6 +5,7 @@ copy this file somewhere secure, rename it, and point an env var to it:
     $ export HAWTHORNE_SETTINGS=/path/to/settings.py
 you may also want to do this in your .bashrc or .zshrc
 '''
+import logging
 
 # the Flask application's debug level; /must/ be False for production
 DEBUG = True
@@ -19,6 +20,11 @@ APP_PORT = 8000
 # app name and URL root, used in emails
 APP_NAME = 'Hawthorne'
 APP_ROOT = 'http://127.0.0.1:8000'
+
+
+# a path to your logfile
+LOG_FILE = '/tmp/hawthorne.log'
+LOG_LEVEL = logging.DEBUG
 
 
 # info on your local mongo instance
