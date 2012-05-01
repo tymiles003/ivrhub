@@ -1,0 +1,2 @@
+recursive-include hawthorne/templates *
+recursive-include hawthorne/static *
