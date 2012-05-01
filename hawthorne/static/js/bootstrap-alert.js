@@ -1,1 +1,1 @@
-../bootstrap/docs/assets/js/bootstrap-alert.js
+../../../vendor/bootstrap/docs/assets/js/bootstrap-alert.js

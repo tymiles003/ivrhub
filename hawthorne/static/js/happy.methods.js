@@ -1,1 +1,1 @@
-../happy/happy.methods.js
+../../../vendor/happy/happy.methods.js

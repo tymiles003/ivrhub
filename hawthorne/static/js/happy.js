@@ -1,1 +1,1 @@
-../happy/happy.js
+../../../vendor/happy/happy.js

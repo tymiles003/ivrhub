@@ -1,1 +1,1 @@
-../bootstrap/docs/assets/js/bootstrap-tab.js
+../../../vendor/bootstrap/docs/assets/js/bootstrap-tab.js
