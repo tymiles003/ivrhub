@@ -44,8 +44,8 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'email' not in session:
-            app.logger.info('someone tried to access %s, a login-only page' % \
-                request.url)
+            app.logger.warning('someone tried to access %s, a login-only \
+                page' % request.url)
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -56,14 +56,14 @@ def verification_required(f):
     def decorated_function(*args, **kwargs):
         # check that someone is logged in
         if 'email' not in session:
-            app.logger.info('someone tried to access %s, a login-only page' % \
-                request.url)
+            app.logger.warning('someone tried to access %s, a login-only \
+                page' % request.url)
             return redirect(url_for('login'))
         # check verification
         user = User.objects(email=session['email'])[0]
         if not user.verified:
-            app.logger.info('%s tried to access %s, a verified-only page' % (
-                session['email'], request.url))
+            app.logger.warning('%s tried to access %s, a verified-only page' \
+                % (session['email'], request.url))
             return redirect(url_for('verification_status'))
         return f(*args, **kwargs)
     return decorated_function
@@ -74,13 +74,13 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         # check that someone is logged in
         if 'email' not in session:
-            app.logger.info('someone tried to access %s, a login-only page' % \
-                request.url)
+            app.logger.warning('someone tried to access %s, a login-only \
+                page' % request.url)
             return abort(404)
         # check admin status
         user = User.objects(email=session['email'])[0]
         if not user.admin_rights:
-            app.logger.info('%s tried to access %s, an admin-only page' % (
+            app.logger.warning('%s tried to access %s, an admin-only page' % (
                 session['email'], request.url))
             return redirect(url_for('home'))
         return f(*args, **kwargs)
@@ -249,7 +249,7 @@ def login():
         # find the user by their email
         user = User.objects(email=request.form['email'])
         if not user:
-            app.logger.info('%s tried to login but is not in the system' % \
+            app.logger.info('%s tried to login but is not known' % \
                 request.form['email'])
             flash('That\'s not a valid email address or password.'
                 , 'error')
@@ -480,8 +480,8 @@ def forgot(code):
 
         user = User.objects(email=request.form['email'])
         if not user:
-            app.logger.info('someone tried to reset %s but that is not in the \
-                system' % request.form['email'])
+            app.logger.info('someone tried to reset the password of %s but \
+                that email is not known' % request.form['email'])
             flash('email not found :/', 'error')
             return redirect(url_for('forgot'))
         
@@ -503,7 +503,7 @@ def forgot(code):
         if code:
             user = User.objects(forgot_password_code=code)
             if not user:
-                app.logger.info('someone tried a bad password reset code')
+                app.logger.warning('someone tried a bad password reset code')
                 abort(404)
             user = user[0]
             return render_template('forgot_password_create_new.html'
