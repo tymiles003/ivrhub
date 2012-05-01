@@ -44,8 +44,8 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'email' not in session:
-            app.logger.warning('someone tried to access %s, a login-only \
-                page' % request.url)
+            app.logger.warning(
+                'someone tried to access %s, a login-only page' % request.url)
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -56,8 +56,8 @@ def verification_required(f):
     def decorated_function(*args, **kwargs):
         # check that someone is logged in
         if 'email' not in session:
-            app.logger.warning('someone tried to access %s, a login-only \
-                page' % request.url)
+            app.logger.warning(
+                'someone tried to access %s, a login-only page' % request.url)
             return redirect(url_for('login'))
         # check verification
         user = User.objects(email=session['email'])[0]
@@ -74,8 +74,8 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         # check that someone is logged in
         if 'email' not in session:
-            app.logger.warning('someone tried to access %s, a login-only \
-                page' % request.url)
+            app.logger.warning(
+                'someone tried to access %s, a login-only page' % request.url)
             return abort(404)
         # check admin status
         user = User.objects(email=session['email'])[0]
@@ -329,7 +329,7 @@ def directory(internal_id):
                     session['email'], request.form['email']
                     , request.form.get('organization', '')))
                 user.organization = request.form.get('organization', '')
-        
+
             if request.form['verification'] == 'verified':
                 # check to see if the verification status has changed
                 if not user.verified:
@@ -480,8 +480,9 @@ def forgot(code):
 
         user = User.objects(email=request.form['email'])
         if not user:
-            app.logger.info('someone tried to reset the password of %s but \
-                that email is not known' % request.form['email'])
+            app.logger.info(
+                'password reset of %s attempted but that email is not known' % 
+                request.form['email'])
             flash('email not found :/', 'error')
             return redirect(url_for('forgot'))
         
