@@ -312,9 +312,23 @@ def directory(internal_id):
 
         profile_form_type = request.form.get('profile_form_type', '')
         if profile_form_type == 'info':
-            user.name = request.form.get('name', '')
-            user.email = request.form.get('email', '')
-            user.organization = request.form.get('organization', '')
+            if user.name != request.form.get('name', ''):
+                app.logger.info('%s edited the name of %s to %s' % (
+                    session['email'], request.form['email']
+                    , request.form.get('name', '')))
+                user.name = request.form.get('name', '')
+
+            if user.email != request.form.get('email', ''):
+                app.logger.info('%s edited the email of %s to %s' % (
+                    session['email'], request.form['email']
+                    , request.form.get('email', '')))
+                user.email = request.form.get('email', '')
+
+            if user.organization != request.form.get('organization', ''):
+                app.logger.info('%s edited the organization of %s to %s' % (
+                    session['email'], request.form['email']
+                    , request.form.get('organization', '')))
+                user.organization = request.form.get('organization', '')
         
             if request.form['verification'] == 'verified':
                 # check to see if the verification status has changed
