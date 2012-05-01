@@ -14,6 +14,7 @@ bcrypt = Bcrypt(app)
 
 from models import *
 import utilities
+from vanilla_views import *
 
 
 ''' decorators
@@ -487,58 +488,6 @@ def _generate_csrf_token():
     return session['_csrf_token']
 
 app.jinja_env.globals['csrf_token'] = _generate_csrf_token
-
-
-
-
-
-
-''' static_views
-some of the more vanilla routes
-'''
-
-@app.route('/')
-def home():
-    ''' home page, how fun
-    '''
-    return render_template('home.html')
-
-
-@app.route('/about')
-def about():
-    ''' show the about page
-    '''
-    return render_template('about.html')
-
-
-@app.route('/help')
-def help():
-    ''' show the help page
-    '''
-    return render_template('help.html')
-
-
-@app.route('/demo')
-def demo():
-    ''' show the demo video
-    '''
-    return render_template('demo.html')
-
-
-''' error pages
-'''
-@app.errorhandler(404)
-def page_not_found(error):
-    ''' replaces stock 404 page
-    '''
-    return render_template('error_404.html'), 404
-
-
-@app.errorhandler(500)
-def server_error(error):
-    ''' replaces stock 500 page
-    '''
-    return render_template('error_500.html'), 500
 
 
 
