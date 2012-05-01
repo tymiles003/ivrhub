@@ -1,4 +1,3 @@
-from serve.hawthorne_server import app
 from lettuce import *
 
 @step('I go to the address "(.*)"')

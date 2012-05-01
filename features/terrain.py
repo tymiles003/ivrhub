@@ -1,4 +1,4 @@
-from serve.hawthorne_server import app, init
+from hawthorne import app, views
 from lettuce import before, after, world
 from pymongo import Connection
 
@@ -16,7 +16,7 @@ def setup_flask_test_client():
     connection.drop_database(app.config['MONGO_CONFIG']['db_name'])
 
     # populate the db
-    init()
+    views.initialize_database()
     
     world.app = app.test_client()
 

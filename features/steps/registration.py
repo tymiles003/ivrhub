@@ -1,4 +1,4 @@
-from serve.hawthorne_server import app
+from hawthorne import app
 from lettuce import *
 
 @step('I intend to register with the test account')
