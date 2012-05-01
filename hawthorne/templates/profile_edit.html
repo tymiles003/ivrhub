@@ -19,7 +19,7 @@
                         <div class='control-group'>
                             <label class='control-label' for='name'>Name</label>
                             <div class='controls'>
-                                <input type='text' class='span3' name='name' id='name' value={{ user.name }}>
+                                <input type='text' class='span3' name='name' id='name' value='{{ user.name }}'>
                             </div>
                         </div>
                         <div class='control-group'>
@@ -32,7 +32,7 @@
                         <div class='control-group'>
                             <label class='control-label' for='organization'>Organization</label>
                             <div class='controls'>
-                                <input type='text' class='span3' name='organization' id='organization' value={{ user.organization }}>
+                                <input type='text' class='span3' name='organization' id='organization' value='{{ user.organization }}'>
                             </div>
                         </div>
                         <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
