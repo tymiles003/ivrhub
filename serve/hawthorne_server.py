@@ -188,6 +188,8 @@ def register():
                 , verified_by = None)
             new_user.save() 
         except:
+            app.logger.error('user registration failed for %s' % \
+                request.form['email'])
             flash('There was an error in the form, sorry :/', 'error')
             return redirect(url_for('register'))
         
@@ -248,6 +250,8 @@ def login():
         # find the user by their email
         user = User.objects(email=request.form['email'])
         if not user:
+            app.logger.info('%s tried to login but is not in the system' % \
+                request.form['email'])
             flash('That\'s not a valid email address or password.'
                 , 'error')
             return redirect(url_for('login'))
@@ -256,11 +260,14 @@ def login():
         # verify the password 
         if not bcrypt.check_password_hash(user.password_hash
             , request.form['password']):
+            app.logger.info('%s used the wrong password to login' % \
+                request.form['email'])
             flash('That\'s not a valid email address or password.'
                 , 'error')
             return redirect(url_for('login'))
 
         # they've made it through the gauntlet, log them in
+        app.logger.info('%s logged in' % request.form['email'])
         user.last_login_time = datetime.datetime.utcnow()
         user.save()
         session['email'] = request.form['email']
@@ -275,6 +282,7 @@ def logout():
     redirect home
     '''
     if 'email' in session:
+        app.logger.info('%s logged out' % session['email'])
         session.pop('email', None)
         session.pop('admin_rights', None)
 
@@ -312,21 +320,32 @@ def directory(internal_id):
             if request.form['verification'] == 'verified':
                 # check to see if the verification status has changed
                 if not user.verified:
+                    app.logger.info('%s verified %s' % (session['email']
+                        , request.form['email']))
                     # send email to user that they've been verified
                     # will fail if email has also been changed..
                     _send_notification_of_verification(user)
                 user.verified = True
             elif request.form['verification'] == 'unverified':
+                app.logger.info('%s unverified %s' % (session['email']
+                    , request.form['email']))
                 user.verified = False
             
             if request.form['admin'] == 'admin':
+                app.logger.info('%s gave admin privileges to %s' % (
+                    session['email'], request.form['email']))
                 user.admin_rights = True
+
             elif request.form['admin'] == 'normal':
+                app.logger.info('%s removed admin privileges from %s' % (
+                    session['email'], request.form['email']))
                 user.admin_rights = False
         
         elif profile_form_type == 'account':
             # delete the user
             user.delete()
+            app.logger.info('%s deleted %s' % (session['email']
+                , request.form['email']))
             flash('user deleted', 'success')
             return redirect(url_for('directory'))
         
@@ -338,6 +357,8 @@ def directory(internal_id):
             user.save()
             flash('changes saved successfully', 'success')
         except:
+            app.logger.error('%s experienced an error saving info about %s' % (
+                session['email'], request.form['email']))
             flash('error saving changes, sorry /:')
         
         return redirect(url_for('directory', internal_id=user.id))
