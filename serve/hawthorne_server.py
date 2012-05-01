@@ -11,7 +11,7 @@ import urlparse
 
 import boto
 from flask import (Flask, session, redirect, render_template, abort, url_for
-    , request, flash, jsonify)
+    , request, flash)
 from flaskext.bcrypt import Bcrypt
 from mongoengine import *
 
