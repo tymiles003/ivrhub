@@ -26,8 +26,7 @@ if not app.config['TESTING']:
     file_handler = logging.handlers.RotatingFileHandler(app.config['LOG_FILE'])
     file_handler.setLevel(app.config['LOG_LEVEL'])
     file_handler.setFormatter(logging.Formatter(
-        '%(asctime)s %(levelname)s: %(message)s '
-        '[in %(pathname)s:%(lineno)d]'
+        '%(asctime)s %(levelname)s: %(message)s'
     ))
     app.logger.addHandler(file_handler)
 
@@ -326,19 +325,23 @@ def directory(internal_id):
                     # will fail if email has also been changed..
                     _send_notification_of_verification(user)
                 user.verified = True
+
             elif request.form['verification'] == 'unverified':
-                app.logger.info('%s unverified %s' % (session['email']
-                    , request.form['email']))
+                if user.verified:
+                    app.logger.info('%s unverified %s' % (session['email']
+                        , request.form['email']))
                 user.verified = False
-            
+           
             if request.form['admin'] == 'admin':
-                app.logger.info('%s gave admin privileges to %s' % (
-                    session['email'], request.form['email']))
+                if not user.admin_rights:
+                    app.logger.info('%s gave admin privileges to %s' % (
+                        session['email'], request.form['email']))
                 user.admin_rights = True
 
             elif request.form['admin'] == 'normal':
-                app.logger.info('%s removed admin privileges from %s' % (
-                    session['email'], request.form['email']))
+                if user.admin_rights:
+                    app.logger.info('%s removed admin privileges from %s' % (
+                        session['email'], request.form['email']))
                 user.admin_rights = False
         
         elif profile_form_type == 'account':
