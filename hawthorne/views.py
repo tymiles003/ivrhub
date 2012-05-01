@@ -12,6 +12,8 @@ from mongoengine import *
 from hawthorne import app
 bcrypt = Bcrypt(app)
 
+# jinja filters and CSRF
+from filters import *
 # mongoengine models
 from models import *
 # db initialization
