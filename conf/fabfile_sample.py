@@ -13,7 +13,6 @@ def dev():
     env.hosts = ['tycho']
     env.virtualenv_dir = '/home/nathaniel/conf/virtualenvs/hawthorne'
     env.supervisord_config = '/home/nathaniel/conf/tycho/supervisord.conf'
-    env.branch = 'master'
 
 
 def pack():
