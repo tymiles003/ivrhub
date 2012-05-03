@@ -14,7 +14,7 @@ def seed():
     ''' adds a default admin to the system based on your settings
     usage:
         $ . /path/to/venv/bin/activate
-        $ python
+        (venv)$ python
         >> import hawthorne
         >> hawthorne.views.seed()
         user bruce@wayneindustries created with specified password
