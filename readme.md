@@ -6,7 +6,7 @@ use virtualenv and pip
     $ virtualenv /path/to/venv
     $ pip install -r requirements.txt -E /path/to/venv
 
-after cloning, get the bootstrap and happy.js repos:
+after cloning, pull in the dependencies:
     
     $ git submodule init
     $ git submodule update
