@@ -13,7 +13,7 @@
             <div class='tab-pane active' id='info'>
                 <h3>Modify profile information</h3>
                 <br />
-                <form class='form-horizontal' action="{{ url_for('directory', internal_id=user.id) }}" method=post id='info_form'>
+                <form class='form-horizontal' action="{{ url_for('members', internal_id=user.id) }}" method=post id='info_form'>
                     <fieldset>
                         <div class='control-group'>
                             <label class='control-label' for='name'>Name</label>
@@ -78,7 +78,7 @@
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Save</button>
-                            <a class='btn' href="{{ url_for('directory') }}">Cancel</a>
+                            <a class='btn' href="{{ url_for('members') }}">Cancel</a>
                         </div>
                     </fieldset>
                 </form>
@@ -102,7 +102,7 @@
                     </div>
 
                     <div class='modal-footer'>
-                        <form action="{{ url_for('directory', internal_id=user.id) }}" method=post id='account_form'>
+                        <form action="{{ url_for('members', internal_id=user.id) }}" method=post id='account_form'>
                             <a href='#' class='btn' data-dismiss='modal'>Cancel</a>
 
                             <input name=profile_form_type type=hidden value="account">

@@ -181,10 +181,10 @@ def dashboard():
     return render_template('dashboard.html')
 
 
-@app.route('/directory/', defaults={'internal_id': None})
-@app.route('/directory/<internal_id>', methods=['GET', 'POST'])
+@app.route('/members/', defaults={'internal_id': None})
+@app.route('/members/<internal_id>', methods=['GET', 'POST'])
 @admin_required
-def directory(internal_id):
+def members(internal_id):
     ''' show the users and their verification/confirmation status
     if there's an email included in the route, render that profile for editing
     '''
@@ -248,7 +248,7 @@ def directory(internal_id):
             app.logger.info('%s deleted %s' % (session['email']
                 , request.form['email']))
             flash('user deleted', 'success')
-            return redirect(url_for('directory'))
+            return redirect(url_for('members'))
         
         else:
             # bad 'profile_form_type'
@@ -262,7 +262,7 @@ def directory(internal_id):
                 session['email'], request.form['email']))
             flash('error saving changes, sorry /:')
         
-        return redirect(url_for('directory', internal_id=user.id))
+        return redirect(url_for('members', internal_id=user.id))
 
     
     if request.method == 'GET':
@@ -271,19 +271,19 @@ def directory(internal_id):
             if not user:
                 abort(404)
             user = user[0]
-            return render_template('directory_edit.html'
+            return render_template('members_edit.html'
                 , user=user)
         
         # nobody in particular was specified; show em all
         users = User.objects()
-        return render_template('directory.html', users=users)
+        return render_template('members.html', users=users)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     ''' viewing/editing ones own profile
-    note that admins can view/edit any profile at /directory
+    note that admins can view/edit any profile at /members
     '''
     user = User.objects(email=session['email'])[0]
 

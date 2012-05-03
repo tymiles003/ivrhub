@@ -62,8 +62,8 @@ def send_notification_of_verification(user, email):
 def send_admin_verification(user):
     ''' email to an admin indicating that there a user needs verification
     '''
-    directory_url = urlparse.urljoin(app.config['APP_ROOT']
-        , url_for('directory', internal_id=user._id))
+    members_url = urlparse.urljoin(app.config['APP_ROOT']
+        , url_for('members', internal_id=user._id))
 
     body = '''
         Howdy!  Someone new has confirmed his or her email address and now 
@@ -79,7 +79,7 @@ def send_admin_verification(user):
         %s
 
         Thanks!
-        ''' % (user.name, user.email, user.organization, directory_url)
+        ''' % (user.name, user.email, user.organization, members_url)
 
     # send to the AWS verified sender
     # ..should probably use a manager's email instead

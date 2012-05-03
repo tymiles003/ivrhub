@@ -4,11 +4,11 @@
 {% endblock %}
 
 {% block body %}
-<h3 class='section-name'>Member Directory
-    <small>click a name to edit</small>
-</h3>
 <div class='row'>
     <div class='span12'>
+        <h3 class='section-name'>Members 
+            <small>click a name to edit</small>
+        </h3>
         {% if not users %}
         <p>No users to speak of..that's odd.</p>
         {% else %}
@@ -28,7 +28,7 @@
             <tbody>
                 {% for user in users %}
                 <tr>
-                    <td><a href="{{ url_for('directory', internal_id=user._id) }}">{{ user.name }}</a></td>
+                    <td><a href="{{ url_for('members', internal_id=user._id) }}">{{ user.name }}</a></td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.organization }}</td>
                     <td>{{ user.registration_time | _format_datetime('medium') }}</td>
