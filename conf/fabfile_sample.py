@@ -1,6 +1,6 @@
 '''
-fabfile_sample
-edit this to your satisfaction then place it in your project root as fabfile.py
+fabfile_sample.py
+edit this to your satisfaction, then move it in your project root as fabfile.py
 usage:
     $ fab dev pack deploy
     $ fab dev uptime
@@ -8,12 +8,11 @@ usage:
 import os
 from fabric.api import *
 
-def prod():
-    env.user = 'brucewayne'
-    env.hosts = ['brahe']
-    env.virtualenv_dir = '/home/bruce/conf/virtualenvs/hawthorne'
-    env.project_dir = '/home/bruce/hawthorne'
-    env.supervisord_config = '/home/bruce/conf/hawthorne/supervisord.conf'
+def dev():
+    env.user = 'nathaniel'
+    env.hosts = ['tycho']
+    env.virtualenv_dir = '/home/nathaniel/conf/virtualenvs/hawthorne'
+    env.supervisord_config = '/home/nathaniel/conf/tycho/supervisord.conf'
     env.branch = 'master'
 
 
@@ -31,15 +30,19 @@ def deploy():
     with cd('/tmp/hawthorne'):
         run('tar xzf /tmp/hawthorne.tar.gz')
         # setup the package with the virtualenv
-        python = os.path.join(env.virtualenv_dir, 'bin/python')
-        run('%s setup.py install' % python)
-        # re-install requirements.txt
-        # tbd..
+        
+        with cd('/tmp/hawthorne/%s' % dist):
+            python = os.path.join(env.virtualenv_dir, 'bin/python')
+            run('%s setup.py install' % python)
+
+            # re-install requirements.txt
+            run('pip install -r requirements.txt -E %s' % env.virtualenv_dir)
 
     # delete the temporary folder
     run('rm -rf /tmp/hawthorne /tmp/hawthorne.tar.gz')
 
     # restart the server..
+    run('supervisorctl restart hawthorne')
 
 
 def logs():
@@ -47,21 +50,6 @@ def logs():
     supervisord redirects stderr and stdout to this path
     '''
     run('tail /tmp/hawthorne.log')
-
-
-def gunicorn(command):
-    ''' gunicorn controls via supervisord
-    '''
-    if command == 'start':
-        run('supervisorctl -c %s start gunicorn' % env.supervisord_config)
-    elif command == 'stop':
-        run('supervisorctl -c %s stop gunicorn' % env.supervisord_config)
-    elif command == 'restart':
-        run('supervisorctl -c %s restart gunicorn' % env.supervisord_config)
-    elif command == 'status':
-        run('supervisorctl -c %s status gunicorn' % env.supervisord_config)
-    else:
-        print 'sorry, did not understand that gunicorn command'
 
 
 def nginx(command):
