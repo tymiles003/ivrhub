@@ -1,2 +1,3 @@
 recursive-include hawthorne/templates *
 recursive-include hawthorne/static *
+include readme.md requirements.txt
