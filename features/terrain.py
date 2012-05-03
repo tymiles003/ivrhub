@@ -3,7 +3,7 @@ from lettuce import before, after, world
 from pymongo import Connection
 
 @before.all
-def setup_flask_test_client():
+def initiate_testing():
     app.config['TESTING'] = True
 
     # setup test db by modifying db name from config
@@ -17,7 +17,10 @@ def setup_flask_test_client():
 
     # populate the db
     views.seed()
-    
+
+
+@before.all
+def setup_flask_test_client():
     world.app = app.test_client()
 
 
