@@ -63,7 +63,6 @@ def register():
                 , email_confirmed = False
                 , last_login_time = datetime.datetime.utcnow()
                 , name = request.form['name']
-                , organization = request.form['organization']
                 , password_hash = bcrypt.generate_password_hash(
                     request.form['password'])
                 , registration_time = datetime.datetime.utcnow()
@@ -304,13 +303,7 @@ def members(internal_id):
                     session['email'], request.form['email']
                     , request.form.get('email', '')))
                 user.email = request.form.get('email', '')
-
-            if user.organization != request.form.get('organization', ''):
-                app.logger.info('%s edited the organization of %s to %s' % (
-                    session['email'], request.form['email']
-                    , request.form.get('organization', '')))
-                user.organization = request.form.get('organization', '')
-
+            
             if request.form['verification'] == 'verified':
                 # check to see if the verification status has changed
                 if not user.verified:
@@ -388,7 +381,6 @@ def profile():
         profile_form_type = request.form.get('profile_form_type', '')
         if profile_form_type == 'info':
             user.name = request.form.get('name', '')
-            user.organization = request.form.get('organization', '')
         
         elif profile_form_type == 'password':
             # check that the current password is correct

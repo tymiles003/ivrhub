@@ -71,7 +71,6 @@ def send_admin_verification(user):
 
         Name: %s
         Email: %s
-        Organization: %s
 
         Click the following link to edit the verification status of this
         person.
@@ -79,7 +78,7 @@ def send_admin_verification(user):
         %s
 
         Thanks!
-        ''' % (user.name, user.email, user.organization, members_url)
+        ''' % (user.name, user.email, members_url)
 
     # send to the AWS verified sender
     # ..should probably use a manager's email instead
