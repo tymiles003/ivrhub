@@ -18,7 +18,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Location</th>
-                    <th>Members</th>
+                    <th style='text-align: center'>Members</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,7 +27,7 @@
                     <td><a href="{{ url_for('organizations', internal_id=organization._id) }}">{{ organization.name }}</a></td>
                     <td>{{ organization.description }}</td>
                     <td>{{ organization.location }}</td>
-                    <td>{{ organization.users|count }}</td>
+                    <td style='text-align: center'>{{ organization.users|count }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

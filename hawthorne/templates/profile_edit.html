@@ -29,6 +29,13 @@
                                 <p class='help-block'>contact support if you need to alter your email address</p>
                             </div>
                         </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='organizations'>Organizations</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='organization' id='organization' disabled value={{ user.organizations|count }}>
+                                <p class='help-block'>ask support for help with membership</p>
+                            </div>
+                        </div>
                         <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
                         
                         <input name=profile_form_type type=hidden value="info">

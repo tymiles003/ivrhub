@@ -17,7 +17,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Organization</th>
+                    <th style='text-align: center'>Organizations</th>
                     <th>Date Registered</th>
                     <th>Last Login</th>
                     <th style='text-align: center'>Email Confirmed</th>
@@ -30,7 +30,9 @@
                 <tr>
                     <td><a href="{{ url_for('members', internal_id=user._id) }}">{{ user.name }}</a></td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.organization }}</td>
+                    <td style='text-align: center'>
+                        <code>{{ user.organizations|count }}</code>
+                    </td>
                     <td>{{ user.registration_time | _format_datetime('medium') }}</td>
                     <td>{{ user.last_login_time | _format_datetime('medium') }}</td>
                     <td style='text-align: center'>
