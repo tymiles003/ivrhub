@@ -21,10 +21,12 @@ APP_PORT = 8000
 APP_NAME = 'Hawthorne'
 APP_ROOT = 'http://127.0.0.1:8000'
 
-
 # a path to your logfile
 LOG_FILE = '/tmp/hawthorne.log'
 LOG_LEVEL = logging.DEBUG
+
+# the expiration time of 'remembered' sessions
+PERMANENT_SESSION_LIFETIME = 180*24*60*60
 
 
 # info on your local mongo instance

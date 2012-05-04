@@ -152,8 +152,11 @@ def login():
         app.logger.info('%s logged in' % request.form['email'])
         user.last_login_time = datetime.datetime.utcnow()
         user.save()
+
         session['email'] = request.form['email']
         session['admin_rights'] = user.admin_rights
+        if request.form.getlist('remember') == 'on':
+            session.permanent = True
 
         return redirect(url_for('dashboard'))
 
