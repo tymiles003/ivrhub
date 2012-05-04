@@ -255,7 +255,7 @@ def organizations(internal_id):
                 # drop 'em
                 user.update(pull__organizations=org)
                 org.update(pull__users=user)
-                flash('successfully removed "%s" from "%s"' % (target, org.name)
+                flash('successfully removed "%s" from %s' % (target, org.name)
                     , 'info')
                 return redirect(url_for('organizations', internal_id=org.id))
 
@@ -264,7 +264,7 @@ def organizations(internal_id):
             name = org.name
             org.delete()
             app.logger.info('%s deleted %s' % (session['email'], name))
-            flash('organization "%s" deleted' % name, 'success')
+            flash('organization "%s" was deleted' % name, 'success')
             return redirect(url_for('organizations'))
         
         else:
