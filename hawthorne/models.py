@@ -25,7 +25,7 @@ class User(Document):
 class Organization(Document):
     ''' people join orgs
     '''
-    users = ListField(ReferenceField(User, reverse_delete_rule=NULLIFY))
-    name = StringField()
-    location = StringField()
     description = StringField()
+    location = StringField()
+    name = StringField(unique=True, required=True)
+    users = ListField(ReferenceField(User, reverse_delete_rule=NULLIFY))

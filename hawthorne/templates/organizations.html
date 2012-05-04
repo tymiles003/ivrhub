@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <h3 class='section-name'>Organizations
+          <small>click on a name to edit or <a href="{{ url_for('organizations', create='true') }}">create a new one</a></small>
+        </h3>
+        {% if not organizations %}
+        <i>No organizations to speak of just yet..</i>
+        {% else %}
+        <table class='table table-striped table-bordered'>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Members</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for organization in organizations %}
+                <tr>
+                    <td><a href="{{ url_for('organizations', internal_id=organization._id) }}">{{ organization.name }}</a></td>
+                    <td>{{ organization.description }}</td>
+                    <td>{{ organization.location }}</td>
+                    <td>{{ organization.users|count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

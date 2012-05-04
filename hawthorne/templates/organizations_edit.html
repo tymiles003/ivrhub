@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class='row'>
+    <div class='offset3 span6'>
+
+        <ul id='organizationTab' class='nav nav-tabs'>
+            <li class='active'><a href='#info' data-toggle='tab'>Info</a></li>
+            <li><a href='#members' data-toggle='tab'>Members</a></li>
+            <li><a href='#admin' data-toggle='tab'>Admin</a></li>
+        </ul>
+
+        <div id='organizationTabContent' class='tab-content'>
+            <div class='tab-pane active' id='info'>
+                <h3>Modify organization info</h3>
+                <br />
+                <form class='form-horizontal' action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='info_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='name'>Name</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='name' id='name' value='{{ organization.name }}'>
+                            </div>
+                        </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='description'>Description</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='description' id='description' value='{{ organization.description }}'>
+                            </div>
+                        </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='location'>location</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='location' id='location' value='{{ organization.location }}'>
+                            </div>
+                        </div>
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+
+                        <input name=form_type type=hidden value="info">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save</button>
+                            <a class='btn' href="{{ url_for('organizations') }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+            
+            
+            <div class='tab-pane' id='members'>
+                <h3>Membership</h3>
+                <br />
+                <form class='form-horizontal' action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='members_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='email'>Email</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='email' id='email'>
+                            </div>
+                        </div>
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+
+                        <input name=form_type type=hidden value="members">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save</button>
+                            <a class='btn' href="{{ url_for('organizations') }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+
+            <div class='tab-pane' id='admin'>
+                <h3>Delete this organization
+                    <small>(this cannot be undone!)</small>
+                </h3>
+                <br />
+
+                <div class='modal hide' id='delete_organization_modal'>
+                    <div class='modal-header'>
+                        <button class='close' data-dismiss='modal'>×</button>
+                        <h3>Delete organization</h3>
+                    </div>
+
+                    <div class='modal-body'>
+                        <p>This will delete the info connected to "{{ organization.name }}"</p>
+                        <p>This operation <strong>cannot be undone by anyone.</strong></p>
+                    </div>
+
+                    <div class='modal-footer'>
+                        <form action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='admin_form'>
+                            <a href='#' class='btn' data-dismiss='modal'>Cancel</a>
+
+                            <input name=form_type type=hidden value="admin">
+
+                            <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                            <button type='submit' class='btn btn-danger'>Delete this organization</button>
+                        </form>
+                    </div>
+                </div><!-- /.modal -->
+
+                <a class='btn btn-danger' data-toggle='modal' href='#delete_organization_modal'>Delete organization</a>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/bootstrap-modal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-tab.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.methods.js') }}"></script>
+<script>
+    $(function() {
+
+        // tabs
+        $('#organizationTab a').click(function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        // modal
+        $('#delete_organization_modal').modal({
+            show: false
+        });
+
+
+        // initial focus on first input
+        $('#name').focus();
+
+        $('#info_form').isHappy({
+            fields: {
+                '#name': {
+                    required: true
+                    , message: ''
+                }
+            }
+        });
+
+    });
+</script>
+{% endblock %}

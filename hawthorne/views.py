@@ -181,6 +181,103 @@ def dashboard():
     return render_template('dashboard.html')
 
 
+@app.route('/organizations/', defaults={'internal_id': None})
+@app.route('/organizations/<internal_id>', methods=['GET', 'POST'])
+@admin_required
+def organizations(internal_id):
+    ''' show the organizations
+    if there's an id included in the route, render that organization alone
+    '''
+    if request.method == 'POST':
+        orgs = Organization.objects(id=internal_id)
+        if not orgs:
+            abort(404)
+        org = orgs[0]
+
+        form_type = request.form.get('form_type', '')
+        if form_type == 'info':
+            if org.name != request.form.get('name', ''):
+                app.logger.info('%s edited the name of %s to %s' % (
+                    session['email'], org.name, request.form.get('name', '')))
+                org.name = request.form.get('name', '')
+            
+            if org.name != request.form.get('description', ''):
+                app.logger.info('%s edited the description of %s to %s' % (
+                    session['email'], org.name
+                    , request.form.get('description', '')))
+                org.description = request.form.get('description', '')
+            
+            if org.location != request.form.get('location', ''):
+                app.logger.info('%s edited the location of %s to %s' % (
+                    session['email'], org.name
+                    , request.form.get('location', '')))
+                org.location = request.form.get('location', '')
+
+        elif form_type == 'members':
+            # push/pull membership
+            current_members = request.form.getlist('members', [])
+            old_members = org.members
+
+
+        elif form_type == 'admin':
+            # delete the organization
+            name = org.name
+            org.delete()
+            app.logger.info('%s deleted %s' % (session['email'], name))
+            flash('organization "%s" deleted' % name, 'success')
+            return redirect(url_for('organizations'))
+        
+        else:
+            # bad 'form_type'
+            abort(404)
+       
+        try:
+            org.save()
+            flash('changes saved successfully', 'success')
+        except:
+            app.logger.error('%s experienced an error saving info about %s' % (
+                session['email'], request.form['name']))
+            flash('error saving changes, sorry /:')
+        
+        return redirect(url_for('organizations', internal_id=org.id))
+
+    
+    if request.method == 'GET':
+        if internal_id:
+            orgs = Organization.objects(id=internal_id)
+            if not orgs:
+                abort(404)
+            org = orgs[0]
+            return render_template('organizations_edit.html'
+                , organization=org)
+
+        if request.args.get('create', '') == 'true':
+            # create a new form
+            try:
+                org_name = 'org-%s' % utilities.generate_random_string(6)
+                new_org = Organization(
+                    name = org_name
+                )
+                new_org.save() 
+                app.logger.info('organization created by %s' % \
+                    session['email'])
+                flash('organization created; please change the defaults', 
+                    'success')
+            except:
+                app.logger.error('organization creation failed for %s' % \
+                    session['email'])
+                flash('There was an error in the form, sorry :/', 'error')
+                return redirect(url_for('organizations'))
+            
+            # redirect to the editing screen
+            return redirect(url_for('organizations', internal_id=new_org.id
+                , edit='true'))
+        
+        # nobody in particular was specified; show em all
+        orgs = Organization.objects()
+        return render_template('organizations.html', organizations=orgs)
+
+
 @app.route('/members/', defaults={'internal_id': None})
 @app.route('/members/<internal_id>', methods=['GET', 'POST'])
 @admin_required
