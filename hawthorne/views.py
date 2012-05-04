@@ -212,11 +212,52 @@ def organizations(internal_id):
                     , request.form.get('location', '')))
                 org.location = request.form.get('location', '')
 
-        elif form_type == 'members':
-            # push/pull membership
-            current_members = request.form.getlist('members', [])
-            old_members = org.members
+        elif form_type == 'add_members':
+            # push membership
+            target = request.form.get('add_member_email', '')
+            users = User.objects(email=target)
+            if not users:
+                flash('we cannot find "%s", has it been registered?' % \
+                    target, 'error')
+                return redirect(url_for('organizations', internal_id=org.id))
 
+            user = users[0]
+            # already a member?
+            if org in user.organizations:
+                flash('"%s" is already a member of "%s"' % (target, org.name)
+                    , 'warning')
+                return redirect(url_for('organizations', internal_id=org.id))
+            
+            else:
+                # add them
+                user.update(push__organizations=org)
+                org.update(push__users=user)
+                flash('successfully added "%s" to "%s"' % (target, org.name)
+                    , 'success')
+                return redirect(url_for('organizations', internal_id=org.id))
+        
+        elif form_type == 'remove_members':
+            # push/pull membership
+            target = request.form.get('remove_member_email', '')
+            users = User.objects(email=target)
+            if not users:
+                flash('we cannot find "%s", has it been registered?' % \
+                    target, 'error')
+                return redirect(url_for('organizations', internal_id=org.id))
+            
+            user = users[0]
+            # already a member?
+            if org not in user.organizations:
+                flash('"%s" is not yet a member of "%s"' % (target, org.name)
+                    , 'warning')
+                return redirect(url_for('organizations', internal_id=org.id))
+            else:
+                # drop 'em
+                user.update(pull__organizations=org)
+                org.update(pull__users=user)
+                flash('successfully removed "%s" from "%s"' % (target, org.name)
+                    , 'info')
+                return redirect(url_for('organizations', internal_id=org.id))
 
         elif form_type == 'admin':
             # delete the organization
@@ -247,8 +288,7 @@ def organizations(internal_id):
             if not orgs:
                 abort(404)
             org = orgs[0]
-            return render_template('organizations_edit.html'
-                , organization=org)
+            return render_template('organizations_edit.html', organization=org)
 
         if request.args.get('create', '') == 'true':
             # create a new form

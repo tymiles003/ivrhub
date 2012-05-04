@@ -1,12 +1,21 @@
 {% extends "layout.html" %}
 
+{% block head %}
+<style>
+    .btn-info {
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
 <div class='row'>
     <div class='offset3 span6'>
 
         <ul id='organizationTab' class='nav nav-tabs'>
             <li class='active'><a href='#info' data-toggle='tab'>Info</a></li>
-            <li><a href='#members' data-toggle='tab'>Members</a></li>
+            <li><a href='#add_members' data-toggle='tab'>Add members</a></li>
+            <li><a href='#remove_members' data-toggle='tab'>Remove members</a></li>
             <li><a href='#admin' data-toggle='tab'>Admin</a></li>
         </ul>
 
@@ -47,20 +56,29 @@
             </div> <!-- /.tab-pane -->
             
             
-            <div class='tab-pane' id='members'>
-                <h3>Membership</h3>
+            <div class='tab-pane' id='add_members'>
+                <h3>Add members</h3>
                 <br />
-                <form class='form-horizontal' action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='members_form'>
+                <form class='form-horizontal form-inline' action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='add_members_form'>
                     <fieldset>
                         <div class='control-group'>
-                            <label class='control-label' for='email'>Email</label>
+                            <label class='control-label' for='add_member_email'>Add by email</label>
                             <div class='controls'>
-                                <input type='text' class='span3' name='email' id='email'>
+                                <input type='text' class='span3' name='add_member_email' id='add_member_email'>
                             </div>
                         </div>
-                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        
+                        <h3 class='section-name'>Current members </h3>
+                        <div id='member_pool'>
+                            {% for user in organization.users %}
+                            <a class='btn btn-small btn-info' disabled>{{ user.email }}</a>
+                            {% else %}
+                            <i>no members yet..</i>
+                            {% endfor %}
+                        </div>
 
-                        <input name=form_type type=hidden value="members">
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        <input name=form_type type=hidden value="add_members">
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Save</button>
@@ -69,6 +87,40 @@
                     </fieldset>
                 </form>
             </div> <!-- /.tab-pane -->
+            
+
+            <div class='tab-pane' id='remove_members'>
+                <h3>Remove members</h3>
+                <br />
+                <form class='form-horizontal form-inline' action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='remove_members_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='remove_member_email'>Remove by email</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='remove_member_email' id='remove_member_email'>
+                            </div>
+                        </div>
+                        
+                        <h3 class='section-name'>Current members </h3>
+                        <div id='member_pool'>
+                            {% for user in organization.users %}
+                            <a class='btn btn-small btn-warning' disabled>{{ user.email }}</a>
+                            {% else %}
+                            <i>no members at the moment..</i>
+                            {% endfor %}
+                        </div>
+
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        <input name=form_type type=hidden value="remove_members">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save</button>
+                            <a class='btn' href="{{ url_for('organizations') }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+
 
             <div class='tab-pane' id='admin'>
                 <h3>Delete this organization
@@ -142,7 +194,28 @@
                 }
             }
         });
+        
+        $('#add_members_form').isHappy({
+            fields: {
+                '#add_member_email': {
+                    required: true
+                    , message: ''
+                    , test: happy.email
+                }
+            }
+        });
+        
+        $('#remove_members_form').isHappy({
+            fields: {
+                '#remove_member_email': {
+                    required: true
+                    , message: ''
+                    , test: happy.email
+                }
+            }
+        });
 
+        
     });
 </script>
 {% endblock %}
