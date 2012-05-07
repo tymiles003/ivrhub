@@ -1,4 +1,5 @@
 recursive-include hawthorne/templates *
 recursive-include hawthorne/static *
-recursive-include vendor *
+recursive-include vendor/bootstrap/docs/assets *
+recursive-include vendor/happy *
 include readme.md requirements.txt
