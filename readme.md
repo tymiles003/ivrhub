@@ -37,3 +37,17 @@ start up the server
 
 ### Go-time in production
 we have some example config files for supervisord, gunicorn, nginx, and fabric -- check those out
+
+
+### Bootstrapping a new server
+ 
+ - install virtualenv and pip
+ - copy over config files for supervisord, gunicorn, nginx and this app
+ - make a dir for the config files and the log files
+ - point the env var to the app config file and put this in your .zshrc
+ - use fabric to install the app 
+ - reload/reread/restart supervisord until it picks up the config file (annoyingly imprecise, I know..)
+ - start the server and check with supervisorctl
+ - edit the nginx config file at nginx.conf and the sites-availble dir (symlink to sites-enabled); restart nginx
+ - seed the db from a shell
+ - update your DNS 
