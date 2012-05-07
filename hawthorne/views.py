@@ -377,9 +377,9 @@ def members(internal_id):
         
         elif profile_form_type == 'account':
             # delete the user
+            user_email = user.email
             user.delete()
-            app.logger.info('%s deleted %s' % (session['email']
-                , request.form['email']))
+            app.logger.info('%s deleted %s' % (session['email'], user_email))
             flash('user deleted', 'success')
             return redirect(url_for('members'))
         
