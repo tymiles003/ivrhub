@@ -6,7 +6,7 @@
 {% block body %}
 <div class='row'>
     <div class='offset3 span6'>
-        <form class='form-horizontal' action="{{ url_for('login') }}" method=post id='login_form'>
+        <form class='form-horizontal' action="{{ url_for('login', then=request.args.get('then', '')) }}" method=post id='login_form'>
             <fieldset> 
                 <legend>Login
                     <small>or <a href="{{ url_for('register') }}">sign up</a></small>

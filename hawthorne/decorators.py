@@ -2,7 +2,7 @@
 '''
 from functools import wraps
 
-from flask import (session, redirect, request, url_for, abort)
+from flask import (flash, session, redirect, request, url_for, abort)
 from mongoengine import *
 
 from hawthorne import app
@@ -14,7 +14,8 @@ def login_required(f):
         if 'email' not in session:
             app.logger.warning(
                 'someone tried to access %s, a login-only page' % request.url)
-            return redirect(url_for('login'))
+            flash('please login first', 'info')
+            return redirect(url_for('login', then=request.path))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -26,7 +27,7 @@ def verification_required(f):
         if 'email' not in session:
             app.logger.warning(
                 'someone tried to access %s, a login-only page' % request.url)
-            return redirect(url_for('login'))
+            return redirect(url_for('login', then=request.path))
         # check verification
         user = User.objects(email=session['email'])[0]
         if not user.verified:

@@ -158,6 +158,10 @@ def login():
         if request.form.getlist('remember') == 'on':
             session.permanent = True
 
+        if request.args.get('then', ''):
+            print request.args.get('then', '')
+            return redirect(request.args.get('then', ''))
+
         return redirect(url_for('dashboard'))
 
 
