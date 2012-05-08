@@ -316,7 +316,9 @@ def organizations(org_label):
             if not orgs:
                 app.logger.error('%s tried to access an organization that \
                     does not exist' % session['email'])
-                abort(404)
+                flash('Organization "%s" not found, sorry!' % org_label
+                    , 'warning')
+                return redirect(url_for('organizations'))
             org = orgs[0]
 
             # permission-check
