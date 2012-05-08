@@ -23,7 +23,7 @@
                     <td><code>{{ user.email }}</code></td>
                     <td>
                         {% for org in user.organizations %}
-                        {{ org.name }}, 
+                        <span class='badge badge-warning'>{{ org.name }}</span>
                         {% else %}
                         <i>none</i>
                         {% endfor %}
