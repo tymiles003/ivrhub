@@ -15,8 +15,7 @@ class User(Document):
     forgot_password_code = StringField()
     last_login_time = DateTimeField(required=True)
     name = StringField()
-    organizations = ListField(ReferenceField('Organization'
-        , reverse_delete_rule=NULLIFY))
+    organizations = ListField(ReferenceField('Organization'))
     password_hash = StringField(required=True)
     registration_time = DateTimeField(required=True)
     verified = BooleanField(required=True)
@@ -28,4 +27,4 @@ class Organization(Document):
     description = StringField()
     location = StringField()
     name = StringField(unique=True, required=True)
-    users = ListField(ReferenceField(User, reverse_delete_rule=NULLIFY))
+    users = ListField(ReferenceField(User))

@@ -268,6 +268,12 @@ def organizations(internal_id):
 
         elif form_type == 'admin':
             # delete the organization
+            # pull out the org from each member first
+            users = org.users
+            for user in users:
+                user.update(pull__organizations=org)
+            
+            # blow away the org itself
             name = org.name
             org.delete()
             app.logger.info('%s deleted %s' % (session['email'], name))
@@ -381,6 +387,12 @@ def members(internal_id):
         
         elif profile_form_type == 'account':
             # delete the user
+            # first pull out the user from the relevant orgs
+            orgs = user.organizations
+            for org in orgs:
+                org.update(pull__users=user)
+            
+            # delete the user itself
             user_email = user.email
             user.delete()
             app.logger.info('%s deleted %s' % (session['email'], user_email))
