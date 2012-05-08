@@ -306,6 +306,7 @@ def organizations(org_label):
             app.logger.error('%s experienced an error saving info about %s' % (
                 session['email'], request.form['name']))
             flash('error saving changes, sorry /:')
+            return redirect(url_for('organizations'))
         
         return redirect(url_for('organizations', org_label=org.label))
 
