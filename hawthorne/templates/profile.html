@@ -13,7 +13,7 @@
             <thead>
                 <tr>
                     <th>Email address</th>
-                    <th style='text-align: center'>Organizations</th>
+                    <th>Organizations</th>
                     <th>Member since</th>
                 </tr>
             </thead>
@@ -21,7 +21,13 @@
             <tbody>
                 <tr>
                     <td><code>{{ user.email }}</code></td>
-                    <td style='text-align: center'><code>{{ user.organizations|count }}</code></td>
+                    <td>
+                        {% for org in user.organizations %}
+                        {{ org.name }}, 
+                        {% else %}
+                        <i>none</i>
+                        {% endfor %}
+                    </td>
                     <td>{{ user.registration_time|_format_datetime('day-month-year') }}</td>
                 </tr>
             </tbody>
