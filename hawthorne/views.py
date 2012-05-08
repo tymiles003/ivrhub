@@ -215,7 +215,7 @@ def organizations(org_label):
                     session['email'], org.name, request.form.get('name', '')))
                 name = request.form.get('name', '')
                 org.name = name
-                org.label = str(escape(name).replace(' ', '-'))
+                org.label = str(escape(name).replace(' ', '-')).lower()
            
             if org.name != request.form.get('description', ''):
                 app.logger.info('%s edited the description of %s to %s' % (
@@ -342,7 +342,7 @@ def organizations(org_label):
             try:
                 org_name = 'org-%s' % utilities.generate_random_string(6)
                 new_org = Organization(
-                    label = org_name
+                    label = org_name.lower()
                     , name = org_name
                 )
                 new_org.save() 
