@@ -9,30 +9,27 @@
             </small>
         </h2>
 
-        <table class='table'>
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Location</th>
-                    <th>Members</th>
-                </tr>
-            </thead>
+        <div class='row'>
+            <div class='span4'>
+                <h4>Description</h4>
+                <p>{{ organization.description }}</p>
+            </div>
 
-            <tbody>
-                <tr>
-                    <td>{{ organization.description }}</td>
-                    <td>{{ organization.location }}</td>
-                    <td>
-                        {% for user in organization.users %}
-                        <span class='badge badge-success'>{{ user.name }}</span>
-                        {% else %}
-                        <i>none</i>
-                        {% endfor %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
+            <div class='offset2 span3'>
+                <h4>Location</h4>
+                <p>{{ organization.location }}</p>
+            </div>
+            
+            <div class='span3'>
+                <h4>Members</h4>
+                {% for user in organization.users %}
+                <span class='badge badge-success'>{{ user.name }}</span>
+                {% else %}
+                <i>none</i>
+                {% endfor %}
+            </div>
+        </div>
+
     </div>
 </div>
 
