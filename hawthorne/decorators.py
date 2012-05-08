@@ -27,6 +27,7 @@ def verification_required(f):
         if 'email' not in session:
             app.logger.warning(
                 'someone tried to access %s, a login-only page' % request.url)
+            flash('please login first', 'info')
             return redirect(url_for('login', then=request.path))
         # check verification
         user = User.objects(email=session['email'])[0]
