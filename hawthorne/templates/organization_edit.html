@@ -51,7 +51,7 @@
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Save</button>
-                            <a class='btn' href="{{ url_for('organizations') }}">Cancel</a>
+                            <a class='btn' href="{{ url_for('organizations', org_label=organization.label) }}">Cancel</a>
                         </div>
                     </fieldset>
                 </form>
@@ -84,7 +84,7 @@
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Add member</button>
-                            <a class='btn' href="{{ url_for('organizations') }}">Cancel</a>
+                            <a class='btn' href="{{ url_for('organizations', org_label=organization.label) }}">Cancel</a>
                         </div>
                     </fieldset>
                 </form>
@@ -117,7 +117,7 @@
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Remove member</button>
-                            <a class='btn' href="{{ url_for('organizations') }}">Cancel</a>
+                            <a class='btn' href="{{ url_for('organizations', org_label=organization.label) }}">Cancel</a>
                         </div>
                     </fieldset>
                 </form>
