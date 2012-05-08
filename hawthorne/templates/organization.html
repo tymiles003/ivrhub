@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <h2 class='section-name'>{{ organization.name }}
+            <small>
+                (<a href="{{ url_for('organizations', org_label=organization.label, edit='true') }}">edit</a>)
+            </small>
+        </h2>
+
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Members</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td><code>{{ organization.description }}</code></td>
+                    <td><code>{{ organization.location }}</code></td>
+                    <td>
+                        {% for user in organization.users %}
+                        {{ user.name }}, 
+                        {% else %}
+                        <i>none</i>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+
+{% endblock %}

@@ -24,7 +24,7 @@
             <tbody>
                 {% for organization in organizations %}
                 <tr>
-                    <td><a href="{{ url_for('organizations', internal_id=organization._id) }}">{{ organization.name }}</a></td>
+                    <td><a href="{{ url_for('organizations', org_label=organization.label) }}">{{ organization.name }}</a></td>
                     <td>{{ organization.description }}</td>
                     <td>{{ organization.location }}</td>
                     <td style='text-align: center'>{{ organization.users|count }}</td>

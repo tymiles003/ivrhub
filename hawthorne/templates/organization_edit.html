@@ -23,7 +23,7 @@
             <div class='tab-pane active' id='info'>
                 <h3>Modify organization info</h3>
                 <br />
-                <form class='form-horizontal' action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='info_form'>
+                <form class='form-horizontal' action="{{ url_for('organizations', org_label=organization.label) }}" method=post id='info_form'>
                     <fieldset>
                         <div class='control-group'>
                             <label class='control-label' for='name'>Name</label>
@@ -59,7 +59,7 @@
             <div class='tab-pane' id='add_members'>
                 <h3>Add members</h3>
                 <br />
-                <form class='form-horizontal form-inline' action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='add_members_form'>
+                <form class='form-horizontal form-inline' action="{{ url_for('organizations', org_label=organization.label) }}" method=post id='add_members_form'>
                     <fieldset>
                         <div class='control-group'>
                             <label class='control-label' for='add_member_email'>Add by email</label>
@@ -92,7 +92,7 @@
             <div class='tab-pane' id='remove_members'>
                 <h3>Remove members</h3>
                 <br />
-                <form class='form-horizontal form-inline' action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='remove_members_form'>
+                <form class='form-horizontal form-inline' action="{{ url_for('organizations', org_label=organization.label) }}" method=post id='remove_members_form'>
                     <fieldset>
                         <div class='control-group'>
                             <label class='control-label' for='remove_member_email'>Remove by email</label>
@@ -140,7 +140,7 @@
                     </div>
 
                     <div class='modal-footer'>
-                        <form action="{{ url_for('organizations', internal_id=organization.id) }}" method=post id='admin_form'>
+                        <form action="{{ url_for('organizations', org_label=organization.label) }}" method=post id='admin_form'>
                             <a href='#' class='btn' data-dismiss='modal'>Cancel</a>
 
                             <input name=form_type type=hidden value="admin">

@@ -26,5 +26,7 @@ class Organization(Document):
     '''
     description = StringField()
     location = StringField()
+    # url-safe version of the name
+    label = StringField(unique=True, required=True)
     name = StringField(unique=True, required=True)
     users = ListField(ReferenceField(User))

@@ -4,7 +4,7 @@ the dynamic routes..how fun
 import datetime
 
 from flask import (render_template, request, flash, redirect, url_for, session
-    , abort)
+    , abort, escape)
 from flaskext.bcrypt import Bcrypt
 from mongoengine import *
 
@@ -187,15 +187,15 @@ def dashboard():
     return render_template('dashboard.html')
 
 
-@app.route('/organizations/', defaults={'internal_id': None})
-@app.route('/organizations/<internal_id>', methods=['GET', 'POST'])
+@app.route('/organizations/', defaults={'org_label': None})
+@app.route('/organizations/<org_label>', methods=['GET', 'POST'])
 @admin_required
-def organizations(internal_id):
+def organizations(org_label):
     ''' show the organizations
-    if there's an id included in the route, render that organization alone
+    if there's a label included in the route, render that organization alone
     '''
     if request.method == 'POST':
-        orgs = Organization.objects(id=internal_id)
+        orgs = Organization.objects(label=org_label)
         if not orgs:
             abort(404)
         org = orgs[0]
@@ -205,8 +205,10 @@ def organizations(internal_id):
             if org.name != request.form.get('name', ''):
                 app.logger.info('%s edited the name of %s to %s' % (
                     session['email'], org.name, request.form.get('name', '')))
-                org.name = request.form.get('name', '')
-            
+                name = request.form.get('name', '')
+                org.name = name
+                org.label = str(escape(name).replace(' ', '-'))
+           
             if org.name != request.form.get('description', ''):
                 app.logger.info('%s edited the description of %s to %s' % (
                     session['email'], org.name
@@ -226,14 +228,14 @@ def organizations(internal_id):
             if not users:
                 flash('we cannot find "%s", has it been registered?' % \
                     target, 'error')
-                return redirect(url_for('organizations', internal_id=org.id))
+                return redirect(url_for('organizations', org_label=org.label))
 
             user = users[0]
             # already a member?
             if org in user.organizations:
                 flash('"%s" is already a member of "%s"' % (target, org.name)
                     , 'warning')
-                return redirect(url_for('organizations', internal_id=org.id))
+                return redirect(url_for('organizations', org_label=org.label))
             
             else:
                 # add them
@@ -241,7 +243,7 @@ def organizations(internal_id):
                 org.update(push__users=user)
                 flash('successfully added "%s" to "%s"' % (target, org.name)
                     , 'success')
-                return redirect(url_for('organizations', internal_id=org.id))
+                return redirect(url_for('organizations', org_label=org.label))
         
         elif form_type == 'remove_members':
             # push/pull membership
@@ -250,21 +252,21 @@ def organizations(internal_id):
             if not users:
                 flash('we cannot find "%s", has it been registered?' % \
                     target, 'error')
-                return redirect(url_for('organizations', internal_id=org.id))
+                return redirect(url_for('organizations', org_label=org.label))
             
             user = users[0]
             # already a member?
             if org not in user.organizations:
                 flash('"%s" is not yet a member of "%s"' % (target, org.name)
                     , 'warning')
-                return redirect(url_for('organizations', internal_id=org.id))
+                return redirect(url_for('organizations', org_label=org.label))
             else:
                 # drop 'em
                 user.update(pull__organizations=org)
                 org.update(pull__users=user)
                 flash('successfully removed "%s" from %s' % (target, org.name)
                     , 'info')
-                return redirect(url_for('organizations', internal_id=org.id))
+                return redirect(url_for('organizations', org_label=org.label))
 
         elif form_type == 'admin':
             # delete the organization
@@ -292,23 +294,28 @@ def organizations(internal_id):
                 session['email'], request.form['name']))
             flash('error saving changes, sorry /:')
         
-        return redirect(url_for('organizations', internal_id=org.id))
+        return redirect(url_for('organizations', org_label=org.label))
 
     
     if request.method == 'GET':
-        if internal_id:
-            orgs = Organization.objects(id=internal_id)
+        if org_label:
+            orgs = Organization.objects(label=org_label)
             if not orgs:
                 abort(404)
             org = orgs[0]
-            return render_template('organizations_edit.html', organization=org)
+            if request.args.get('edit', '') == 'true':
+                return render_template('organization_edit.html'
+                    , organization=org)
+            else:
+                return render_template('organization.html', organization=org)
 
         if request.args.get('create', '') == 'true':
             # create a new form
             try:
                 org_name = 'org-%s' % utilities.generate_random_string(6)
                 new_org = Organization(
-                    name = org_name
+                    label = org_name
+                    , name = org_name
                 )
                 new_org.save() 
                 app.logger.info('organization created by %s' % \
@@ -322,7 +329,7 @@ def organizations(internal_id):
                 return redirect(url_for('organizations'))
             
             # redirect to the editing screen
-            return redirect(url_for('organizations', internal_id=new_org.id
+            return redirect(url_for('organizations', org_label=new_org.label
                 , edit='true'))
         
         # nobody in particular was specified; show em all
