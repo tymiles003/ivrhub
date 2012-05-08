@@ -38,10 +38,7 @@
         <div class='row'>
 
             <div class='span4 well'>
-                <h3><i class='icon-globe'></i>
-                    {% if session.admin_rights %}
-                    All 
-                    {% endif %}
+                <h3><i class='icon-globe'></i>{% if session.admin_rights %}All {% endif %}
                     Organizations</h3>
                 <p class='note'>view details on 
                 {% if session.admin_rights %}
