@@ -8,31 +8,28 @@
                 (<a href="{{ url_for('profile', edit='true') }}">edit</a>)
             </small>
         </h2>
-
-        <table class='table'>
-            <thead>
-                <tr>
-                    <th>Email address</th>
-                    <th>Organizations</th>
-                    <th>Member since</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr>
-                    <td><code>{{ user.email }}</code></td>
-                    <td>
-                        {% for org in user.organizations %}
-                        <span class='badge badge-warning'>{{ org.name }}</span>
-                        {% else %}
-                        <i>none</i>
-                        {% endfor %}
-                    </td>
-                    <td>{{ user.registration_time|_format_datetime('day-month-year') }}</td>
-                </tr>
-            </tbody>
-        </table>
         
+        <div class='row'>
+            <div class='span4'>
+                <h4>Email</h4>
+                <code>{{ user.email }}</code>
+            </div>
+
+            <div class='offset2 span3'>
+                <h4>Organizations</h4> 
+                {% for org in user.organizations %}
+                <span class='badge badge-warning'>{{ org.name }}</span>
+                {% else %}
+                <i>none</i>
+                {% endfor %}
+            </div>
+            
+            <div class='span3'>
+                <h4>Member since</h4>
+                <p>{{ user.registration_time|_format_datetime('day-month-year') }}</p>
+            </div>
+        </div>
+
     </div>
 </div>
 
