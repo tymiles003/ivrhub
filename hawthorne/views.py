@@ -217,7 +217,7 @@ def organizations(org_label):
                 org.name = name
                 org.label = str(escape(name).replace(' ', '-')).lower()
            
-            if org.name != request.form.get('description', ''):
+            if org.description != request.form.get('description', ''):
                 app.logger.info('%s edited the description of %s to %s' % (
                     session['email'], org.name
                     , request.form.get('description', '')))
