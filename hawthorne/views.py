@@ -189,16 +189,24 @@ def dashboard():
 
 @app.route('/organizations/', defaults={'org_label': None})
 @app.route('/organizations/<org_label>', methods=['GET', 'POST'])
-@admin_required
+@verification_required
 def organizations(org_label):
     ''' show the organizations
     if there's a label included in the route, render that organization alone
     '''
+    user = User.objects(email=session['email'])[0]
+
     if request.method == 'POST':
         orgs = Organization.objects(label=org_label)
         if not orgs:
             abort(404)
         org = orgs[0]
+        
+        # permission-check
+        if user not in org.users and not user.admin_rights:
+            app.logger.error('%s tried to edit an organization but was \
+                denied for want of admin rights' % session['email'])
+            abort(404)
 
         form_type = request.form.get('form_type', '')
         if form_type == 'info':
@@ -224,23 +232,23 @@ def organizations(org_label):
         elif form_type == 'add_members':
             # push membership
             target = request.form.get('add_member_email', '')
-            users = User.objects(email=target)
-            if not users:
+            new_members = User.objects(email=target)
+            if not new_members:
                 flash('we cannot find "%s", has it been registered?' % \
                     target, 'error')
                 return redirect(url_for('organizations', org_label=org.label))
 
-            user = users[0]
+            new_member = new_members[0]
             # already a member?
-            if org in user.organizations:
+            if org in new_member.organizations:
                 flash('"%s" is already a member of "%s"' % (target, org.name)
                     , 'warning')
                 return redirect(url_for('organizations', org_label=org.label))
             
             else:
                 # add them
-                user.update(push__organizations=org)
-                org.update(push__users=user)
+                new_member.update(push__organizations=org)
+                org.update(push__users=new_member)
                 flash('successfully added "%s" to "%s"' % (target, org.name)
                     , 'success')
                 return redirect(url_for('organizations', org_label=org.label))
@@ -248,32 +256,37 @@ def organizations(org_label):
         elif form_type == 'remove_members':
             # push/pull membership
             target = request.form.get('remove_member_email', '')
-            users = User.objects(email=target)
-            if not users:
+            old_members = User.objects(email=target)
+            if not old_members:
                 flash('we cannot find "%s", has it been registered?' % \
                     target, 'error')
                 return redirect(url_for('organizations', org_label=org.label))
             
-            user = users[0]
-            # already a member?
-            if org not in user.organizations:
+            old_member = old_members[0]
+            # not yet a member?
+            if org not in old_member.organizations:
                 flash('"%s" is not yet a member of "%s"' % (target, org.name)
                     , 'warning')
                 return redirect(url_for('organizations', org_label=org.label))
             else:
                 # drop 'em
-                user.update(pull__organizations=org)
-                org.update(pull__users=user)
+                old_member.update(pull__organizations=org)
+                org.update(pull__users=old_member)
                 flash('successfully removed "%s" from %s' % (target, org.name)
                     , 'info')
                 return redirect(url_for('organizations', org_label=org.label))
 
         elif form_type == 'admin':
-            # delete the organization
+            # delete the organization; permission-check first
+            if not user.admin_rights:
+                app.logger.error('%s tried to delete %s but was denied for \
+                    want of admin rights' % (session['email'], org.name))
+                abort(404)
+
             # pull out the org from each member first
-            users = org.users
-            for user in users:
-                user.update(pull__organizations=org)
+            members = org.users
+            for member in members:
+                member.update(pull__organizations=org)
             
             # blow away the org itself
             name = org.name
@@ -301,8 +314,17 @@ def organizations(org_label):
         if org_label:
             orgs = Organization.objects(label=org_label)
             if not orgs:
+                app.logger.error('%s tried to access an organization that \
+                    does not exist' % session['email'])
                 abort(404)
             org = orgs[0]
+
+            # permission-check
+            if user not in org.users and not user.admin_rights:
+                app.logger.error('%s tried to access an organization but was \
+                    denied for want of admin rights' % session['email'])
+                abort(404)
+
             if request.args.get('edit', '') == 'true':
                 return render_template('organization_edit.html'
                     , organization=org)
@@ -311,6 +333,12 @@ def organizations(org_label):
 
         if request.args.get('create', '') == 'true':
             # create a new form
+            # permissions-check 
+            if not user.admin_rights:
+                app.logger.error('%s tried to create an organization but was \
+                    denied for want of admin rights' % session['email'])
+                abort(404)
+
             try:
                 org_name = 'org-%s' % utilities.generate_random_string(6)
                 new_org = Organization(
@@ -333,7 +361,10 @@ def organizations(org_label):
                 , edit='true'))
         
         # nobody in particular was specified; show em all
-        orgs = Organization.objects()
+        if user.admin_rights:
+            orgs = Organization.objects()
+        else:
+            orgs = user.organizations
         return render_template('organizations.html', organizations=orgs)
 
 

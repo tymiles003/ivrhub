@@ -6,11 +6,19 @@
 {% block body %}
 <div class='row'>
     <div class='span12'>
-        <h3 class='section-name'>Organizations
-          <small>click on a name to edit or <a href="{{ url_for('organizations', create='true') }}">create a new one</a></small>
+        <h3 class='section-name'>
+            {% if session.admin_rights %}
+            All
+            {% endif %}
+            Organizations
+            <small>click on a name to edit 
+                {% if session.admin_rights %}
+                or <a href="{{ url_for('organizations', create='true') }}">create a new one</a>
+                {% endif %}
+            </small>
         </h3>
         {% if not organizations %}
-        <i>No organizations to speak of just yet..</i>
+        <i>No organizations to speak of just yet, an admin should create one soon..</i>
         {% else %}
         <table class='table table-striped table-bordered'>
             <thead>

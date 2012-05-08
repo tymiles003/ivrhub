@@ -93,7 +93,11 @@
                 <li><a href="#"><i class='icon-signal'></i> Analysis</a></li>
                 <li class='divider'></li>
                 <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Profile</a></li>
-                <li><a href="{{ url_for('organizations') }}"><i class='icon-globe'></i> Organizations</a></li>
+                <li><a href="{{ url_for('organizations') }}"><i class='icon-globe'></i>
+                  {% if session.admin_rights %}
+                   All
+                  {% endif %}
+                    Organizations</a></li>
                 {% if session.admin_rights %}
                 <li class='divider'></li>
                 <li><a href="{{ url_for('members') }}"><i class='icon-briefcase'></i> Members</a></li>

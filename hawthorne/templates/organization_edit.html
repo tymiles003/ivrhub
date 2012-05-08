@@ -16,7 +16,9 @@
             <li class='active'><a href='#info' data-toggle='tab'>Info</a></li>
             <li><a href='#add_members' data-toggle='tab'>Add members</a></li>
             <li><a href='#remove_members' data-toggle='tab'>Remove members</a></li>
+            {% if session.admin_rights %}
             <li><a href='#admin' data-toggle='tab'>Admin</a></li>
+            {% endif %}
         </ul>
 
         <div id='organizationTabContent' class='tab-content'>

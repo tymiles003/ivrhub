@@ -39,7 +39,13 @@
 
             <div class='span4 well'>
                 <h3><i class='icon-globe'></i>Organizations</h3>
-                <p class='note'>view details on your <a href="{{ url_for('organizations') }}">organizations</a></p>
+                <p class='note'>view details on 
+                {% if session.admin_rights %}
+                all registered
+                {% else %}
+                your 
+                {% endif %}
+                <a href="{{ url_for('organizations') }}">organizations</a></p>
             </div>
 
         </div>
