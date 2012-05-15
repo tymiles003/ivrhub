@@ -35,7 +35,7 @@
                 <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
 
                 <div class='form-actions'>
-                    <button type='submit' class='btn btn-primary'>Login</button>
+                    <button type='submit' id='login_button' class='btn btn-primary' data-loading-text='Signing in...'>Login</button>
                 </div>
             </fieldset>
         </form>
@@ -46,6 +46,7 @@
 
 {% block js %}
 <script src="{{ url_for('static', filename='js/happy.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-button.js') }}"></script>
 <script>
     var validators = {
         email: function (val) {
@@ -57,6 +58,13 @@
         // initial focus on email input
         $('#email').focus();
 
+        // stateful login button
+        $('#login_button').button();
+        $('#login_button').click(function() {
+            $(this).button('loading');
+        });
+
+        // form validation
         $('#login_form').isHappy({
             fields: {
                 '#email': {
