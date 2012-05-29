@@ -12,20 +12,28 @@
         <div class='row'>
             <div class='span4'>
                 <h4>Description</h4>
-                <p>{{ organization.description }}</p>
+                {% if organization.description %}
+                    <p>{{ organization.description }}</p>
+                {% else %}
+                    <i>None</i>
+                {% endif %}
             </div>
 
             <div class='offset2 span3'>
                 <h4>Location</h4>
-                <p>{{ organization.location }}</p>
+                {% if organization.location %}
+                    <p>{{ organization.location }}</p>
+                {% else %}
+                    <i>None</i>
+                {% endif %}
             </div>
             
             <div class='span3'>
                 <h4>Members</h4>
                 {% for user in users %}
-                <span class='badge badge-success'>{{ user.name }}</span>
+                    <span class='badge badge-success'>{{ user.name }}</span>
                 {% else %}
-                <i>none</i>
+                    <i>None</i>
                 {% endfor %}
             </div>
         </div>
