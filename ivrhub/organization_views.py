@@ -27,7 +27,7 @@ def organizations(org_label):
         org = orgs[0]
         
         # permission-check
-        if user not in org.users and not user.admin_rights:
+        if org not in user.organizations and not user.admin_rights:
             app.logger.error('%s tried to edit an organization but was \
                 denied for want of admin rights' % session['email'])
             abort(404)
@@ -72,7 +72,6 @@ def organizations(org_label):
             else:
                 # add them
                 new_member.update(push__organizations=org)
-                org.update(push__users=new_member)
                 flash('successfully added "%s" to "%s"' % (target, org.name)
                     , 'success')
                 return redirect(url_for('organizations', org_label=org.label))
@@ -95,7 +94,6 @@ def organizations(org_label):
             else:
                 # drop 'em
                 old_member.update(pull__organizations=org)
-                org.update(pull__users=old_member)
                 flash('successfully removed "%s" from %s' % (target, org.name)
                     , 'info')
                 return redirect(url_for('organizations', org_label=org.label))
@@ -107,8 +105,8 @@ def organizations(org_label):
                     want of admin rights' % (session['email'], org.name))
                 abort(404)
 
-            # pull out the org from each member first
-            members = org.users
+            # revoke membership first
+            members = User.objects(organizations=org)
             for member in members:
                 member.update(pull__organizations=org)
             
@@ -147,16 +145,20 @@ def organizations(org_label):
             org = orgs[0]
 
             # permission-check
-            if user not in org.users and not user.admin_rights:
+            if org not in user.organizations and not user.admin_rights:
                 app.logger.error('%s tried to access an organization but was \
                     denied for want of admin rights' % session['email'])
                 abort(404)
 
             if request.args.get('edit', '') == 'true':
+                users = User.objects(organizations=org)
                 return render_template('organization_edit.html'
-                    , organization=org)
+                    , organization=org, users=users)
             else:
-                return render_template('organization.html', organization=org)
+                # get all the members
+                users = User.objects(organizations=org)
+                return render_template('organization.html', organization=org
+                    , users=users)
 
         if request.args.get('create', '') == 'true':
             # create a new form
@@ -192,4 +194,11 @@ def organizations(org_label):
             orgs = Organization.objects()
         else:
             orgs = user.organizations
-        return render_template('organizations.html', organizations=orgs)
+
+        # find the users for each org
+        users = {}
+        for org in orgs:
+            users[org.name] = User.objects(organizations=org)
+
+        return render_template('organizations.html', organizations=orgs
+            , users=users)
