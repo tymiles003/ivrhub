@@ -1,8 +1,8 @@
 '''
-hawthorne_settings_sample.py
+ivrhub_settings_sample.py
 the following settings are placeholders
 copy this file somewhere secure, rename it, and point an env var to it:
-    $ export HAWTHORNE_SETTINGS=/path/to/settings.py
+    $ export IVRHUB_SETTINGS=/path/to/settings.py
 you may also want to do this in your .bashrc or .zshrc
 '''
 import logging
@@ -18,11 +18,11 @@ APP_IP = '127.0.0.1'
 APP_PORT = 8000
 
 # app name and URL root, used in emails
-APP_NAME = 'Hawthorne'
+APP_NAME = 'IVRHub'
 APP_ROOT = 'http://127.0.0.1:8000'
 
 # a path to your logfile
-LOG_FILE = '/tmp/hawthorne.log'
+LOG_FILE = '/tmp/ivrhub.log'
 LOG_LEVEL = logging.DEBUG
 
 # the expiration time of 'remembered' sessions
@@ -31,7 +31,7 @@ PERMANENT_SESSION_LIFETIME = 180*24*60*60
 
 # info on your local mongo instance
 MONGO_CONFIG = {
-    'db_name': 'hawthorne'
+    'db_name': 'ivrhub'
     , 'host': 'localhost'
     , 'port': 27017
 }

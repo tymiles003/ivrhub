@@ -24,13 +24,13 @@ def deploy():
     # determine release name and version
     dist = local('python setup.py --fullname', capture=True).strip()
     # upload the source tarball and unzip
-    put('dist/%s.tar.gz' % dist, '/tmp/hawthorne.tar.gz')
-    run('mkdir /tmp/hawthorne')
-    with cd('/tmp/hawthorne'):
-        run('tar xzf /tmp/hawthorne.tar.gz')
+    put('dist/%s.tar.gz' % dist, '/tmp/ivrhub.tar.gz')
+    run('mkdir /tmp/ivrhub')
+    with cd('/tmp/ivrhub'):
+        run('tar xzf /tmp/ivrhub.tar.gz')
         # setup the package with the virtualenv
         
-        with cd('/tmp/hawthorne/%s' % dist):
+        with cd('/tmp/ivrhub/%s' % dist):
             python = os.path.join(env.virtualenv_dir, 'bin/python')
             run('%s setup.py install' % python)
 
@@ -38,17 +38,17 @@ def deploy():
             run('pip install -r requirements.txt -E %s' % env.virtualenv_dir)
 
     # delete the temporary folder
-    run('rm -rf /tmp/hawthorne /tmp/hawthorne.tar.gz')
+    run('rm -rf /tmp/ivrhub/tmp/ivrhub.tar.gz')
 
     # restart the server..
-    run('supervisorctl restart hawthorne')
+    run('supervisorctl restart ivrhub')
 
 
 def logs():
     ''' view logs
     supervisord redirects stderr and stdout to this path
     '''
-    run('tail /tmp/hawthorne.log')
+    run('tail /tmp/ivrhub.log')
 
 
 def nginx(command):
