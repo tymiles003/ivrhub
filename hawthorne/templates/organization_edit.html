@@ -10,7 +10,13 @@
 
 {% block body %}
 <div class='row'>
-    <div class='offset3 span6'>
+    <div class='span12'>
+        <h2 class='section-name'>
+            <a href="{{ url_for('organizations', org_label=organization.label) }}">{{ organization.name }}</a>
+            <small>
+                (editing)
+            </small>
+        </h2>
 
         <ul id='organizationTab' class='nav nav-tabs'>
             <li class='active'><a href='#info' data-toggle='tab'>Info</a></li>
