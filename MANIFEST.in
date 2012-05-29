@@ -1,5 +1,5 @@
-recursive-include hawthorne/templates *
-recursive-include hawthorne/static *
+recursive-include ivrhub/templates *
+recursive-include ivrhub/static *
 recursive-include vendor/bootstrap/docs/assets *
 recursive-include vendor/happy *
 include readme.md requirements.txt

@@ -17,18 +17,18 @@ after cloning, pull in the dependencies:
 ### Go-time
 setup a real config file outside of source control
 
-    $ cp conf/hawthorne_settings_sample.py /path/to/real/settings.py              
+    $ cp conf/ivrhub_settings_sample.py /path/to/real/settings.py              
 
 edit that new config..then point an env var at it
 
-    $ export HAWTHORNE_SETTINGS=/path/to/real/settings.py
+    $ export IVRHUB_SETTINGS=/path/to/real/settings.py
 
 activate your virtualenv and create the default admin
 
     $ ./path/to/venv/bin/activate
     (venv)$ python
-    >> import hawthorne
-    >> hawthorne.views.seed()
+    >> import ivrhub 
+    >> ivrhub.views.seed()
 
 start up the server
 
