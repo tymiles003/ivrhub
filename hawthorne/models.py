@@ -25,7 +25,7 @@ class Organization(Document):
     ''' people join orgs
     '''
     description = StringField(default='')
-    location = StringField()
+    location = StringField(default='')
     # url-safe version of the name
     label = StringField(unique=True, required=True)
     name = StringField(unique=True, required=True)
