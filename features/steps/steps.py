@@ -1,4 +1,4 @@
-from hawthorne import app
+from ivrhub import app
 from lettuce import *
 
 @step('I am not logged in')

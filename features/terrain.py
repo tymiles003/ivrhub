@@ -1,4 +1,4 @@
-from hawthorne import app, views
+from ivrhub import app, views
 from lettuce import before, after, world
 from pymongo import Connection
 
