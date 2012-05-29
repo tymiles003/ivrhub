@@ -38,7 +38,7 @@ def deploy():
             run('pip install -r requirements.txt -E %s' % env.virtualenv_dir)
 
     # delete the temporary folder
-    run('rm -rf /tmp/ivrhub/tmp/ivrhub.tar.gz')
+    run('rm -rf /tmp/ivrhub /tmp/ivrhub.tar.gz')
 
     # restart the server..
     run('supervisorctl restart ivrhub')
