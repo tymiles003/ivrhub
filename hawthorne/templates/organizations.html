@@ -35,7 +35,7 @@
                     <td><a href="{{ url_for('organizations', org_label=organization.label) }}">{{ organization.name }}</a></td>
                     <td>{{ organization.description }}</td>
                     <td>{{ organization.location }}</td>
-                    <td style='text-align: center'>{{ organization.users|count }}</td>
+                    <td style='text-align: center'>{{ users[organization.name]|count }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
