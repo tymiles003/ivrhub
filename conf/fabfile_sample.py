@@ -11,7 +11,7 @@ from fabric.api import *
 def dev():
     env.user = 'nathaniel'
     env.hosts = ['tycho']
-    env.virtualenv_dir = '/home/nathaniel/conf/virtualenvs/hawthorne'
+    env.virtualenv_dir = '/home/nathaniel/conf/virtualenvs/ivrhub'
     env.supervisord_config = '/home/nathaniel/conf/tycho/supervisord.conf'
 
 
