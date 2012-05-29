@@ -3,6 +3,10 @@
 {% block body %}
 <div class='row'>
     <div class='span12'>
+        <span class='label label-warning'>
+            <i class='icon-globe'></i>
+            <abbr class='initialism'>Organization</abbr>
+        </span>
         <h2 class='section-name'>{{ organization.name }}
             <small>
                 (<a href="{{ url_for('organizations', org_label=organization.label, edit='true') }}">edit</a>)
