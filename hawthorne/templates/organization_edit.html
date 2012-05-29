@@ -231,3 +231,13 @@
     });
 </script>
 {% endblock %}
+
+{% block breadcrumb %}
+
+<p>
+<span class='divider'>/</span>
+<a href="{{ url_for('organizations', org_label=organization.label) }}">{{ organization.name }}</a> 
+<span class='divider'>(<i>editing</i>)</span>
+</p>
+
+{% endblock %}
