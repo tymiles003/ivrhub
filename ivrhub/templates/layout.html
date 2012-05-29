@@ -74,6 +74,11 @@
         margin: 4px 0 8px;
       }
 
+      span.divider {
+        padding: 0 7px 0 7px;
+        color: #8c8c8c;
+      }
+
     </style>
 
     {% block head %}
@@ -158,11 +163,16 @@
 
         <div class='footer-wrapper'>
           <footer>
-          <div class='row'>
-            <p class='pull-right'>
-            built by <a href='http://aquaya.org' target=_blank>Aquaya</a>
-            </p>
-          </div>
+            <div class='row'>
+              <div class='span8'>
+                {% block breadcrumb %}
+                {% endblock %}
+              </div>
+
+              <p class='pull-right'>
+              built by <a href='http://aquaya.org' target=_blank>Aquaya</a>
+              </p>
+            </div>
           </footer>
         </div> <!-- /.footer-wrapper -->
 
