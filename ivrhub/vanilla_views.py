@@ -3,7 +3,7 @@ some of the more boring routes
 '''
 from flask import (render_template)
 
-from hawthorne import app
+from ivrhub import app
 
 
 @app.route('/')

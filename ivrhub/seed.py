@@ -5,7 +5,7 @@ import datetime
 from flaskext.bcrypt import Bcrypt
 from mongoengine import *
 
-from hawthorne import app
+from ivrhub import app
 bcrypt = Bcrypt(app)
 from models import *
 import utilities
@@ -15,8 +15,8 @@ def seed():
     usage:
         $ . /path/to/venv/bin/activate
         (venv)$ python
-        >> import hawthorne
-        >> hawthorne.views.seed()
+        >> import ivrhub 
+        >> ivrhub.views.seed()
         user bruce@wayneindustries created with specified password
     '''
     # initialize the mongoengine connection

@@ -1,4 +1,4 @@
-''' hawthorne
+''' ivrhub
 a flask skeleton
 '''
 import datetime
@@ -10,7 +10,7 @@ from mongoengine import *
 
 
 app = Flask(__name__)
-app.config.from_envvar('HAWTHORNE_SETTINGS')
+app.config.from_envvar('IVRHUB_SETTINGS')
 bcrypt = Bcrypt(app)
 
 
@@ -31,4 +31,4 @@ connect(app.config['MONGO_CONFIG']['db_name']
 )
 
 
-import hawthorne.views
+import ivrhub.views

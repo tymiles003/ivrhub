@@ -8,7 +8,7 @@ from flask import (render_template, request, flash, redirect, url_for, session
 from decorators import *
 from models import *
 import utilities
-from hawthorne import app
+from ivrhub import app
 
 
 @app.route('/organizations/', defaults={'org_label': None})

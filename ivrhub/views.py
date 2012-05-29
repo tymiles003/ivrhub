@@ -4,11 +4,11 @@ the dynamic routes..how fun
 import datetime
 
 from flask import (render_template, request, flash, redirect, url_for, session
-    , abort, escape)
+    , abort)
 from flaskext.bcrypt import Bcrypt
 from mongoengine import *
 
-from hawthorne import app
+from ivrhub import app
 bcrypt = Bcrypt(app)
 
 # view controls

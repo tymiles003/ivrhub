@@ -6,7 +6,7 @@ import urlparse
 import boto
 from flask import (url_for)
 
-from hawthorne import app
+from ivrhub import app
 
 def generate_random_string(length):
     ''' generating API IDs and keys

@@ -5,7 +5,7 @@ from functools import wraps
 from flask import (flash, session, redirect, request, url_for, abort)
 from mongoengine import *
 
-from hawthorne import app
+from ivrhub import app
 from models import *
 
 def login_required(f):

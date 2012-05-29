@@ -3,7 +3,7 @@ formatters of sorts
 '''
 from flask import (request, session, abort)
 
-from hawthorne import app
+from ivrhub import app
 import utilities
 
 
