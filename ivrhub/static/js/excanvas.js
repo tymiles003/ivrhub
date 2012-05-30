@@ -1,0 +1,1 @@
+../../../vendor/soundmanager2/demo/360-player/script/excanvas.js
