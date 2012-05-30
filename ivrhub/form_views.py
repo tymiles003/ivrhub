@@ -58,7 +58,7 @@ def forms(org_label, form_label):
         elif form_type == 'admin':
             # blow away the form itself
             name = form.name
-            form.delete()
+            utilities.delete_form(form)
             app.logger.info('%s deleted %s' % (session['email'], name))
             flash('form "%s" was deleted' % name, 'success')
             return redirect(url_for('organizations', org_label=org.label))
@@ -73,9 +73,10 @@ def forms(org_label, form_label):
             return redirect(url_for('forms', org_label=org_label
                 , form_label=form.label))
         except:
+            form.reload()
             app.logger.error('%s experienced an error saving info about form \
                 "%s"' % (session['email'], request.form['name']))
-            flash('Error saving changes, sorry /:')
+            flash('Error saving changes, sorry.  Is the name unique?', 'error')
             return redirect(url_for('forms', org_label=org_label
                 , form_label=form_label))
     

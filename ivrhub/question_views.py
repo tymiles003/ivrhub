@@ -135,7 +135,7 @@ def questions(org_label, form_label, question_label):
 
             elif prompt_type == 'audio_url':
                 question.audio_url = request.form.get('audio_url', '').strip()
-
+                
 
         elif form_type == 'admin':
             # blow away the question itself
@@ -149,19 +149,22 @@ def questions(org_label, form_label, question_label):
         else:
             # bad 'form_type'
             abort(404)
-       
+        
         try:
             question.save()
             flash('Changes to this question were saved successfully'
                 , 'success')
         except:
-            app.logger.error('%s experienced an error saving info about \
-                question "%s"' % (session['email'], request.form['name']))
-            flash('Error saving changes, sorry /:')
+            question.reload()
+            app.logger.error('%s experienced an error saving info \
+                about question "%s"' % (
+                session['email'], request.form['name']))
+            flash('Error saving changes, are the names unique?', 'error')
         
         return redirect(url_for('questions', org_label=org_label
             , form_label=form.label, question_label=question.label
             , edit='true'))
+       
     
     if request.method == 'GET':
         if question_label:

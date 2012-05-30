@@ -109,6 +109,11 @@ def organizations(org_label):
             members = User.objects(organizations=org)
             for member in members:
                 member.update(pull__organizations=org)
+
+            # delete all associated forms
+            forms = Form.objects(organization=org)
+            for form in forms:
+                utilities.delete_form(form)
             
             # blow away the org itself
             name = org.name
@@ -127,7 +132,7 @@ def organizations(org_label):
         except:
             app.logger.error('%s experienced an error saving info about %s' % (
                 session['email'], request.form['name']))
-            flash('error saving changes, sorry /:')
+            flash('Error saving changes, is the name unique?', 'error')
             return redirect(url_for('organizations'))
         
         return redirect(url_for('organizations', org_label=org.label))

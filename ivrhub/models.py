@@ -47,7 +47,7 @@ class Form(Document):
     # url-safe version of the name
     label = StringField(unique_with='organization')
     language = StringField(default = '')
-    name = StringField(default = '')
+    name = StringField(unique_with='organization')
     organization = ReferenceField(Organization)
     questions = ListField(ReferenceField('Question'))
 
@@ -62,7 +62,7 @@ class Question(Document):
     form = ReferenceField(Form)
     # url-safe version of the name
     label = StringField(unique_with='form')
-    name = StringField()
+    name = StringField(unique_with='form')
     # 'text_prompt', 'audio_file' or 'audio_url'
     prompt_type = StringField(default='text_prompt')
     # 'keypad' or 'voice'

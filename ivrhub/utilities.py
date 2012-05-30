@@ -4,10 +4,20 @@ import os
 import urlparse
 
 import boto
-from boto.s3.key import Key as S3_Key
 from flask import (url_for)
 
 from ivrhub import app
+
+
+def delete_form(form):
+    ''' delete specified form
+    also delete all associated questions
+    '''
+    # delete all associated questions
+    for question in form.questions:
+        delete_question(question)
+
+    form.delete()
 
 
 def delete_question(question):
