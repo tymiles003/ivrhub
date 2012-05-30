@@ -24,6 +24,9 @@
 
         <ul id='formTab' class='nav nav-tabs'>
             <li class='active'><a href='#info' data-toggle='tab'>Basic info</a></li>
+            <li><a href='#introduction' data-toggle='tab'>Introduction</a></li>
+            <li><a href='#questions' data-toggle='tab'>Questions</a></li>
+            <li><a href='#conclusion' data-toggle='tab'>Conclusion</a></li>
             <li><a href='#admin' data-toggle='tab'>Delete form</a></li>
         </ul>
 
@@ -51,6 +54,75 @@
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Save</button>
+                            <a class='btn' href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+            
+            <div class='tab-pane' id='introduction'>
+                <h3>Modify form introduction</h3>
+                <br />
+                <form class='form-horizontal' 
+                    action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" 
+                    method=post id='introduction_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='name'>Name</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='name' id='name' value='{{ form.name }}'>
+                            </div>
+                        </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='description'>Description</label>
+                            <div class='controls'>
+                                <textarea class='span3' name='description' id='description'>{{ form.description }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        <input name=form_type type=hidden value="introduction">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save introduction</button>
+                            <a class='btn' href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+            
+            <div class='tab-pane' id='questions'>
+                <h3>Add or edit questions for this form</h3>
+                <br />
+                <form class='form-horizontal' 
+                    action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" 
+                    method=post id='questions_form'>
+                    <fieldset>
+                        
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        <input name=form_type type=hidden value="questions">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save questions</button>
+                            <a class='btn' href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+            
+            <div class='tab-pane' id='conclusion'>
+                <h3>Modify this form's conclusion</h3>
+                <br />
+                <form class='form-horizontal' 
+                    action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" 
+                    method=post id='conclusion_form'>
+                    <fieldset>
+                        
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        <input name=form_type type=hidden value="conclusion">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save conclusion</button>
                             <a class='btn' href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">Cancel</a>
                         </div>
                     </fieldset>
@@ -86,9 +158,11 @@
                         </form>
                     </div>
                 </div><!-- /.modal -->
-
-                <a class='btn btn-danger' data-toggle='modal' href='#delete_form_modal'>Delete form</a>
-            </div>
+                
+                <div class='form-actions'>
+                    <a class='btn btn-danger' data-toggle='modal' href='#delete_form_modal'>Delete form</a>
+                </div>
+            </div> <!-- /.tab-pane -->
 
 
         </div>
@@ -112,6 +186,19 @@
             e.preventDefault();
             $(this).tab('show');
         });
+        
+        // enable link to tab
+        var url = document.location.toString();
+        if (url.match('#')) {
+            $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+        } 
+
+        // change hash for page-reload
+        $('.nav-tabs a').on('shown', function (e) {
+            window.location.hash = e.target.hash;
+        })
+        // /tabs
+
 
         // modal
         $('#delete_form_modal').modal({
