@@ -69,7 +69,7 @@ def require_not_logged_in(f):
     return decorated_function
 
 
-def csrf_protect():
+def csrf_protect(f):
     ''' CSRF protection via http://flask.pocoo.org/snippets/3/
     using decorator rather than 'before_request' as twilio routes need to \
     skip csrf-check
