@@ -79,8 +79,12 @@
 
                         <td>
                             {% if question.prompt_type == 'text_prompt' %}
-                                (<i>{{ question.text_prompt_language }}</i>)
-                                {{ question.text_prompt }}
+                                {% if question.text_prompt %}
+                                    (<i>{{ question.text_prompt_language }}</i>)
+                                    {{ question.text_prompt }}
+                                {% else %}
+                                    <i>None</i>
+                                {% endif %}
 
                             {% elif question.prompt_type == 'audio_url' %}
                                 <div class='ui360'>
