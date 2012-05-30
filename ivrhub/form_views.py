@@ -38,12 +38,11 @@ def forms(org_label, form_label):
         if not form_label:
             abort(404)
 
-        forms = Form.objects(label=form_label)
+        forms = Form.objects(label=form_label, organization=org)
         if not forms:
             app.logger.error('%s tried to access a form that does not \
                 exist' % session['email'])
-            flash('Form "%s" does not exist, sorry!' % form_label
-                , 'warning')
+            flash('Form "%s" does not exist, sorry!' % form_label, 'warning')
             return redirect(url_for('forms', org_label=org_label))
         form = forms[0]
 
@@ -82,7 +81,7 @@ def forms(org_label, form_label):
     
     if request.method == 'GET':
         if form_label:
-            forms = Form.objects(label=form_label)
+            forms = Form.objects(label=form_label, organization=org)
             if not forms:
                 app.logger.error('%s tried to access a form that does not \
                     exist' % session['email'])
