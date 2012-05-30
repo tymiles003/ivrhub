@@ -88,7 +88,7 @@ def forms(org_label, form_label):
                     exist' % session['email'])
                 flash('Form "%s" does not exist, sorry!' % form_label
                     , 'warning')
-                return redirect(url_for('forms', org_label=org_label))
+                return redirect(url_for('organizations', org_label=org_label))
             form = forms[0]
 
             if request.args.get('edit', '') == 'true':
