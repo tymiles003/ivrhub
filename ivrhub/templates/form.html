@@ -43,6 +43,9 @@
     </div>
 </div>
 
+<br />
+<br />
+
 <div class='row'>
     <div class='span12'>
         <h3 class='section-name'>Questions
@@ -58,7 +61,7 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th>Prompt</th>
-                        <th>Delete</th>
+                        <th style='text-align: right'>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,7 +101,8 @@
                             {% endif %}
                         </td>
 
-                        <td>x</td>
+                        <td><a href="{{ url_for('questions', org_label=form.organization.label
+                            , form_label=form.label, question_label=question.label, edit='true') }}#admin" class='close'>×</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -106,7 +110,6 @@
         {% endif %}
     </div>
 </div>
-
 
 {% endblock %}
 
@@ -117,8 +120,10 @@
 <script src='{{ url_for('static', filename='js/360player.js') }}'></script>
 
 <script>
+
     $(function() {
-        
+
+        // soundmanager2 config
         // point to swf file dir
         soundManager.url = "{{ url_for('static', filename='swf') }}";
 
