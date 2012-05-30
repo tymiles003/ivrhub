@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<style>
+    .btn-info {
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <span class='label label-form'>
+            <i class='icon-list-alt'></i>
+            <abbr class='initialism'>Forms</abbr>
+        </span>
+        <h2 class='section-name'>
+            <a href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">{{ form.name }}</a>
+            <small>
+                (editing)
+            </small>
+        </h2>
+
+        <ul id='formTab' class='nav nav-tabs'>
+            <li class='active'><a href='#info' data-toggle='tab'>Basic info</a></li>
+            <li><a href='#admin' data-toggle='tab'>Delete form</a></li>
+        </ul>
+
+        <div id='formTabContent' class='tab-content'>
+            <div class='tab-pane active' id='info'>
+                <h3>Modify form info</h3>
+                <br />
+                <form class='form-horizontal' action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" method=post id='info_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='name'>Name</label>
+                            <div class='controls'>
+                                <input type='text' class='span3' name='name' id='name' value='{{ form.name }}'>
+                            </div>
+                        </div>
+                        <div class='control-group'>
+                            <label class='control-label' for='description'>Description</label>
+                            <div class='controls'>
+                                <textarea class='span3' name='description' id='description'>{{ form.description }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        <input name=form_type type=hidden value="info">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save</button>
+                            <a class='btn' href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+            
+            
+            <div class='tab-pane' id='admin'>
+                <h3>Delete this form 
+                    <small>(this cannot be undone!)</small>
+                </h3>
+                <br />
+
+                <div class='modal hide' id='delete_form_modal'>
+                    <div class='modal-header'>
+                        <button class='close' data-dismiss='modal'>×</button>
+                        <h3>Delete form</h3>
+                    </div>
+
+                    <div class='modal-body'>
+                        <p>This will delete the info connected to "{{ form.name }}"</p>
+                        <p>This operation <strong>cannot be undone by anyone.</strong></p>
+                    </div>
+
+                    <div class='modal-footer'>
+                        <form action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" method=post id='admin_form'>
+                            <a href='#' class='btn' data-dismiss='modal'>Cancel</a>
+
+                            <input name=form_type type=hidden value="admin">
+
+                            <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                            <button type='submit' class='btn btn-danger'>Delete this form</button>
+                        </form>
+                    </div>
+                </div><!-- /.modal -->
+
+                <a class='btn btn-danger' data-toggle='modal' href='#delete_form_modal'>Delete form</a>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/bootstrap-modal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-tab.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.methods.js') }}"></script>
+<script>
+    $(function() {
+
+        // tabs
+        $('#formTab a').click(function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        // modal
+        $('#delete_form_modal').modal({
+            show: false
+        });
+
+
+        // initial focus on first input
+        $('#name').focus();
+
+        $('#info_form').isHappy({
+            fields: {
+                '#name': {
+                    required: true
+                    , message: ''
+                }
+            }
+        });
+        
+    });
+</script>
+{% endblock %}
+
+{% block breadcrumb %}
+
+<p>
+<span class='divider'>/</span>
+<a href="{{ url_for('organizations', org_label=form.organization.label) }}">{{ form.organization.name }}</a> 
+<span class='divider'>/</span>
+<a href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">{{ form.name }}</a> 
+<span class='divider'>(<i>editing</i>)</span>
+</p>
+
+{% endblock %}

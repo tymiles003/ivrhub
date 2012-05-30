@@ -157,8 +157,10 @@ def organizations(org_label):
             else:
                 # get all the members
                 users = User.objects(organizations=org)
+                # get all relevant forms
+                forms = Form.objects(organization=org)
                 return render_template('organization.html', organization=org
-                    , users=users)
+                    , users=users, forms=forms)
 
         if request.args.get('create', '') == 'true':
             # create a new form

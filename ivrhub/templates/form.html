@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <span class='label label-form'>
+            <i class='icon-list-alt'></i>
+            <abbr class='initialism'>Forms</abbr>
+        </span>
+        <h2 class='section-name'>{{ form.name }}
+            <small>
+                (<a href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label, edit='true') }}">edit</a>)
+            </small>
+        </h2>
+
+        <div class='row'>
+            <div class='span4'>
+                <h4>Description</h4>
+                {% if form.description %}
+                    <p>{{ form.description }}</p>
+                {% else %}
+                    <i>None</i>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<p>
+<span class='divider'>/</span>
+<a href="{{ url_for('organizations', org_label=form.organization.label) }}">{{ form.organization.name }}</a>
+<span class='divider'>/</span>
+{{ form.name }}
+</p>
+
+{% endblock %}

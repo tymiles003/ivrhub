@@ -25,7 +25,66 @@ class Organization(Document):
     ''' people join orgs
     '''
     description = StringField(default='')
-    location = StringField(default='')
     # url-safe version of the name
     label = StringField(unique=True, required=True)
+    location = StringField(default='')
     name = StringField(unique=True, required=True)
+
+
+class Form(Document):
+    ''' the heart of the system
+    '''
+    calling_code = StringField(default = '')
+    # something to say after asking questions
+    # object is structured like a question without the metdadata
+    conclusion = DictField()
+    creation_time = DateTimeField()
+    creator = ReferenceField(User)
+    description = StringField(default = '')
+    # something to say before asking questions
+    # object is structured like a question without the metdadata
+    intro = DictField()
+    label = StringField(default = '')
+    language = StringField(default = '')
+    name = StringField(default = '')
+    organization = ReferenceField(Organization)
+    questions = ListField(ReferenceField('Question'))
+
+
+class Question(Document):
+    ''' connected to forms
+    '''
+    audio_url = StringField()
+    creation_time = DateTimeField()
+    description = StringField()
+    name = StringField()
+    # 'keypad' or 'voice'
+    response_type = StringField(default='keypad')
+    s3_key = StringField()
+    s3_url = StringField()
+    text_prompt = StringField()
+    text_prompt_language = StringField()
+
+
+class Response(Document):
+    ''' individual response to a form
+    '''
+    call_sid = StringField()
+    completion_time = DateTimeField()
+    form = ReferenceField(Form)
+    initiation_time = DateTimeField()
+    # track the progress of the response
+    last_question_asked = ReferenceField(Question)
+    # any notes about the response as a whole
+    notes = StringField()
+    respondent_phone_number = StringField()
+
+
+class Answer(Document):
+    ''' connected to questions and responses
+    '''
+    audio_url = StringField()
+    keypad_input = StringField()
+    # any notes on this answer (like a transcription)
+    notes = StringField()
+    question = ReferenceField(Question)
