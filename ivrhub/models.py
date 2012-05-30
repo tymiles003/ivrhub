@@ -44,7 +44,8 @@ class Form(Document):
     # something to say before asking questions
     # object is structured like a question without the metdadata
     intro = DictField()
-    label = StringField(default = '')
+    # url-safe version of the name
+    label = StringField(unique_with='organization')
     language = StringField(default = '')
     name = StringField(default = '')
     organization = ReferenceField(Organization)
@@ -57,6 +58,9 @@ class Question(Document):
     audio_url = StringField()
     creation_time = DateTimeField()
     description = StringField()
+    form = ReferenceField(Form)
+    # url-safe version of the name
+    label = StringField(unique_with='form')
     name = StringField()
     # 'keypad' or 'voice'
     response_type = StringField(default='keypad')
