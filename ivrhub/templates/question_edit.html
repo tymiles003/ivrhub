@@ -39,13 +39,13 @@
                         <div class='control-group'>
                             <label class='control-label' for='name'>Name</label>
                             <div class='controls'>
-                                <input type='text' class='span3' name='name' id='name' value='{{ question.name }}'>
+                                <input type='text' class='span3' name='name' id='name' autocomplete='off' value='{{ question.name }}'>
                             </div>
                         </div>
                         <div class='control-group'>
                             <label class='control-label' for='description'>Description</label>
                             <div class='controls'>
-                                <textarea class='span3' name='description' id='description'>{{ question.description }}</textarea>
+                                <textarea class='span3' name='description' id='description'>{% if question.description %}{{ question.description }}{% endif %}</textarea>
                             </div>
                         </div>
                         
@@ -66,11 +66,146 @@
                 <form class='form-horizontal' 
                     action="{{ url_for('questions', org_label=question.form.organization.label, form_label=question.form.label
                         , question_label=question.label) }}" 
-                    method=post id='prompt_form'>
+                    method=post id='prompt_form' enctype=multipart/form-data>
                     <fieldset>
-                        
+                        <div class='row'>
+                            <div class='span4'>
+                                <div class='control-group specify_prompt_type'>
+                                    <label class='control-label' for='specify_prompt_type'>Prompt type</label>
+                                    <div class='controls'>
+                                        <label class='radio'>
+                                            <input type='radio' name='specify_prompt_type' value='text_prompt'
+                                            {% if question.prompt_type == 'text_prompt' %}
+                                                checked
+                                            {% endif %}
+                                            > Text
+                                        </label>
+                                        <label class='radio'>
+                                            <input type='radio' name='specify_prompt_type' value='audio_file'
+                                            {% if question.prompt_type == 'audio_file' %}
+                                                checked
+                                            {% endif %}
+                                            > Audio file
+                                        </label>
+                                        <label class='radio'>
+                                            <input type='radio' name='specify_prompt_type' value='audio_url'
+                                            {% if question.prompt_type == 'audio_url' %}
+                                                checked
+                                            {% endif %}
+                                            > Audio URL
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class='control-group'>
+                                    <label class='control-label' for='response_type'>Response type</label>
+                                    <div class='controls'>
+                                        <label class='radio'>
+                                            <input type='radio' name='response_type' value='keypad' 
+                                            {% if question.response_type == 'keypad' %}
+                                                checked
+                                            {% endif %}
+                                            > <span class='label label-info'>keypad</span>
+                                        </label>
+                                        <label class='radio'>
+                                            <input type='radio' name='response_type' value='voice'
+                                            {% if question.response_type == 'voice' %}
+                                                checked
+                                            {% endif %}
+                                            > <span class='label label-warning'>voice</span>
+                                        </label>
+                                        <p class='help-block'>the respondent will type or speak their answer</p>
+                                    </div>
+                                </div>
+                            </div> <!-- /.span4 -->
+
+                            <div class='span6'>
+                                <div class='control-group prompt_type' id='specify_text_prompt'>
+                                    <label class='control-label' for='text_prompt'>Text prompt</label>
+                                    <div class='controls'>
+                                        {# squish these together to prevent extra whitespace #}
+                                        <textarea class='input-xlarge' name='text_prompt' rows='4' id='text_prompt'>{% if question.text_prompt %}{{ question.text_prompt }}{% endif %}</textarea>
+                                        <p class='help-block'>these words will be spoken in the language below</p>
+                                    </div>
+                                </div>
+
+                                <div class='control-group prompt_type' id='specify_text_prompt_language'>
+                                    <label class='control-label' for='text_prompt_language'>Text prompt language</label>
+                                    <div class='controls'>
+                                        <label class='radio'>
+                                            <input type='radio' name='text_prompt_language' value='en'
+                                            {% if question.text_prompt_language == 'en' %}
+                                                checked
+                                            {% endif %}
+                                            > English (American)
+                                        </label>
+                                        <label class='radio'>
+                                            <input type='radio' name='text_prompt_language' value='es'
+                                            {% if question.text_prompt_language == 'es' %}
+                                                checked
+                                            {% endif %}
+                                            > Spanish
+                                        </label>
+                                        <label class='radio'>
+                                            <input type='radio' name='text_prompt_language' value='fr'
+                                            {% if question.text_prompt_language == 'fr' %}
+                                                checked
+                                            {% endif %}
+                                            
+                                            > French
+                                        </label>
+                                        <label class='radio'>
+                                            <input type='radio' name='text_prompt_language' value='de'
+                                            {% if question.text_prompt_language == 'de' %}
+                                                checked
+                                            {% endif %}
+                                            
+                                            > German
+                                        </label>
+                                        <label class='radio'>
+                                            <input type='radio' name='text_prompt_language' value='en-gb'
+                                            {% if question.text_prompt_language == 'en-gb' %}
+                                                checked
+                                            {% endif %}
+                                            > English (Great Britian)
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class='control-group prompt_type' id='specify_audio_url'>
+                                    <label class='control-label' for='audio_url'>Prompt audio URL</label>
+                                    <div class='controls'>
+                                        <input type='text' class='input-xlarge' name='audio_url' autocomplete='off' id='audio_url'
+                                        {% if question.audio_url %}
+                                            value='{{ question.audio_url }}'
+                                        {% endif %}
+                                        >
+                                        <p class='help-block'>path to an mp3 file on the web - this will be played to your responder</p>
+
+                                    </div>
+                                </div>
+
+                                <div class='control-group prompt_type' id='specify_audio_file'>
+                                    <label class='control-label' for='audio_file'>Prompt audio file</label>
+                                    <div class='controls'>
+                                        {% if question.audio_filename %}
+                                            <input type=text class='input-file' name='audio_file' id='audio_file' 
+                                            disabled value='{{ question.audio_filename }}'>
+                                            <input name=audio_file_exists type=hidden value="true">
+                                            <p class='help-block'>this question already has an attached mp3</p>
+                                        {% else %}
+                                            <input type=file class='input-file' name='audio_file' id='audio_file'>
+                                            <p class='help-block'>upload an mp3 file from your computer to play to the responders</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div> <!-- /.span6 -->
+
+                        </div> <!-- /.row -->
+
                         <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-                        <input name=form_type type=hidden value="conclusion">
+                        <input name=form_type type=hidden value="prompt">
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Save prompt</button>
@@ -170,6 +305,21 @@
                 }
             }
         });
+
+        /* prompt type-selection 
+        */
+        $('.specify_prompt_type').change(function() {
+            var form_type = $("input[name='specify_prompt_type']:checked").val();
+
+            $('.prompt_type').hide();
+            if (form_type == 'text_prompt') {
+                $('#specify_text_prompt, #specify_text_prompt_language').show();
+            } else if (form_type == 'audio_url') {
+                $('#specify_audio_url').show();
+            } else if (form_type == 'audio_file') {
+                $('#specify_audio_file').show();
+            }
+        }).change();
         
     });
 </script>

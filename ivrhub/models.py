@@ -55,6 +55,7 @@ class Form(Document):
 class Question(Document):
     ''' connected to forms
     '''
+    audio_filename = StringField()
     audio_url = StringField()
     creation_time = DateTimeField()
     description = StringField()
@@ -62,12 +63,14 @@ class Question(Document):
     # url-safe version of the name
     label = StringField(unique_with='form')
     name = StringField()
+    # 'text_prompt', 'audio_file' or 'audio_url'
+    prompt_type = StringField(default='text_prompt')
     # 'keypad' or 'voice'
     response_type = StringField(default='keypad')
     s3_key = StringField()
     s3_url = StringField()
     text_prompt = StringField()
-    text_prompt_language = StringField()
+    text_prompt_language = StringField(default='en')
 
 
 class Response(Document):

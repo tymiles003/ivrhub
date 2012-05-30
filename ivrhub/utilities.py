@@ -4,6 +4,7 @@ import os
 import urlparse
 
 import boto
+from boto.s3.key import Key as S3_Key
 from flask import (url_for)
 
 from ivrhub import app
@@ -13,9 +14,21 @@ def delete_question(question):
     ''' delete specified question
     also remove it from the associated form
     '''
+    if question.s3_key:
+        # connect to S3 and remove the file
+        connection = boto.connect_s3(
+            aws_access_key_id=app.config['AWS']['access_key_id']
+            , aws_secret_access_key=app.config['AWS']['secret_access_key'])
+
+        bucket_name = 'ivrhub-prompts-%s' % app.config['AWS']['access_key_id']
+        bucket = connection.create_bucket(bucket_name.lower())
+        bucket.delete_key(question.s3_key)
+    
+    # pull the question from the form
     form = question.form
     form.update(pull__questions = question)
-
+    
+    # blow away the question itself
     question.delete()
 
 

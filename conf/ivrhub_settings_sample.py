@@ -41,6 +41,10 @@ MONGO_CONFIG = {
 GOOGLE_ANALYTICS_ID = 'UA-12345678-9'
 
 
+# where uploaded audio files are stored before being sent to S3
+UPLOADED_DATA_DEST = '/tmp'
+
+
 # amazon web services credentials
 # you must verify a sender and seek production access via AWS SES
 AWS = {
