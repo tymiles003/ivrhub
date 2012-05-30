@@ -7,6 +7,7 @@ from mongoengine import *
 
 from ivrhub import app
 from models import *
+import utilities
 
 def login_required(f):
     @wraps(f)
@@ -66,3 +67,27 @@ def require_not_logged_in(f):
             return redirect(url_for('dashboard'))
         return f(*args, **kwargs)
     return decorated_function
+
+
+def csrf_protect():
+    ''' CSRF protection via http://flask.pocoo.org/snippets/3/
+    using decorator rather than 'before_request' as twilio routes need to \
+    skip csrf-check
+    '''
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if request.method == 'POST':
+            token = session.pop('_csrf_token', None)
+            if not token or token != request.form.get('_csrf_token'):
+                if not app.config['TESTING']:
+                    app.logger.error('bad CSRF token')
+                    abort(403)
+        return f(*args, **kwargs)
+    return decorated_function
+
+def _generate_csrf_token():
+    if '_csrf_token' not in session:
+        session['_csrf_token'] = utilities.generate_random_string(24)
+    return session['_csrf_token']
+
+app.jinja_env.globals['csrf_token'] = _generate_csrf_token

@@ -21,6 +21,7 @@ question_route = '/organizations/<org_label>/forms/<form_label>/questions'
 @app.route(question_route, defaults={'question_label': None})
 @app.route(question_route + '/<question_label>', methods=['GET', 'POST'])
 @verification_required
+@csrf_protect
 def questions(org_label, form_label, question_label):
     ''' show the questions for a given form
     if there's a label included in the route, render that question alone

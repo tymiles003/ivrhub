@@ -33,6 +33,7 @@ from question_views import *
 '''
 @app.route('/register', methods=['GET', 'POST'])
 @require_not_logged_in
+@csrf_protect
 def register():
     ''' displays registration page
     sends confirmation email to registrant
@@ -193,6 +194,7 @@ def dashboard():
 
 @app.route('/members/', defaults={'internal_id': None})
 @app.route('/members/<internal_id>', methods=['GET', 'POST'])
+@csrf_protect
 @admin_required
 def members(internal_id):
     ''' show the users and their verification/confirmation status
@@ -291,6 +293,7 @@ def members(internal_id):
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
+@csrf_protect
 def profile():
     ''' viewing/editing ones own profile
     note that admins can view/edit any profile at /members
@@ -350,6 +353,7 @@ def profile():
 
 @app.route('/forgot/', defaults={'code': None}, methods=['GET', 'POST'])
 @app.route('/forgot/<code>', methods=['GET', 'POST'])
+@csrf_protect
 def forgot(code):
     ''' take input email address
     send password reset link

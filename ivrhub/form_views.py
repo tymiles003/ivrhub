@@ -13,6 +13,7 @@ from ivrhub import app
 @app.route('/organizations/<org_label>/forms/<form_label>'
     , methods=['GET', 'POST'])
 @verification_required
+@csrf_protect
 def forms(org_label, form_label):
     ''' show the forms
     if there's a label included in the route, render that form alone
@@ -102,7 +103,8 @@ def forms(org_label, form_label):
             try:
                 form_name = 'form-%s' % utilities.generate_random_string(6)
                 new_form = Form(
-                    label = form_name.lower()
+                    calling_code = utilities.generate_calling_code(6)
+                    , label = form_name.lower()
                     , organization = org
                     , name = form_name
                 )

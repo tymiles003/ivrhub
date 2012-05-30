@@ -14,6 +14,7 @@ from ivrhub import app
 @app.route('/organizations/', defaults={'org_label': None})
 @app.route('/organizations/<org_label>', methods=['GET', 'POST'])
 @verification_required
+@csrf_protect
 def organizations(org_label):
     ''' show the organizations
     if there's a label included in the route, render that organization alone
