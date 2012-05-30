@@ -11,40 +11,41 @@
 {% block body %}
 <div class='row'>
     <div class='span12'>
-        <span class='label label-form'>
+        <span class='label label-question'>
             <i class='icon-list-alt'></i>
-            <abbr class='initialism'>Forms</abbr>
+            <abbr class='initialism'>Questions</abbr>
         </span>
         <h2 class='section-name'>
-            <a href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">{{ form.name }}</a>
+            <a href="{{ url_for('questions', org_label=question.form.organization.label, form_label=question.form.label
+                , question_label=question.label) }}">{{ question.name }}</a>
             <small>
                 (editing)
             </small>
         </h2>
 
-        <ul id='formTab' class='nav nav-tabs'>
+        <ul id='questionTab' class='nav nav-tabs'>
             <li class='active'><a href='#info' data-toggle='tab'>Basic info</a></li>
-            <li><a href='#introduction' data-toggle='tab'>Introduction</a></li>
-            <li><a href='#conclusion' data-toggle='tab'>Conclusion</a></li>
-            <li><a href='#admin' data-toggle='tab'>Delete form</a></li>
+            <li><a href='#prompt' data-toggle='tab'>Prompt</a></li>
+            <li><a href='#admin' data-toggle='tab'>Delete question</a></li>
         </ul>
 
-        <div id='formTabContent' class='tab-content'>
+        <div id='questionTabContent' class='tab-content'>
             <div class='tab-pane active' id='info'>
-                <h3>Modify form info</h3>
+                <h3>Modify question info</h3>
                 <br />
-                <form class='form-horizontal' action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" method=post id='info_form'>
+                <form class='form-horizontal' action="{{ url_for('questions', org_label=question.form.organization.label, form_label=question.form.label
+                    , question_label=question.label) }}" method=post id='info_form'>
                     <fieldset>
                         <div class='control-group'>
                             <label class='control-label' for='name'>Name</label>
                             <div class='controls'>
-                                <input type='text' class='span3' name='name' id='name' value='{{ form.name }}'>
+                                <input type='text' class='span3' name='name' id='name' value='{{ question.name }}'>
                             </div>
                         </div>
                         <div class='control-group'>
                             <label class='control-label' for='description'>Description</label>
                             <div class='controls'>
-                                <textarea class='span3' name='description' id='description'>{{ form.description }}</textarea>
+                                <textarea class='span3' name='description' id='description'>{{ question.description }}</textarea>
                             </div>
                         </div>
                         
@@ -53,57 +54,27 @@
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Save</button>
-                            <a class='btn' href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">Cancel</a>
+                            <a class='btn' href="{{ url_for('forms', org_label=question.form.organization.label, form_label=question.form.label) }}">Cancel</a>
                         </div>
                     </fieldset>
                 </form>
             </div> <!-- /.tab-pane -->
             
-            <div class='tab-pane' id='introduction'>
-                <h3>Modify form introduction</h3>
+            <div class='tab-pane' id='prompt'>
+                <h3>Modify this question's prompt</h3>
                 <br />
                 <form class='form-horizontal' 
-                    action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" 
-                    method=post id='introduction_form'>
-                    <fieldset>
-                        <div class='control-group'>
-                            <label class='control-label' for='name'>Name</label>
-                            <div class='controls'>
-                                <input type='text' class='span3' name='name' id='name' value='{{ form.name }}'>
-                            </div>
-                        </div>
-                        <div class='control-group'>
-                            <label class='control-label' for='description'>Description</label>
-                            <div class='controls'>
-                                <textarea class='span3' name='description' id='description'>{{ form.description }}</textarea>
-                            </div>
-                        </div>
-                        
-                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-                        <input name=form_type type=hidden value="introduction">
-
-                        <div class='form-actions'>
-                            <button type='submit' class='btn btn-success'>Save introduction</button>
-                            <a class='btn' href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">Cancel</a>
-                        </div>
-                    </fieldset>
-                </form>
-            </div> <!-- /.tab-pane -->
-            
-            <div class='tab-pane' id='conclusion'>
-                <h3>Modify this form's conclusion</h3>
-                <br />
-                <form class='form-horizontal' 
-                    action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" 
-                    method=post id='conclusion_form'>
+                    action="{{ url_for('questions', org_label=question.form.organization.label, form_label=question.form.label
+                        , question_label=question.label) }}" 
+                    method=post id='prompt_form'>
                     <fieldset>
                         
                         <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
                         <input name=form_type type=hidden value="conclusion">
 
                         <div class='form-actions'>
-                            <button type='submit' class='btn btn-success'>Save conclusion</button>
-                            <a class='btn' href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">Cancel</a>
+                            <button type='submit' class='btn btn-success'>Save prompt</button>
+                            <a class='btn' href="{{ url_for('forms', org_label=question.form.organization.label, form_label=question.form.label) }}">Cancel</a>
                         </div>
                     </fieldset>
                 </form>
@@ -111,36 +82,37 @@
             
             
             <div class='tab-pane' id='admin'>
-                <h3>Delete this form 
+                <h3>Delete this question
                     <small>(this cannot be undone!)</small>
                 </h3>
                 <br />
 
-                <div class='modal hide' id='delete_form_modal'>
+                <div class='modal hide' id='delete_question_modal'>
                     <div class='modal-header'>
                         <button class='close' data-dismiss='modal'>×</button>
-                        <h3>Delete form</h3>
+                        <h3>Delete question</h3>
                     </div>
 
                     <div class='modal-body'>
-                        <p>This will delete the info connected to "{{ form.name }}"</p>
+                        <p>This will delete the info connected to "{{ question.name }}"</p>
                         <p>This operation <strong>cannot be undone by anyone.</strong></p>
                     </div>
 
                     <div class='modal-footer'>
-                        <form action="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}" method=post id='admin_form'>
+                        <form action="{{ url_for('questions', org_label=question.form.organization.label, form_label=question.form.label
+                                , question_label=question.label) }}" method=post id='admin_form'>
                             <a href='#' class='btn' data-dismiss='modal'>Cancel</a>
 
                             <input name=form_type type=hidden value="admin">
 
                             <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-                            <button type='submit' class='btn btn-danger'>Delete this form</button>
+                            <button type='submit' class='btn btn-danger'>Delete this question</button>
                         </form>
                     </div>
                 </div><!-- /.modal -->
                 
                 <div class='form-actions'>
-                    <a class='btn btn-danger' data-toggle='modal' href='#delete_form_modal'>Delete form</a>
+                    <a class='btn btn-danger' data-toggle='modal' href='#delete_question_modal'>Delete question</a>
                 </div>
             </div> <!-- /.tab-pane -->
 
@@ -162,7 +134,7 @@
     $(function() {
 
         // tabs
-        $('#formTab a').click(function(e) {
+        $('#questionTab a').click(function(e) {
             e.preventDefault();
             $(this).tab('show');
         });
@@ -182,7 +154,7 @@
 
 
         // modal
-        $('#delete_form_modal').modal({
+        $('#delete_question_modal').modal({
             show: false
         });
 
@@ -207,9 +179,11 @@
 
 <p>
 <span class='divider'>/</span>
-<a href="{{ url_for('organizations', org_label=form.organization.label) }}">{{ form.organization.name }}</a> 
+<a href="{{ url_for('organizations', org_label=question.form.organization.label) }}">{{ question.form.organization.name }}</a> 
 <span class='divider'>/</span>
-<a href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">{{ form.name }}</a> 
+<a href="{{ url_for('forms', org_label=question.form.organization.label, form_label=question.form.label) }}">{{ question.form.name }}</a> 
+<span class='divider'>/</span>
+<a href="{{ url_for('questions', org_label=question.form.organization.label, form_label=question.form.label, question_label=question.label) }}">{{ question.name }}</a> 
 <span class='divider'>(<i>editing</i>)</span>
 </p>
 

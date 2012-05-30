@@ -8,6 +8,17 @@ from flask import (url_for)
 
 from ivrhub import app
 
+
+def delete_question(question):
+    ''' delete specified question
+    also remove it from the associated form
+    '''
+    form = question.form
+    form.update(pull__questions = question)
+
+    question.delete()
+
+
 def generate_random_string(length):
     ''' generating API IDs and keys
     '''

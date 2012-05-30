@@ -23,9 +23,49 @@
                 {% endif %}
             </div>
         </div>
-
     </div>
 </div>
+
+<div class='row'>
+    <div class='span12'>
+        <h3 class='section-name'>Questions
+            <small>click a question name to edit or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
+                , create='true') }}">add a new one</a></small>
+        </h3>
+        {% if not form.questions %}
+            <i>No questions created for this form yet.</i>
+        {% else %}
+            <table class='table table-bordered table-striped'>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Prompt</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in form.questions %}
+                    <tr>
+                        <td><a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
+                                , question_label=question.label, edit='true') }}">{{ question.name }}</a></td>
+                        <td>
+                            {% if question.description %}
+                                {{ question.description }}
+                            {% else %}
+                                <i>None</i>
+                            {% endif %}
+                        </td>
+                        <td>..prompt</td>
+                        <td>x</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+
 
 {% endblock %}
 
