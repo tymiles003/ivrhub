@@ -125,12 +125,13 @@ def organizations(org_label):
             org.save()
             flash('changes saved successfully', 'success')
         except:
+            org.reload()
             app.logger.error('%s experienced an error saving info about %s' % (
                 session['email'], request.form['name']))
-            flash('error saving changes, sorry /:')
-            return redirect(url_for('organizations'))
+            flash('Error saving changes, is the name unique?', 'error')
         
-        return redirect(url_for('organizations', org_label=org.label))
+        return redirect(url_for('organizations', org_label=org.label
+            , edit='true'))
 
     
     if request.method == 'GET':
