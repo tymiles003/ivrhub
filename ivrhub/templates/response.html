@@ -16,6 +16,14 @@
         .icon-download {
             margin: 2px 0 0 0;
         }
+
+        .audio-answer-container {
+            min-width: 85px;
+        }
+        .audio-download-link {
+            position: relative;
+            top: 15px;
+        }
     </style>
 {% endblock %}
 
@@ -147,12 +155,12 @@
                                 {% endif %}
 
                             {% elif answer.question.response_type == 'voice' %}
-                                <div class='ui360'>
-                                    {# have to manually tack on the .mp3 #}
-                                    <a href="{{ answer.audio_url }}.mp3"></a>
-                                </div>
-                                <div class='audio-label'>
-                                    <a href="{{ answer.audio_url }}" target=_blank>
+                                <div class='audio-answer-container'>
+                                    <div class='ui360'>
+                                        {# have to manually tack on the .mp3 #}
+                                        <a href="{{ answer.audio_url }}.mp3"></a>
+                                    </div>
+                                    <a class='audio-download-link' href="{{ answer.audio_url }}" target=_blank>
                                         <i class='icon-download'></i>
                                     </a>
                                 </div>
