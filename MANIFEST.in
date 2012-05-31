@@ -2,4 +2,5 @@ recursive-include ivrhub/templates *
 recursive-include ivrhub/static *
 recursive-include vendor/bootstrap/docs/assets *
 recursive-include vendor/happy *
+recursive-include vendor/soundmanager2 *
 include readme.md requirements.txt
