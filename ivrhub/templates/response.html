@@ -74,10 +74,7 @@
 <div class='row'>
     <div class='span12'>
         <h3 class='section-name'>Answers
-            {#
-            <small>click a question name to edit or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
-                    , create='true') }}">add a new one</a></small>
-            #}
+            <small>click a question name to add notes to an answer</small>
         </h3>
         {% if not answers %}
             <i>No answers for this response yet.</i>
@@ -88,12 +85,15 @@
                         <th>Question</th>
                         <th>Prompt</th>
                         <th>Answer</th>
+                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for answer in answers %}
                     <tr>
-                        <td>{{ answer.question.name }}</td>
+                        <td><a href="{{ url_for('answers', org_label=answer.response.form.organization.label
+                                , form_label=answer.response.form.label, response_sid=answer.response.call_sid
+                                , question_label=answer.question.label, edit='true') }}">{{ answer.question.name }}</a></td>
 
                         <td>
                             {% if answer.question.prompt_type == 'text_prompt' %}
@@ -136,9 +136,19 @@
                                     {# have to manually tack on the .mp3 #}
                                     <a href="{{ answer.audio_url }}.mp3"></a>
                                 </div>
+                                {#
                                 <div class='audio-label'>
                                     <code>voice</code>
                                 </div>
+                                #}
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            {% if answer.notes %}
+                                {{ answer.notes }}
+                            {% else %}
+                                <i>None</i>
                             {% endif %}
                         </td>
                     </tr>

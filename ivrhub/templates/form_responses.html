@@ -58,7 +58,8 @@
                     <tr>
                         <td>
                             <code>
-                                <a href="{{ url_for('responses', org_label=form.organization.label, form_label=form.label, response_sid=response.call_sid) }}">
+                                <a href="{{ url_for('responses', org_label=form.organization.label, form_label=form.label
+                                    , response_sid=response.call_sid) }}">
                                     {{ response.call_sid|abbreviate(7) }}
                                 </a>
                             </code>

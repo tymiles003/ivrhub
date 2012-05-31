@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <span class='label label-answer'>
+            <i class='icon-check'></i>
+            <abbr class='initialism'>Answer</abbr>
+        </span>
+        <h2 class='section-name'>
+            <a href="{{ url_for('responses', org_label=answer.response.form.organization.label
+                , form_label=answer.response.form.label, response_sid=answer.response.call_sid) }}">{{ answer.question.name }}</a>
+            <small>
+                (editing)
+            </small>
+        </h2>
+
+        <ul id='answerTab' class='nav nav-tabs'>
+            <li class='active'><a href='#info' data-toggle='tab'>Notes</a></li>
+        </ul>
+
+        <div id='answerTabContent' class='tab-content'>
+            <div class='tab-pane active' id='info'>
+                <h3>Add notes to this answer</h3>
+                <br />
+                <form class='form-horizontal' action="{{ url_for('answers', org_label=answer.response.form.organization.label
+                    , form_label=answer.response.form.label, response_sid=answer.response.call_sid, question_label=answer.question.label) }}" 
+                    method=post id='info_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='notes'>Notes</label>
+                            <div class='controls'>
+                                {% if answer.notes %}
+                                    <textarea class='span3' name='notes' id='notes'>{{ answer.notes }}</textarea>
+                                {% else %}
+                                    <textarea class='span3' name='notes' id='notes'></textarea>
+                                {% endif %}
+                                <p class='help-block'>any notes on this particular answer</p>
+                            </div>
+                        </div>
+                        
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        <input name=form_type type=hidden value="info">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save notes</button>
+                            <a class='btn' href="{{ url_for('answers', org_label=answer.response.form.organization.label
+                                , form_label=answer.response.form.label, response_sid=answer.response.call_sid
+                                , question_label=answer.question.label) }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+            
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/bootstrap-modal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-tab.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.methods.js') }}"></script>
+<script>
+    $(function() {
+
+        // tabs
+        $('#answerTab a').click(function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        
+        // enable link to tab
+        // via dubbe at http://stackoverflow.com/questions/7862233
+        var url = document.location.toString();
+        if (url.match('#')) {
+            $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+        } 
+
+        // change hash for page-reload
+        $('.nav-tabs a').on('shown', function (e) {
+            window.location.hash = e.target.hash;
+        })
+        // /tabs
+
+    });
+</script>
+{% endblock %}
+
+{% block breadcrumb %}
+
+<p>
+<span class='divider'>/</span>
+<a href="{{ url_for('organizations', org_label=answer.response.form.organization.label) }}">{{ answer.response.form.organization.name }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('forms', org_label=answer.response.form.organization.label, form_label=answer.response.form.label) }}">{{ answer.response.form.name }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('responses', org_label=answer.response.form.organization.label, form_label=answer.response.form.label) }}">responses</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('responses', org_label=answer.response.form.organization.label, form_label=answer.response.form.label
+    , response_sid=answer.response.call_sid) }}">{{ answer.response.call_sid|abbreviate(7) }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('responses', org_label=answer.response.form.organization.label, form_label=answer.response.form.label
+    , response_sid=answer.response.call_sid) }}">{{ answer.question.name }}</a>
+<span class='divider'>(<i>editing</i>)</span>
+</p>
+
+{% endblock %}
