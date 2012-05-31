@@ -37,6 +37,8 @@
 <span class='divider'>/</span>
 <a href="{{ url_for('forms', org_label=question.form.organization.label, form_label=question.form.label) }}">{{ question.form.name }}</a> 
 <span class='divider'>/</span>
+<a href="{{ url_for('questions', org_label=question.form.organization.label, form_label=question.form.label) }}">questions</a> 
+<span class='divider'>/</span>
 {{ question.name }}
 </p>
 

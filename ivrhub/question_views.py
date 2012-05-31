@@ -144,7 +144,7 @@ def questions(org_label, form_label, question_label):
             utilities.delete_question(question)
             app.logger.info('%s deleted %s' % (session['email'], name))
             flash('Question "%s" was deleted.' % name, 'success')
-            return redirect(url_for('forms', org_label=org.label
+            return redirect(url_for('questions', org_label=org.label
                 , form_label=form.label))
         
         else:
@@ -163,8 +163,7 @@ def questions(org_label, form_label, question_label):
             flash('Error saving changes, are the names unique?', 'error')
         
         return redirect(url_for('questions', org_label=org_label
-            , form_label=form.label, question_label=question.label
-            , edit='true'))
+            , form_label=form.label, question_label=question.label))
        
     
     if request.method == 'GET':
@@ -205,8 +204,11 @@ def questions(org_label, form_label, question_label):
                 app.logger.error('question creation failed for %s' % \
                     session['email'])
                 flash('There was an error in the form, sorry :/', 'error')
-                return redirect(url_for('forms', org_label=org_label
+                return redirect(url_for('questions', org_label=org_label
                     , form_label=form.label))
         
-        # nobody in particular was specified; punt for now
-        abort(404)
+        else:
+            # no question in particular was specified; show em all
+            questions = Question.objects(form=form)
+            return render_template('form_questions.html', questions=questions 
+                , form=form)

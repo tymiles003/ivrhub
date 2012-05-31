@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/360player.css') }}">
+
+    <style>
+
+        div.ui360 {
+            float: left;
+        }
+
+        .audio-label {
+            height: 24px;
+            margin: 16px 0 0 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <span class='label label-question'>
+            <i class='icon-check'></i>
+            <abbr class='initialism'>Questions</abbr>
+        </span>
+        <h2 class='section-name'>
+            <a href="{{ url_for('forms', org_label=form.organization.label
+                , form_label=form.label) }}">{{ form.name }}</a>
+        </h2>
+
+        <div class='row'>
+            <div class='span4'>
+                <h4>Description</h4>
+                {% if form.description %}
+                    <p>{{ form.description }}</p>
+                {% else %}
+                    <i>None</i>
+                {% endif %}
+            </div>
+            
+            <div class='offset6 span2'>
+                <h4>Calling code</h4>
+                <span class='label label-calling-code'>
+                    <i class='icon-bell'></i>
+                    <abbr class='initialism'>{{ form.calling_code }}</abbr>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class='row'>
+    <div class='span12'>
+        <h3 class='section-name'>Questions
+            <small>click a question name to edit or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
+                , create='true') }}">add a new one</a></small>
+        </h3>
+        {% if not questions %}
+            <i>No questions created for this form yet.</i>
+        {% else %}
+            <table class='table table-bordered table-striped'>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Prompt</th>
+                        <th style='text-align: right'>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions %}
+                    <tr>
+                        <td><a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
+                                , question_label=question.label, edit='true') }}">{{ question.name }}</a></td>
+                        <td>
+                            {% if question.description %}
+                                {{ question.description }}
+                            {% else %}
+                                <i>None</i>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if question.prompt_type == 'text_prompt' %}
+                                {% if question.text_prompt %}
+                                    (<i>{{ question.text_prompt_language }}</i>)
+                                    {{ question.text_prompt }}
+                                {% else %}
+                                    <i>None</i>
+                                {% endif %}
+
+                            {% elif question.prompt_type == 'audio_url' %}
+                                <div class='ui360'>
+                                    <a href="{{ question.audio_url }}"></a>
+                                </div>
+                                <div class='audio-label'>
+                                    <code><abbr title='{{ question.audio_url }}'>{{ question.audio_url|abbreviate(30) }}</abbr></code>
+                                </div>
+                            
+                            {% elif question.prompt_type == 'audio_file' %}
+                                <div class='ui360'>
+                                    <a href="{{ question.s3_url }}"></a>
+                                </div>
+                                <div class='audio-label'>
+                                    <code><abbr title='{{ question.audio_filename }}'>{{ question.audio_filename|abbreviate(30) }}</abbr></code>
+                                </div>
+
+                            {% endif %}
+                        </td>
+
+                        <td><a href="{{ url_for('questions', org_label=form.organization.label
+                            , form_label=form.label, question_label=question.label, edit='true') }}#admin" class='close'>×</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<!--[if IE]<script type='text/javascript' src="{{ url_for('static', filename='js/excanvas.js') }}"></script><![endif]-->
+<script src='{{ url_for('static', filename='js/berniecode-animator.js') }}'></script>
+<script src='{{ url_for('static', filename='js/soundmanager2.js') }}'></script>
+<script src='{{ url_for('static', filename='js/360player.js') }}'></script>
+
+<script>
+
+    $(function() {
+
+        // soundmanager2 config
+        // point to swf file dir
+        soundManager.url = "{{ url_for('static', filename='swf') }}";
+
+    });
+
+</script>
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<p>
+<span class='divider'>/</span>
+<a href="{{ url_for('organizations', org_label=form.organization.label) }}">{{ form.organization.name }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">{{ form.name }}</a>
+<span class='divider'>/</span>
+questions
+</p>
+
+{% endblock %}
