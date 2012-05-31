@@ -10,15 +10,15 @@ Feature: Proper response codes when in various states of logged-in-edness
 
     Examples:
             | route        | code | data |
-            | "/"          | 200  | "a Flask skeleton" |
-            | "about"      | 200  | "There are two roles" |
-            | "help"       | 200  | "For more info on the project" |
-            | "demo"       | 200  | "likely a youtube video" |
+            | "/"          | 200  | "mobile data collection" |
+            | "about"      | 200  | "conduct surveys" |
+            | "help"       | 200  | "For more info" |
+            | "demo"       | 200  | "Check back soon" |
             | "register"   | 200  | "<legend>Register" |
             | "forgot/"    | 200  | "<legend>Forgotten Password" |
             | "nope"       | 404  | "" |
             | "login"      | 200  | "<legend>Login" |
-            | "logout"     | 200  | "a Flask skeleton" |
+            | "logout"     | 200  | "mobile data collection" |
             | "dashboard"  | 200  | "<legend>Login" |
             | "profile"    | 200  | "<legend>Login" |
             | "members"  | 404  | "" |
@@ -31,15 +31,15 @@ Feature: Proper response codes when in various states of logged-in-edness
 
     Examples:
             | route        | code | data |
-            | "/"          | 200  | "a Flask skeleton" |
-            | "about"      | 200  | "There are two roles" |
-            | "help"       | 200  | "For more info on the project" |
-            | "demo"       | 200  | "likely a youtube video" |
+            | "/"          | 200  | "mobile data collection" |
+            | "about"      | 200  | "conduct surveys" |
+            | "help"       | 200  | "For more info" |
+            | "demo"       | 200  | "Check back soon" |
             | "register"   | 200  | "Dashboard" |
             | "forgot/"    | 200  | "Dashboard" |
             | "nope"       | 404  | "" |
             | "login"      | 200  | "Dashboard" |
-            | "logout"     | 200  | "a Flask skeleton" |
+            | "logout"     | 200  | "mobile data collection" |
             | "dashboard"  | 200  | "Dashboard" |
             | "profile"    | 200  | "edit" |
             | "profile?edit=true"    | 200  | "Modify" |
