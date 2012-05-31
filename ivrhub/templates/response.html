@@ -13,10 +13,6 @@
             height: 24px;
             margin: 16px 0 0 0;
         }
-
-        abbr.call-sid {
-            color: #0088cc;
-        }
     </style>
 {% endblock %}
 
@@ -28,7 +24,11 @@
             <abbr class='initialism'>Responses</abbr>
         </span>
         <h2 class='section-name'>
-            ID: <abbr class='call-sid' title='{{ response.call_sid }}'>{{ response.call_sid|abbreviate(7) }}</abbr>
+            <abbr class='call-sid' title='{{ response.call_sid }}'>{{ response.call_sid|abbreviate(7) }}</abbr>
+            <small>
+                (<a href="{{ url_for('responses', org_label=response.form.organization.label
+                    , form_label=response.form.label, response_sid=response.call_sid, edit='true') }}">edit</a>)
+            </small>
         </h2>
 
         <div class='row'>
@@ -50,6 +50,19 @@
             <div class='span2'>
                 <h4>Respondent number</h4>
                 <p><code>{{ response.respondent_phone_number }}</code></p>
+            </div>
+        </div>
+
+        <br />
+        
+        <div class='row'>
+            <div class='span12'>
+                <h4>Notes</h4>
+                {% if response.notes %}
+                    {{ response.notes }}
+                {% else %}
+                    <i>None</i>
+                {% endif %}
             </div>
         </div>
     </div>

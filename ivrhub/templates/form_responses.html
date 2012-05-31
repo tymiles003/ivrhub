@@ -50,6 +50,7 @@
                         <th>ID</th>
                         <th>Time initialized</th>
                         <th>Status</th>
+                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,6 +73,14 @@
                                 <span class='label label-warning'>
                                     <abbr class='initialism'>Unfinished</abbr>
                                 </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if response.notes %}
+                                {{ response.notes }}
+                            {% else %}
+                                <i>None</i>
                             {% endif %}
                         </td>
                     </tr>

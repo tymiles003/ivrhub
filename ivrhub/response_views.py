@@ -55,15 +55,16 @@ def responses(org_label, form_label, response_sid):
 
         form_type = request.form.get('form_type', '')
         if form_type == 'info':
-            pass
+            response.notes = request.form.get('notes', '')
 
         elif form_type == 'admin':
-            initiation_time = response.initiation_time
+            initiation_time = response.initiation_time.strftime(
+                '%m/%d/%y %H:%M:%S')
             utilities.delete_response(response)
 
             app.logger.info('%s deleted response initiated at %s' \
                 % (session['email'], initiation_time))
-            flash('The response initiated at "%s" was deleted' \
+            flash('The response initiated at %s was deleted' \
                 % initiation_time, 'success')
             return redirect(url_for('responses', org_label=org.label
                 , form_label=form.label))

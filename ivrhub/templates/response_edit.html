@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<style>
+    .btn-info {
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <span class='label label-response'>
+            <i class='icon-check'></i>
+            <abbr class='initialism'>Responses</abbr>
+        </span>
+        <h2 class='section-name'>
+            <abbr class='call-sid' title='{{ response.call_sid }}'>{{ response.call_sid|abbreviate(7) }}</abbr>
+            <small>
+                (editing)
+            </small>
+        </h2>
+
+        <ul id='responseTab' class='nav nav-tabs'>
+            <li class='active'><a href='#info' data-toggle='tab'>Notes</a></li>
+            <li><a href='#admin' data-toggle='tab'>Delete response</a></li>
+        </ul>
+
+        <div id='responseTabContent' class='tab-content'>
+            <div class='tab-pane active' id='info'>
+                <h3>Modify response info</h3>
+                <br />
+                <form class='form-horizontal' action="{{ url_for('responses', org_label=response.form.organization.label
+                    , form_label=response.form.label, response_sid=response.call_sid) }}" method=post id='info_form'>
+                    <fieldset>
+                        <div class='control-group'>
+                            <label class='control-label' for='notes'>Notes</label>
+                            <div class='controls'>
+                                {% if response.notes %}
+                                    <textarea class='span3' name='notes' id='notes'>{{ response.notes }}</textarea>
+                                {% else %}
+                                    <textarea class='span3' name='notes' id='notes'></textarea>
+                                {% endif %}
+                                <p class='help-block'>any notes on this response as a whole</p>
+                            </div>
+                        </div>
+                        
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                        <input name=form_type type=hidden value="info">
+
+                        <div class='form-actions'>
+                            <button type='submit' class='btn btn-success'>Save notes</button>
+                            <a class='btn' href="{{ url_for('responses', org_label=response.form.organization.label
+                                , form_label=response.form.label, response_sid=response.call_sid) }}">Cancel</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div> <!-- /.tab-pane -->
+            
+            <div class='tab-pane' id='admin'>
+                <h3>Delete this response
+                    <small>(this cannot be undone!)</small>
+                </h3>
+                <br />
+
+                <div class='modal hide' id='delete_response_modal'>
+                    <div class='modal-header'>
+                        <button class='close' data-dismiss='modal'>×</button>
+                        <h3>Delete response</h3>
+                    </div>
+
+                    <div class='modal-body'>
+                        <p>This will delete the info connected to the response initiated on 
+                            <code>{{ response.initiation_time|_format_datetime('short-date-with-time') }}</code></p>
+                        <p>This operation <strong>cannot be undone by anyone.</strong></p>
+                    </div>
+
+                    <div class='modal-footer'>
+                        <form action="{{ url_for('responses', org_label=response.form.organization.label
+                            , form_label=response.form.label, response_sid=response.call_sid) }}" method=post id='admin_form'>
+                            <a href='#' class='btn' data-dismiss='modal'>Cancel</a>
+
+                            <input name=form_type type=hidden value="admin">
+
+                            <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                            <button type='submit' class='btn btn-danger'>Delete this response</button>
+                        </form>
+                    </div>
+                </div><!-- /.modal -->
+                
+                <div class='form-actions'>
+                    <a class='btn btn-danger' data-toggle='modal' href='#delete_response_modal'>Delete response</a>
+                </div>
+            </div> <!-- /.tab-pane -->
+
+
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/bootstrap-modal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-tab.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.js') }}"></script>
+<script src="{{ url_for('static', filename='js/happy.methods.js') }}"></script>
+<script>
+    $(function() {
+
+        // tabs
+        $('#responseTab a').click(function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        
+        // enable link to tab
+        // via dubbe at http://stackoverflow.com/questions/7862233
+        var url = document.location.toString();
+        if (url.match('#')) {
+            $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+        } 
+
+        // change hash for page-reload
+        $('.nav-tabs a').on('shown', function (e) {
+            window.location.hash = e.target.hash;
+        })
+        // /tabs
+
+
+        // modal
+        $('#delete_response_modal').modal({
+            show: false
+        });
+
+    });
+</script>
+{% endblock %}
+
+{% block breadcrumb %}
+
+<p>
+<span class='divider'>/</span>
+<a href="{{ url_for('organizations', org_label=response.form.organization.label) }}">{{ response.form.organization.name }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('forms', org_label=response.form.organization.label, form_label=response.form.label) }}">{{ response.form.name }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('responses', org_label=response.form.organization.label, form_label=response.form.label) }}">responses</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('responses', org_label=response.form.organization.label, form_label=response.form.label
+    , response_sid=response.call_sid) }}">{{ response.call_sid|abbreviate(7) }}</a>
+(<i>editing</i>)
+</p>
+
+{% endblock %}
