@@ -97,7 +97,13 @@
                                     <a href="{{ question.audio_url }}"></a>
                                 </div>
                                 <div class='audio-label'>
-                                    <code><abbr title='{{ question.audio_url }}'>{{ question.audio_url|abbreviate(30) }}</abbr></code>
+                                    <abbr title='{{ question.audio_url }}'>
+                                        <code>
+                                            <a href="{{ question.audio_url }}" target=_blank>
+                                                {{ question.audio_url|abbreviate(30) }}
+                                            </a>
+                                        </code>
+                                    </abbr>
                                 </div>
                             
                             {% elif question.prompt_type == 'audio_file' %}
@@ -105,7 +111,13 @@
                                     <a href="{{ question.s3_url }}"></a>
                                 </div>
                                 <div class='audio-label'>
-                                    <code><abbr title='{{ question.audio_filename }}'>{{ question.audio_filename|abbreviate(30) }}</abbr></code>
+                                    <abbr title='{{ question.audio_filename }}'>
+                                        <code>
+                                            <a href="{{ question.s3_url }}" target=_blank>
+                                                {{ question.audio_filename|abbreviate(30) }}
+                                            </a>
+                                        </code>
+                                    </abbr>
                                 </div>
 
                             {% endif %}

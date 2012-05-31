@@ -13,6 +13,9 @@
             height: 24px;
             margin: 16px 0 0 0;
         }
+        .icon-download {
+            margin: 2px 0 0 0;
+        }
     </style>
 {% endblock %}
 
@@ -109,7 +112,13 @@
                                     <a href="{{ answer.question.audio_url }}"></a>
                                 </div>
                                 <div class='audio-label'>
-                                    <code><abbr title='{{ answer.question.audio_url }}'>{{ answer.question.audio_url|abbreviate(30) }}</abbr></code>
+                                    <abbr title='{{ answer.question.audio_url }}'>
+                                        <code>
+                                            <a href="{{ answer.question.audio_url }}" target=_blank>
+                                                {{ answer.question.audio_url|abbreviate(30) }}
+                                            </a>
+                                        </code>
+                                    </abbr>
                                 </div>
                             
                             {% elif answer.question.prompt_type == 'audio_file' %}
@@ -117,7 +126,13 @@
                                     <a href="{{ answer.question.s3_url }}"></a>
                                 </div>
                                 <div class='audio-label'>
-                                    <code><abbr title='{{ answer.question.audio_filename }}'>{{ answer.question.audio_filename|abbreviate(30) }}</abbr></code>
+                                    <abbr title='{{ answer.question.audio_filename }}'>
+                                        <code>
+                                            <a href="{{ answer.question.s3_url }}" target=_blank>
+                                                {{ answer.question.audio_filename|abbreviate(30) }}
+                                            </a>
+                                        </code>
+                                    </abbr>
                                 </div>
 
                             {% endif %}
@@ -136,11 +151,11 @@
                                     {# have to manually tack on the .mp3 #}
                                     <a href="{{ answer.audio_url }}.mp3"></a>
                                 </div>
-                                {#
                                 <div class='audio-label'>
-                                    <code>voice</code>
+                                    <a href="{{ answer.audio_url }}" target=_blank>
+                                        <i class='icon-download'></i>
+                                    </a>
                                 </div>
-                                #}
                             {% endif %}
                         </td>
                         
