@@ -1,32 +1,55 @@
 {% extends "layout.html" %}
 
+{% block head %}
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/360player.css') }}">
+
+    <style>
+        
+        div.ui360 {
+            float: left;
+        }
+
+        .audio-label {
+            height: 24px;
+            margin: 16px 0 0 0;
+        }
+
+        abbr.call-sid {
+            color: #0088cc;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class='row'>
     <div class='span12'>
         <span class='label label-response'>
-            <i class='icon-list-alt'></i>
+            <i class='icon-check'></i>
             <abbr class='initialism'>Responses</abbr>
         </span>
         <h2 class='section-name'>
-            <code>{{ response.call_sid|abbreviate(7) }}</code>
+            ID: <abbr class='call-sid' title='{{ response.call_sid }}'>{{ response.call_sid|abbreviate(7) }}</abbr>
         </h2>
 
         <div class='row'>
             <div class='span4'>
-                <h4>Description</h4>
-                {% if response.form.description %}
-                    <p>{{ response.form.description }}</p>
-                {% else %}
-                    <i>None</i>
-                {% endif %}
+                <h4>In response to</h4>
+                <a href="{{ url_for('forms', org_label=response.form.organization.label, form_label=response.form.label) }}">
+                    <span class='label label-form'>
+                        <i class='icon-list-alt'></i>
+                        <abbr class='initialism'>{{ response.form.name }}</abbr>
+                    </span>
+                </a>
             </div>
             
-            <div class='offset6 span2'>
-                <h4>Calling code</h4>
-                <span class='label label-calling-code'>
-                    <i class='icon-bell'></i>
-                    <abbr class='initialism'>{{ response.form.calling_code }}</abbr>
-                </span>
+            <div class='offset4 span2'>
+                <h4>Initiated</h4>
+                <p>{{ response.initiation_time|_format_datetime('short-date-with-time') }}</p>
+            </div>
+            
+            <div class='span2'>
+                <h4>Respondent number</h4>
+                <p><code>{{ response.respondent_phone_number }}</code></p>
             </div>
         </div>
     </div>
@@ -50,12 +73,61 @@
                 <thead>
                     <tr>
                         <th>Question</th>
+                        <th>Prompt</th>
+                        <th>Answer</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for answer in answers %}
                     <tr>
                         <td>{{ answer.question.name }}</td>
+
+                        <td>
+                            {% if answer.question.prompt_type == 'text_prompt' %}
+                                {% if answer.question.text_prompt %}
+                                    (<i>{{ answer.question.text_prompt_language }}</i>)
+                                    {{ answer.question.text_prompt }}
+                                {% else %}
+                                    <i>None</i>
+                                {% endif %}
+
+                            {% elif answer.question.prompt_type == 'audio_url' %}
+                                <div class='ui360'>
+                                    <a href="{{ answer.question.audio_url }}"></a>
+                                </div>
+                                <div class='audio-label'>
+                                    <code><abbr title='{{ answer.question.audio_url }}'>{{ answer.question.audio_url|abbreviate(30) }}</abbr></code>
+                                </div>
+                            
+                            {% elif answer.question.prompt_type == 'audio_file' %}
+                                <div class='ui360'>
+                                    <a href="{{ answer.question.s3_url }}"></a>
+                                </div>
+                                <div class='audio-label'>
+                                    <code><abbr title='{{ answer.question.audio_filename }}'>{{ answer.question.audio_filename|abbreviate(30) }}</abbr></code>
+                                </div>
+
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            {% if answer.question.response_type == 'keypad' %}
+                                {% if answer.keypad_input %}
+                                    <code>{{ answer.keypad_input }}</code>
+                                {% else %}
+                                    <i>None</i>
+                                {% endif %}
+
+                            {% elif answer.question.response_type == 'voice' %}
+                                <div class='ui360'>
+                                    {# have to manually tack on the .mp3 #}
+                                    <a href="{{ answer.audio_url }}.mp3"></a>
+                                </div>
+                                <div class='audio-label'>
+                                    <code>voice</code>
+                                </div>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -90,13 +162,13 @@
 
 <p>
 <span class='divider'>/</span>
-<a href="{{ url_for('organizations', org_label=form.organization.label) }}">{{ form.organization.name }}</a>
+<a href="{{ url_for('organizations', org_label=response.form.organization.label) }}">{{ response.form.organization.name }}</a>
 <span class='divider'>/</span>
-<a href="{{ url_for('forms', org_label=response.form.organization.label, form_label=response.form.label) }}">{{ form.name }}</a>
+<a href="{{ url_for('forms', org_label=response.form.organization.label, form_label=response.form.label) }}">{{ response.form.name }}</a>
 <span class='divider'>/</span>
 <a href="{{ url_for('responses', org_label=response.form.organization.label, form_label=response.form.label) }}">responses</a>
 <span class='divider'>/</span>
-{{ response.sid|abbrevaite(7) }}
+{{ response.call_sid|abbreviate(7) }}
 </p>
 
 {% endblock %}

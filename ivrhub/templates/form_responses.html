@@ -39,7 +39,7 @@
 <div class='row'>
     <div class='span12'>
         <h3 class='section-name'>Responses
-            <small>click an ID to edit</small>
+            <small>click an ID to view</small>
         </h3>
         {% if not responses %}
             <i>No responses for this form yet.</i>
@@ -48,12 +48,32 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Time initialized</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for response in responses %}
                     <tr>
-                        <td>{{ response.call_sid }}</td>
+                        <td>
+                            <code>
+                                <a href="{{ url_for('responses', org_label=form.organization.label, form_label=form.label, response_sid=response.call_sid) }}">
+                                    {{ response.call_sid|abbreviate(7) }}
+                                </a>
+                            </code>
+                        </td>
+                        <td>{{ response.initiation_time|_format_datetime('short-date-with-time') }}</td>
+                        <td>
+                            {% if response.completion_time %}
+                                <span class='label label-info'>
+                                    <abbr class='initialism'>Complete</abbr>
+                                </span>
+                            {% else %}
+                                <span class='label label-warning'>
+                                    <abbr class='initialism'>Unfinished</abbr>
+                                </span>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
