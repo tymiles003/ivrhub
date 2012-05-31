@@ -78,22 +78,24 @@ def csrf_protect(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if request.method == 'POST':
-            submitted_token = request.form.get('_csrf_token', '')
-            [submitted_salt, submitted_csrf_hash] = submitted_token.split('-')
-            
-            # get the user for their API key
-            user = User.objects(email=session['email'])[0]
+            if not app.config['TESTING']:
+                submitted_token = request.form.get('_csrf_token', '')
+                [submitted_salt, submitted_csrf_hash] = \
+                    submitted_token.split('-')
+                
+                # get the user for their API key
+                user = User.objects(email=session['email'])[0]
 
-            # hash the app's secret with these values
-            m = hashlib.md5()
-            target = submitted_salt + user.api_key + \
-                base64.b64encode(app.config['SECRET_KEY'])
-            m.update(target)
+                # hash the app's secret with these values
+                m = hashlib.md5()
+                target = submitted_salt + user.api_key + \
+                    base64.b64encode(app.config['SECRET_KEY'])
+                m.update(target)
 
-            if submitted_csrf_hash != m.hexdigest():
-                if not app.config['TESTING']:
+                if submitted_csrf_hash != m.hexdigest():
                     app.logger.error('bad CSRF token')
                     abort(403)
+
         return f(*args, **kwargs)
     return decorated_function
 
