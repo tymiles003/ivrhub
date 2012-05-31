@@ -152,7 +152,7 @@
 <span class='divider'>/</span>
 <a href="{{ url_for('responses', org_label=response.form.organization.label, form_label=response.form.label
     , response_sid=response.call_sid) }}">{{ response.call_sid|abbreviate(7) }}</a>
-(<i>editing</i>)
+<span class='divider'>(<i>editing</i>)</span>
 </p>
 
 {% endblock %}
