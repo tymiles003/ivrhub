@@ -209,6 +209,4 @@ def questions(org_label, form_label, question_label):
         
         else:
             # no question in particular was specified; show em all
-            questions = Question.objects(form=form)
-            return render_template('form_questions.html', questions=questions 
-                , form=form)
+            return render_template('form_questions.html', form=form)

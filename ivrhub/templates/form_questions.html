@@ -58,7 +58,7 @@
             <small>click a question name to edit or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
                 , create='true') }}">add a new one</a></small>
         </h3>
-        {% if not questions %}
+        {% if not form.questions %}
             <i>No questions created for this form yet.</i>
         {% else %}
             <table class='table table-bordered table-striped'>
@@ -71,7 +71,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for question in questions %}
+                    {% for question in form.questions %}
                     <tr>
                         <td><a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
                                 , question_label=question.label, edit='true') }}">{{ question.name }}</a></td>
