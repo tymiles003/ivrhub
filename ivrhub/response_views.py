@@ -103,9 +103,17 @@ def responses(org_label, form_label, response_sid):
 
             else:
                 # get all relevant answers
+                # make sure they're ordered correctly
+                ordered_answers = []
                 answers = Answer.objects(response=response)
+                for question in form.questions:
+                    for answer in answers:
+                        if answer.question == question:
+                            ordered_answers.append(answer)
+                            continue
+
                 return render_template('response.html', response=response
-                    , answers=answers)
+                    , answers=ordered_answers)
         
         else:
             # no response in particular was specified; show em all
