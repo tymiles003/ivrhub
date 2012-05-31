@@ -8,7 +8,32 @@
 <div class='row'>
     <div class='span12'>
         <p>For more info on the project, check the <a href="{{ url_for('about') }}">About page</a>.</p>
-        <p>Or send us a message if you're stuck; contact details are <a href='https://github.com/aquaya'>here</a>.</p>
+        <p>Send us a message if you're stuck; contact details are <a href='https://github.com/aquaya'>here</a>.</p>
+    </div>
+</div>
+
+<br />
+
+<div class='row'>
+    <div class='span8'>
+        <h3>FAQ</h3>
+        <p><strong>Is my data private?</strong></p>
+        <p>Yes.  Your forms and the responses from participants are private by default.</p>
+
+        <p><strong>Is this open to people from outside of the US?</strong></p>
+        <p>Absolutely - this was designed to work with respondents from anywhere.  If you have connection issues please let us know.  If you'd like to read more about coverage, you should know that we use Twilio to control our calls; here is some information on Twilio's <a href='http://www.twilio.com/pricing/international-calling-rates'>international coverage</a>.</p>
+
+        <p><strong>How are the question prompts created?</strong></p>
+        <p>If your questions are in English, Spanish, French or German, you can type them out and we will use a text-to-speech program to read the words.  If you are creating a form in a different language, you can upload audio recordings of the question prompts.</p>
+
+        <p><strong>Can I control who is allowed to call in?</strong></p>
+        <p>Yes, you have the option to "whitelist" certain phone numbers so that only they may respond.  Keeping your form's calling code private also provides some measure of security.</p>
+
+        <p><strong>How much does this cost?</strong></p>
+        <p>The beta will be free.  Once out of beta, costs will largely depend on where you're calling and for how long; see <a href="http://www.twilio.com/pricing/international-calling-rates">this map</a> to get an idea of the rates.</p>
+        
+        <p><strong>How does this scale?</strong></p>
+        <p>IVRHub is great for testing voice responses systems on your project.  For long term work in one locale, we recommend setting up <a href="http://asterisk.org">Asterisk</a> or <a href="http://www.freeswitch.org/">FreeSwitch</a> with a local number to reduce costs.</p>
     </div>
 </div>
 {% endblock %}

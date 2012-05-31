@@ -34,6 +34,13 @@ def demo():
     return render_template('demo.html')
 
 
+@app.route('/friends')
+def friends():
+    ''' show some friends
+    '''
+    return render_template('friends.html')
+
+
 ''' error pages
 '''
 @app.errorhandler(404)
