@@ -21,6 +21,14 @@ APP_PORT = 8000
 APP_NAME = 'IVRHub'
 APP_ROOT = 'http://127.0.0.1:8000'
 
+# phone number purchased from twilio, used in the nav header
+APP_PHONE_NUMBER = {
+    'country_code': '0'
+    , 'area_code': '123'
+    , 'national_number_first': '456'
+    , 'national_number_second': '7890'
+}
+
 # a path to your logfile
 LOG_FILE = '/tmp/ivrhub.log'
 LOG_LEVEL = logging.DEBUG
