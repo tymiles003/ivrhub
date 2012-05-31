@@ -7,6 +7,20 @@ import boto
 from flask import (url_for)
 
 from ivrhub import app
+from models import *
+
+
+def delete_response(response):
+    ''' remove specified response
+    also delete all relevant answers
+    '''
+    # first remove all answers
+    answers = Answer.objects(response=response)
+    for answer in answers:
+        answer.delete()
+
+    # blow away the response itself
+    response.delete()
 
 
 def delete_form(form):
@@ -16,6 +30,11 @@ def delete_form(form):
     # delete all associated questions
     for question in form.questions:
         delete_question(question)
+
+    # delete all associated responses
+    responses = Response.objects(form=form)
+    for response in responses:
+        delete_response(response)
 
     form.delete()
 
@@ -40,6 +59,25 @@ def delete_question(question):
     
     # blow away the question itself
     question.delete()
+
+
+def generate_random_numeric_string(length):
+    ''' generate string of random numbers
+    '''
+    return ''.join(map(lambda x: '0123456789'[ord(x)%10]
+        , os.urandom(length)))
+
+
+def generate_calling_code(length):
+    ''' generate a random suitable calling code
+    should be easy to type as an sms
+    '''
+    while(1):
+        code = generate_random_numeric_string(length)
+        forms = Form.objects(calling_code=code)
+        if not forms:
+            break
+    return code
 
 
 def generate_random_string(length):

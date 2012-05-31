@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <span class='label label-response'>
+            <i class='icon-list-alt'></i>
+            <abbr class='initialism'>Responses</abbr>
+        </span>
+        <h2 class='section-name'>
+            <a href="{{ url_for('forms', org_label=form.organization.label
+                , form_label=form.label) }}">{{ form.name }}</a>
+        </h2>
+
+        <div class='row'>
+            <div class='span4'>
+                <h4>Description</h4>
+                {% if form.description %}
+                    <p>{{ form.description }}</p>
+                {% else %}
+                    <i>None</i>
+                {% endif %}
+            </div>
+            
+            <div class='offset6 span2'>
+                <h4>Calling code</h4>
+                <span class='label label-calling-code'>
+                    <i class='icon-bell'></i>
+                    <abbr class='initialism'>{{ form.calling_code }}</abbr>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class='row'>
+    <div class='span12'>
+        <h3 class='section-name'>Responses
+            <small>click an ID to edit</small>
+        </h3>
+        {% if not responses %}
+            <i>No responses for this form yet.</i>
+        {% else %}
+            <table class='table table-bordered table-striped'>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for response in responses %}
+                    <tr>
+                        <td>{{ response.call_sid }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<p>
+<span class='divider'>/</span>
+<a href="{{ url_for('organizations', org_label=form.organization.label) }}">{{ form.organization.name }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('forms', org_label=form.organization.label, form_label=form.label) }}">{{ form.name }}</a>
+<span class='divider'>/</span>
+responses
+</p>
+
+{% endblock %}

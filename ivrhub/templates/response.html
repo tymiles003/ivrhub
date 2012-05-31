@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class='row'>
+    <div class='span12'>
+        <span class='label label-response'>
+            <i class='icon-list-alt'></i>
+            <abbr class='initialism'>Responses</abbr>
+        </span>
+        <h2 class='section-name'>
+            <code>{{ response.call_sid|abbreviate(7) }}</code>
+        </h2>
+
+        <div class='row'>
+            <div class='span4'>
+                <h4>Description</h4>
+                {% if response.form.description %}
+                    <p>{{ response.form.description }}</p>
+                {% else %}
+                    <i>None</i>
+                {% endif %}
+            </div>
+            
+            <div class='offset6 span2'>
+                <h4>Calling code</h4>
+                <span class='label label-calling-code'>
+                    <i class='icon-bell'></i>
+                    <abbr class='initialism'>{{ response.form.calling_code }}</abbr>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class='row'>
+    <div class='span12'>
+        <h3 class='section-name'>Answers
+            {#
+            <small>click a question name to edit or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
+                    , create='true') }}">add a new one</a></small>
+            #}
+        </h3>
+        {% if not answers %}
+            <i>No answers for this response yet.</i>
+        {% else %}
+            <table class='table table-bordered table-striped'>
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for answer in answers %}
+                    <tr>
+                        <td>{{ answer.question.name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<!--[if IE]<script type='text/javascript' src="{{ url_for('static', filename='js/excanvas.js') }}"></script><![endif]-->
+<script src='{{ url_for('static', filename='js/berniecode-animator.js') }}'></script>
+<script src='{{ url_for('static', filename='js/soundmanager2.js') }}'></script>
+<script src='{{ url_for('static', filename='js/360player.js') }}'></script>
+
+<script>
+
+    $(function() {
+
+        // soundmanager2 config
+        // point to swf file dir
+        soundManager.url = "{{ url_for('static', filename='swf') }}";
+
+    });
+
+</script>
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<p>
+<span class='divider'>/</span>
+<a href="{{ url_for('organizations', org_label=form.organization.label) }}">{{ form.organization.name }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('forms', org_label=response.form.organization.label, form_label=response.form.label) }}">{{ form.name }}</a>
+<span class='divider'>/</span>
+<a href="{{ url_for('responses', org_label=response.form.organization.label, form_label=response.form.label) }}">responses</a>
+<span class='divider'>/</span>
+{{ response.sid|abbrevaite(7) }}
+</p>
+
+{% endblock %}

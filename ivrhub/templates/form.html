@@ -39,6 +39,14 @@
                     <i>None</i>
                 {% endif %}
             </div>
+            
+            <div class='offset6 span2'>
+                <h4>Calling code</h4>
+                <span class='label label-calling-code'>
+                    <i class='icon-bell'></i>
+                    <abbr class='initialism'>{{ form.calling_code }}</abbr>
+                </span>
+            </div>
         </div>
     </div>
 </div>
@@ -112,6 +120,17 @@
                 </tbody>
             </table>
         {% endif %}
+    </div>
+</div>
+
+<br />
+
+<div class='row'>
+    <div class='span12'>
+        <h3 class='section-name'>
+            <a href="{{ url_for('responses', org_label=form.organization.label, form_label=form.label) }}">Responses</a>
+        </h3>
+
     </div>
 </div>
 

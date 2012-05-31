@@ -27,6 +27,7 @@ from vanilla_views import *
 from organization_views import *
 from form_views import *
 from question_views import *
+from response_views import *
 
 
 ''' routes

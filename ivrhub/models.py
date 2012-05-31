@@ -34,7 +34,8 @@ class Organization(Document):
 class Form(Document):
     ''' the heart of the system
     '''
-    calling_code = StringField(default = '')
+    # unique code for requesting this form via sms or a call
+    calling_code = StringField()
     # something to say after asking questions
     # object is structured like a question without the metdadata
     conclusion = DictField()
@@ -79,6 +80,8 @@ class Response(Document):
     call_sid = StringField()
     completion_time = DateTimeField()
     form = ReferenceField(Form)
+    # whether this was a 'call' or 'ringback' or 'scheduled call'
+    initiated_using = StringField()
     initiation_time = DateTimeField()
     # track the progress of the response
     last_question_asked = ReferenceField(Question)
@@ -95,3 +98,4 @@ class Answer(Document):
     # any notes on this answer (like a transcription)
     notes = StringField()
     question = ReferenceField(Question)
+    response = ReferenceField(Response)
