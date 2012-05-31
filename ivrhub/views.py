@@ -63,8 +63,6 @@ def register():
         try:
             new_user = User(
                 admin_rights = False
-                , api_id = 'ID' + utilities.generate_random_string(32)
-                , api_key = utilities.generate_random_string(34)
                 , email = request.form['email']
                 , email_confirmation_code = \
                     utilities.generate_random_string(34)
@@ -199,6 +197,7 @@ def dashboard():
 @app.route('/members/<internal_id>', methods=['GET', 'POST'])
 @csrf_protect
 @admin_required
+@csrf_protect
 def members(internal_id):
     ''' show the users and their verification/confirmation status
     if there's an email included in the route, render that profile for editing
@@ -228,10 +227,15 @@ def members(internal_id):
                 if not user.verified:
                     app.logger.info('%s verified %s' % (session['email']
                         , request.form['email']))
+                    
                     # send email to user that they've been verified
                     utilities.send_notification_of_verification(user
                         , request.form.get('email', ''))
-                user.verified = True
+                    user.verified = True
+                    
+                    # create API credentials for the user
+                    user.api_id = 'ID' + utilities.generate_random_string(32)
+                    user.api_key = utilities.generate_random_string(34)
 
             elif request.form['verification'] == 'unverified':
                 if user.verified:
@@ -357,6 +361,7 @@ def profile():
 @app.route('/forgot/', defaults={'code': None}, methods=['GET', 'POST'])
 @app.route('/forgot/<code>', methods=['GET', 'POST'])
 @csrf_protect
+@require_not_logged_in
 def forgot(code):
     ''' take input email address
     send password reset link

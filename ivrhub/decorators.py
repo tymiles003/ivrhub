@@ -1,6 +1,8 @@
 ''' decorators
 '''
+import base64
 from functools import wraps
+import hashlib
 
 from flask import (flash, session, redirect, request, url_for, abort)
 from mongoengine import *
@@ -70,24 +72,56 @@ def require_not_logged_in(f):
 
 
 def csrf_protect(f):
-    ''' CSRF protection via http://flask.pocoo.org/snippets/3/
-    using decorator rather than 'before_request' as twilio routes need to \
-    skip csrf-check
+    ''' CSRF protection
+    from bobince's answer at http://stackoverflow.com/questions/2695153
     '''
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if request.method == 'POST':
-            token = session.pop('_csrf_token', None)
-            if not token or token != request.form.get('_csrf_token'):
-                if not app.config['TESTING']:
+            if not app.config['TESTING']:
+                submitted_token = request.form.get('_csrf_token', '')
+                [submitted_salt, submitted_csrf_hash] = \
+                    submitted_token.split('-')
+                
+                # get the user for their API key
+                user = User.objects(email=session['email'])[0]
+
+                # hash the app's secret with these values
+                m = hashlib.md5()
+                target = submitted_salt + user.api_key + \
+                    base64.b64encode(app.config['SECRET_KEY'])
+                m.update(target)
+
+                if submitted_csrf_hash != m.hexdigest():
                     app.logger.error('bad CSRF token')
                     abort(403)
+
         return f(*args, **kwargs)
     return decorated_function
 
+
 def _generate_csrf_token():
-    if '_csrf_token' not in session:
-        session['_csrf_token'] = utilities.generate_random_string(24)
-    return session['_csrf_token']
+    ''' create a signed token
+    signature is made with app's secret and user api key
+    signed tokens (rather than per-request tokens) work across tabs
+    they also play more nicely with AJAX
+    still vulnerable to an attack from a verified user with an API key
+    '''
+    # create a random value
+    salt = utilities.generate_random_string(24)
+
+    # get the user for their API key
+    user = User.objects(email=session['email'])[0]
+
+    # hash the app's secret with these values
+    m = hashlib.md5()
+    target = salt + user.api_key + base64.b64encode(app.config['SECRET_KEY'])
+    m.update(target)
+
+    # create a token by combining the salt and hash
+    token = salt + '-' + m.hexdigest()
+
+    return token
+
 
 app.jinja_env.globals['csrf_token'] = _generate_csrf_token
