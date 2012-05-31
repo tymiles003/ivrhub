@@ -9,6 +9,34 @@ from models import *
 import utilities
 from ivrhub import app
 
+
+@app.route('/forms')
+@verification_required
+def all_forms():
+    ''' show forms for all relevant organizations
+    '''
+    user = User.objects(email=session['email'])[0]
+
+    if user.admin_rights:
+        organizations = Organization.objects()
+    else:
+        organizations = user.organizations
+    
+    # get all forms
+    forms = []
+    # also track the number of responses to each form
+    responses = {} 
+    for org in organizations:
+        print org
+        org_forms = Form.objects(organization=org)
+        forms.extend(org_forms)
+
+        for form in org_forms:
+            responses[form.name] = Response.objects(form=form).count()
+    
+    return render_template('forms_all.html', forms=forms, responses=responses)
+
+
 @app.route('/organizations/<org_label>/forms', defaults={'form_label': None})
 @app.route('/organizations/<org_label>/forms/<form_label>'
     , methods=['GET', 'POST'])

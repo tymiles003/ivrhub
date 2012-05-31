@@ -140,8 +140,7 @@
               {{ session.email }} <b class='caret'></b>
             </a>
             <ul class='dropdown-menu'>
-              <li><a href="#"><i class='icon-list-alt'></i> Forms</a></li>
-              <li><a href="#"><i class='icon-signal'></i> Analysis</a></li>
+              <li><a href="{{ url_for('all_forms') }}"><i class='icon-list-alt'></i> Forms</a></li>
               <li class='divider'></li>
               <li><a href="{{ url_for('profile') }}"><i class='icon-user'></i> Profile</a></li>
               <li><a href="{{ url_for('organizations') }}"><i class='icon-globe'></i>

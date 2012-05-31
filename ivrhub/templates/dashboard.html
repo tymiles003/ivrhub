@@ -5,6 +5,16 @@
     h3 i {
         margin: 3px 8px 0 0;
     }
+
+    /* don't underline on hover
+    and keep text color the same as default 
+    */
+    .well-link:hover {
+        text-decoration: none;
+    }
+    .well-link {
+        color: #333;
+    }
 </style>
 {% endblock %}
 
@@ -13,11 +23,13 @@
 <div class='row'>
     <div class='span12'>
         <div class='row'>
-
-            <div class='span4 well'>
-                <h3><i class='icon-list-alt'></i>Forms</h3>
-                <p class='note'>view your <a href='#'>forms</a></p>
-            </div>
+            
+            <a class='well-link' href='{{ url_for('all_forms') }}'>
+                <div class='span4 well'>
+                    <h3><i class='icon-list-alt'></i>Forms</h3>
+                    <p class='note'>view forms for all of your organizations</p>
+                </div>
+            </a>
 
         </div>
     </div>
@@ -25,17 +37,19 @@
     <div class='span12'>
         <div class='row'>
 
-            <div class='span4 well'>
-                <h3><i class='icon-globe'></i>{% if session.admin_rights %}All {% endif %}
-                    Organizations</h3>
-                <p class='note'>view details on 
-                {% if session.admin_rights %}
-                all registered
-                {% else %}
-                your 
-                {% endif %}
-                <a href="{{ url_for('organizations') }}">organizations</a></p>
-            </div>
+            <a class='well-link' href='{{ url_for('organizations') }}'>
+                <div class='span4 well'>
+                    <h3><i class='icon-globe'></i>{% if session.admin_rights %}All {% endif %}
+                        Organizations</h3>
+                    <p class='note'>view details on 
+                    {% if session.admin_rights %}
+                    all registered
+                    {% else %}
+                    your 
+                    {% endif %}
+                    organizations</p>
+                </div>
+            </a>
 
         </div>
     </div>
