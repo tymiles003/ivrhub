@@ -96,7 +96,12 @@ def forms(org_label, form_label):
                 return render_template('form_edit.html', form=form)
             
             else:
-                return render_template('form.html', form=form)
+                # count the number of entities
+                question_count = Question.objects(form=form).count()
+                response_count = Response.objects(form=form).count()
+                return render_template('form.html', form=form
+                    , question_count=question_count
+                    , response_count=response_count)
 
         if request.args.get('create', '') == 'true':
             # create a new form

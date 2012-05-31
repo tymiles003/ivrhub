@@ -59,19 +59,34 @@
     </div>
 </div>
 
+<hr />
 
 <div class='row'>
-    <div class='span12'>
-        <h3 class='section-name'>
-            <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label) }}">Questions</a>
-        </h3>
-
-        <h3 class='section-name'>
-            <a href="{{ url_for('responses', org_label=form.organization.label, form_label=form.label) }}">Responses</a>
-        </h3>
-
-    </div>
+    <a href="{{ url_for('questions', org_label=form.organization.label
+        , form_label=form.label) }}" class='well-link'>
+        <div class='span3 well'>
+            <span class='label label-question'>
+                <i class='icon-list-alt'></i>
+                <abbr class='initialism'>Questions ({{ question_count }})</abbr>
+            </span>
+            <p>view and edit questions for this form</p>
+        </div>
+    </a>
 </div>
+
+<div class='row'>
+    <a href="{{ url_for('responses', org_label=form.organization.label
+        , form_label=form.label) }}" class='well-link'>
+        <div class='span3 well'>
+            <span class='label label-response'>
+                <i class='icon-check'></i>
+                <abbr class='initialism'>Responses ({{ response_count }})</abbr>
+            </span>
+            <p>view and annotate responses to this form</p>
+        </div>
+    </a>
+</div>
+
 
 {% endblock %}
 
