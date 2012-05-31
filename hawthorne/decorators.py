@@ -1,12 +1,15 @@
 ''' decorators
 '''
+import base64
 from functools import wraps
+import hashlib
 
 from flask import (flash, session, redirect, request, url_for, abort)
 from mongoengine import *
 
 from hawthorne import app
 from models import *
+import utilities
 
 def login_required(f):
     @wraps(f)
@@ -66,3 +69,57 @@ def require_not_logged_in(f):
             return redirect(url_for('dashboard'))
         return f(*args, **kwargs)
     return decorated_function
+
+
+def csrf_protect(f):
+    ''' CSRF protection
+    from bobince's answer at http://stackoverflow.com/questions/2695153
+    '''
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if request.method == 'POST':
+            submitted_token = request.form.get('_csrf_token', '')
+            [submitted_salt, submitted_csrf_hash] = submitted_token.split('-')
+            
+            # get the user for their API key
+            user = User.objects(email=session['email'])[0]
+
+            # hash the app's secret with these values
+            m = hashlib.md5()
+            target = submitted_salt + user.api_key + \
+                base64.b64encode(app.config['SECRET_KEY'])
+            m.update(target)
+
+            if submitted_csrf_hash != m.hexdigest():
+                if not app.config['TESTING']:
+                    app.logger.error('bad CSRF token')
+                    abort(403)
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def _generate_csrf_token():
+    ''' create a signed token
+    signature is made with app's secret and user api key
+    signed tokens (rather than per-request tokens) work across tabs
+    they also play more nicely with AJAX
+    still vulnerable to an attack from a verified user with an API key
+    '''
+    # create a random value
+    salt = utilities.generate_random_string(24)
+
+    # get the user for their API key
+    user = User.objects(email=session['email'])[0]
+
+    # hash the app's secret with these values
+    m = hashlib.md5()
+    target = salt + user.api_key + base64.b64encode(app.config['SECRET_KEY'])
+    m.update(target)
+
+    # create a token by combining the salt and hash
+    token = salt + '-' + m.hexdigest()
+
+    return token
+
+
+app.jinja_env.globals['csrf_token'] = _generate_csrf_token
