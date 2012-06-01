@@ -16,6 +16,10 @@
         .table-sort-handle {
             cursor: move;
         }
+
+        .edit-status-placeholder {
+            margin: 0 0 0 12px;
+        }
     </style>
 {% endblock %}
 
@@ -26,6 +30,7 @@
             <i class='icon-question-sign'></i>
             <abbr class='initialism'>Questions</abbr>
         </span>
+        <span class='edit-status-placeholder'></span>
         <h2 class='section-name'>
             <a href="{{ url_for('forms', org_label=form.organization.label
                 , form_label=form.label) }}">{{ form.name }}</a>
@@ -58,7 +63,7 @@
 <div class='row'>
     <div class='span12'>
         <h3 class='section-name'>Questions
-            <small>click a name to edit, drag to reorder, or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
+            <small>click a name to edit, drag the icon to reorder, or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
                 , create='true') }}">add a new one</a></small>
         </h3>
         {% if not form.questions %}
@@ -171,6 +176,10 @@
             cursor: 'move'
             , handle: '.table-sort-handle'
             , update: function(event, ui) {
+                // add note that we've started working..
+                // to bad I can't get marquee styled right..
+                $('.edit-status-placeholder').html('<i>saving...</i>');
+
                 // capture the ids of the rows
                 $(this).sortable('refresh');
                 var sorted_questions = $(this).sortable('toArray', 'id');
@@ -186,8 +195,17 @@
                     }
                     , success: function(message) {
                         if (message.status == 'success') {
-                            // add a spinner and a checkbox or something
+                            $('.edit-status-placeholder').delay(1000).queue(function() {
+                                $(this).html('<i class="icon-ok"></i>');
+                                $(this).dequeue();
+                            });
+                        } else {
+                            $('.edit-status-placeholder').delay(1000).queue(function() {
+                                $(this).html('<i class="icon-remove"></i>&nbsp;<i>something went wrong, sorry :/</i>');
+                                $(this).dequeue();
+                            });
                         }
+
                     }
                 });
             }
