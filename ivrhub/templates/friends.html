@@ -4,40 +4,19 @@
 {% endblock %}
 
 {% block body %}
-<h3 class='section-name'>About</h3>
-    <div class='row'>
-        <div class='span10'>
-            <p>IVRHub makes it easy to <strong>conduct surveys</strong> and <strong>collect data</strong> using mobile phones.  There are no apps to install, and there's no harware to deploy.  Because the questions are voice-based, there are no literacy requirements for enumerators and the surveys can be in any language.</p>
-            <p>If your respondents can make phone calls, they can use IVRHub.  <strong>Here's how it works</strong>:</p>
-
-            <div id='how-it-works' class='row'>
-                <div class='span8'>
-                    <ol>
-                        <li><p>The survey-designer <a href="{{ url_for('register') }}">creates an account</a> and begins building a form.  Form questions can have custom audio prompts from an uploaded file or the web.  We can also use text-to-speech software in several languages.</p></li>
-                        <li><p>After setting up the questions, the designer publishes the form and receives a unique calling code.</p></li>
-                        <li><p>Survey respondents are given the form's calling code.  They can either directly call the IVRHub service and enter the code to begin a response, or they can text the code to IVRHub and we will call them back.</p></li>
-                        <li><p>The respondents complete the questions using their keypad or by speaking their answers.</p></li>
-                        <li><p>Answers are available on IVRHub for the form designer to review.  The voice responses can be played back for the designer to transcribe.</p></li>
-                        <li><p>Data may be exported for further analysis.</p></li>
-                    </ol>
-                </div>
-            </div>
-
-            <br />
-
-            <p>Check out our <a href="{{ url_for('demo') }}">demo</a> to see more, or feel free to get in touch, contact details are <a href='https://github.com/aquaya'>here</a>.</p>
-        </div>
-
-    </div>
-
-    <br />
-
-    <div class='row'>
-        <div class='span10'>
-            <h3>FYI</h3>
-            <p>If IVRHub doesn't seem quite right for your data collection needs, be sure to check out these <a href="{{ url_for('friends') }}">other excellent options</a>.</p>
-            <p>This is a beta service built by the folks at <a href='http://aquaya.org'>Aquaya</a>.  We're on <a href='https://github.com/Aquaya/ivrhub'>Github</a>.  Lookin up to <a href='http://formhub.org'>formhub</a>.</p>
-        </div>
+<h3 class='section-name'>Friends</h3>
+<div class='row'>
+    <div class='span4'>
+        <p>Looking to use a dedicated app for mobile data collection?  Want to allow SMS replies?  You're in luck - there's a lot of great stuff out there:</p>
+        <ul>
+            <li><a href="http://commcarehq.org">CommCare</a></li>
+            <li><a href="http://formhub.org">FormHub</a></li>
+            <li><a href="http://opendatakit.org">Open Data Kit</a></li>
+            <li><a href="https://bitbucket.org/javarosa/javarosa/wiki/Home">JavaRosa</a></li>
+            <li><a href="http://episurveyor.org">Episurveyor</a></li>
+            <li><a href="http://rapidsms.org">RapidSMS</a></li>
+            <li><a href="http://frontlinesms.org">FrontlineSMS</a></li>
+        </ul>
     </div>
 </div>
 {% endblock %}
