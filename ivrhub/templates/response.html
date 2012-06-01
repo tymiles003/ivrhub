@@ -122,7 +122,7 @@
                                     <abbr title='{{ answer.question.audio_url }}'>
                                         <code>
                                             <a href="{{ answer.question.audio_url }}" target=_blank>
-                                                {{ answer.question.audio_url|abbreviate(30) }}
+                                                {{ answer.question.audio_url|abbreviate(10, remove='start') }}
                                             </a>
                                         </code>
                                     </abbr>
@@ -136,7 +136,7 @@
                                     <abbr title='{{ answer.question.audio_filename }}'>
                                         <code>
                                             <a href="{{ answer.question.s3_url }}" target=_blank>
-                                                {{ answer.question.audio_filename|abbreviate(30) }}
+                                                {{ answer.question.audio_filename|abbreviate(10, remove='start') }}
                                             </a>
                                         </code>
                                     </abbr>

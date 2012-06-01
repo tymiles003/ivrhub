@@ -9,8 +9,8 @@
         }
 
         .audio-label {
-            height: 24px;
-            margin: 16px 0 0 0;
+            position: relative;
+            top: 15px;
         }
 
         .table-sort-handle {
@@ -19,6 +19,10 @@
 
         .edit-status-placeholder {
             margin: 0 0 0 12px;
+        }
+
+        .audio-question-container {
+            min-width: 150px;
         }
     </style>
 {% endblock %}
@@ -107,31 +111,35 @@
                                 {% endif %}
 
                             {% elif question.prompt_type == 'audio_url' %}
-                                <div class='ui360'>
-                                    <a href="{{ question.audio_url }}"></a>
-                                </div>
-                                <div class='audio-label'>
-                                    <abbr title='{{ question.audio_url }}'>
-                                        <code>
-                                            <a href="{{ question.audio_url }}" target=_blank>
-                                                {{ question.audio_url|abbreviate(30) }}
-                                            </a>
-                                        </code>
-                                    </abbr>
+                                <div class='audio-question-container'>
+                                    <div class='ui360'>
+                                        <a href="{{ question.audio_url }}"></a>
+                                    </div>
+                                    <div class='audio-label'>
+                                        <abbr title='{{ question.audio_url }}'>
+                                            <code>
+                                                <a href="{{ question.audio_url }}" target=_blank>
+                                                    {{ question.audio_url|abbreviate(10, remove='start') }}
+                                                </a>
+                                            </code>
+                                        </abbr>
+                                    </div>
                                 </div>
                             
-                            {% elif question.prompt_type == 'audio_file' %}
-                                <div class='ui360'>
-                                    <a href="{{ question.s3_url }}"></a>
-                                </div>
-                                <div class='audio-label'>
-                                    <abbr title='{{ question.audio_filename }}'>
-                                        <code>
-                                            <a href="{{ question.s3_url }}" target=_blank>
-                                                {{ question.audio_filename|abbreviate(30) }}
-                                            </a>
-                                        </code>
-                                    </abbr>
+                                {% elif question.prompt_type == 'audio_file' %}
+                                <div class='audio-question-container'>
+                                    <div class='ui360'>
+                                        <a href="{{ question.s3_url }}"></a>
+                                    </div>
+                                    <div class='audio-label'>
+                                        <abbr title='{{ question.audio_filename }}'>
+                                            <code>
+                                                <a href="{{ question.s3_url }}" target=_blank>
+                                                    {{ question.audio_filename|abbreviate(10, remove='start') }}
+                                                </a>
+                                            </code>
+                                        </abbr>
+                                    </div>
                                 </div>
 
                             {% endif %}
