@@ -76,6 +76,7 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th>Prompt</th>
+                        <th>Response type</th>
                         <th style='text-align: right'>Delete</th>
                     </tr>
                 </thead>
@@ -135,9 +136,19 @@
 
                             {% endif %}
                         </td>
+                        
+                        <td>
+                            {% if question.response_type == 'keypad' %}
+                                <span class='label label-info'>keypad</span>
+                            {% elif question.response_type == 'voice' %}
+                                <span class='label label-warning'>voice</span>
+                            {% endif %}
+                        </td>
 
-                        <td><a href="{{ url_for('questions', org_label=form.organization.label
-                            , form_label=form.label, question_label=question.label, edit='true') }}#admin" class='close'>×</a></td>
+                        <td>
+                            <a href="{{ url_for('questions', org_label=form.organization.label
+                                , form_label=form.label, question_label=question.label, edit='true') }}#admin" class='close'>×</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
