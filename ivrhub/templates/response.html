@@ -102,9 +102,8 @@
                 <tbody>
                     {% for answer in answers %}
                     <tr>
-                        <td><a href="{{ url_for('answers', org_label=answer.response.form.organization.label
-                                , form_label=answer.response.form.label, response_sid=answer.response.call_sid
-                                , question_label=answer.question.label, edit='true') }}">{{ answer.question.name }}</a></td>
+                        <td><a href="{{ url_for('questions', org_label=answer.response.form.organization.label
+                                , form_label=answer.response.form.label) }}">{{ answer.question.name }}</a></td>
 
                         <td>
                             {% if answer.question.prompt_type == 'text_prompt' %}
@@ -176,6 +175,12 @@
                             {% else %}
                                 <i>None</i>
                             {% endif %}
+                            &nbsp;
+                            <a href="{{ url_for('answers', org_label=answer.response.form.organization.label
+                                , form_label=answer.response.form.label, response_sid=answer.response.call_sid
+                                , question_label=answer.question.label, edit='true') }}">
+                                (<i>edit</i>)
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}
