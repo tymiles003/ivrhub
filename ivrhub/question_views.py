@@ -181,8 +181,8 @@ def questions(org_label, form_label, question_label):
                 session['email'], request.form['name']))
             flash('Error saving changes, are the names unique?', 'error')
         
-        return redirect(url_for('questions', org_label=org_label
-            , form_label=form.label, question_label=question.label))
+        return redirect(url_for('questions', org_label=org.label
+            , form_label=form.label))
        
     
     if request.method == 'GET':
