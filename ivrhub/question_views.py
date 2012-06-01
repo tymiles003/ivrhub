@@ -1,12 +1,13 @@
 ''' question_views
 creating and editing questions
 '''
+import json
 import os
 
 import boto
 from boto.s3.key import Key as S3_Key
 from flask import (render_template, request, flash, redirect, url_for, session
-    , abort, escape)
+    , abort, escape, jsonify)
 from flaskext.uploads import (UploadSet, configure_uploads, UploadNotAllowed)
 
 from decorators import *
@@ -18,7 +19,8 @@ uploaded_data = UploadSet('data', extensions=('mp3'))
 configure_uploads(app, uploaded_data)
 
 question_route = '/organizations/<org_label>/forms/<form_label>/questions'
-@app.route(question_route, defaults={'question_label': None})
+@app.route(question_route, defaults={'question_label': None}
+    , methods=['GET', 'POST'])
 @app.route(question_route + '/<question_label>', methods=['GET', 'POST'])
 @verification_required
 @csrf_protect
@@ -53,15 +55,32 @@ def questions(org_label, form_label, question_label):
     form = forms[0]
 
     if request.method == 'POST':
-        if not question_label:
+        # capture the type of modifications
+        form_type = request.form.get('form_type', '')
+
+        if not question_label and form_type == 'question_ordering':
+            # reordering the list of questions
+            # get the json-encoded question id list
+            sorted_question_ids = json.loads(
+                request.form.get('sorted_questions', ''))
+            
+            # get the full objects as the model wants references
+            full_questions = []
+            for question_id in sorted_question_ids:
+                question = Question.objects(id=question_id)[0]
+                full_questions.append(question)
+            
+            form.update(set__questions=full_questions)
+
+            return jsonify({'status': 'success'})
+
+        elif not question_label:
             abort(404)
 
         questions = Question.objects(label=question_label, form=form)
         if not questions:
             abort(404)
         question = questions[0]
-
-        form_type = request.form.get('form_type', '')
 
         if form_type == 'info':
             name = request.form.get('name', '')

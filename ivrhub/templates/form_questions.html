@@ -4,7 +4,6 @@
     <link rel='stylesheet' href="{{ url_for('static', filename='css/360player.css') }}">
 
     <style>
-
         div.ui360 {
             float: left;
         }
@@ -12,6 +11,10 @@
         .audio-label {
             height: 24px;
             margin: 16px 0 0 0;
+        }
+
+        .table-sort-handle {
+            cursor: move;
         }
     </style>
 {% endblock %}
@@ -55,7 +58,7 @@
 <div class='row'>
     <div class='span12'>
         <h3 class='section-name'>Questions
-            <small>click a question name to edit or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
+            <small>click a name to edit, drag to reorder, or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
                 , create='true') }}">add a new one</a></small>
         </h3>
         {% if not form.questions %}
@@ -64,15 +67,20 @@
             <table class='table table-bordered table-striped'>
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Prompt</th>
                         <th style='text-align: right'>Delete</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class='sort'>
                     {% for question in form.questions %}
-                    <tr>
+                    <tr id='{{ question.id }}'>
+                        <td style='text-align: center' class='table-sort-handle'>
+                            <i class='icon-move'></i>
+                        </td>
+
                         <td><a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
                                 , question_label=question.label, edit='true') }}">{{ question.name }}</a></td>
                         <td>
@@ -142,6 +150,14 @@
 <script src='{{ url_for('static', filename='js/soundmanager2.js') }}'></script>
 <script src='{{ url_for('static', filename='js/360player.js') }}'></script>
 
+<!-- jquery ui from cdn with local fallback -->
+<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'></script>
+<script>
+    if (typeof jQuery.ui == 'undefined') {
+    document.write(unescape("%3Cscript src='{{ url_for('static', filename='js/jquery-ui.min.js') }}' type='text/javascript'%3E%3C/script%3E"));
+    }
+</script>
+
 <script>
 
     $(function() {
@@ -149,6 +165,35 @@
         // soundmanager2 config
         // point to swf file dir
         soundManager.url = "{{ url_for('static', filename='swf') }}";
+
+        // jquery ui sortable question list
+        $('.sort').sortable({
+            cursor: 'move'
+            , handle: '.table-sort-handle'
+            , update: function(event, ui) {
+                // capture the ids of the rows
+                $(this).sortable('refresh');
+                var sorted_questions = $(this).sortable('toArray', 'id');
+                
+                $.ajax({
+                    type: 'POST'
+                    , url: "{{ url_for('questions', org_label=form.organization.label, form_label=form.label) }}"
+                    , data: {
+                        'sorted_questions': JSON.stringify(sorted_questions)
+                        , form_type: "question_ordering"
+                        , _csrf_token: "{{ csrf_token() }}"
+
+                    }
+                    , success: function(message) {
+                        if (message.status == 'success') {
+                            // add a spinner and a checkbox or something
+                        }
+                    }
+                });
+            }
+        });
+
+
 
     });
 

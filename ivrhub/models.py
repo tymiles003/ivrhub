@@ -50,6 +50,7 @@ class Form(Document):
     language = StringField(default = '')
     name = StringField(unique_with='organization')
     organization = ReferenceField(Organization)
+    # have to store questions here as well so we know the order
     questions = ListField(ReferenceField('Question'))
 
 
