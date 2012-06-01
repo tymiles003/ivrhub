@@ -112,8 +112,26 @@ def responses(org_label, form_label, response_sid):
                             ordered_answers.append(answer)
                             continue
 
+                # calculate the duration of the response
+                if response.completion_time:
+                    delta = response.completion_time - response.initiation_time
+                    # format the difference like "03:45"
+                    call_minutes = delta.seconds/60
+                    call_seconds = delta.seconds%60
+                    # see if we need to prepend any zeros
+                    if call_minutes < 10:
+                        call_minutes = '0%s' % call_minutes
+                    
+                    if call_seconds < 10:
+                        call_seconds = '0%s' % call_seconds
+
+                    call_duration = '%s:%s' % (call_minutes, call_seconds)
+
+                else:
+                    call_duration = None
+
                 return render_template('response.html', response=response
-                    , answers=ordered_answers)
+                    , answers=ordered_answers, call_duration=call_duration)
         
         else:
             # no response in particular was specified; show em all
