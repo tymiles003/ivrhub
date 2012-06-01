@@ -21,6 +21,10 @@ def _build_question_twiml(question, twiml_response):
     uses 'with' statement to allow interrupts for gather()
     interrupts not available for twilio's 'say'
     '''
+    # add a pause before each question
+    # allows respondent to bring phone back to ear
+    twiml_response.pause(length=2)
+
     if question.response_type == 'keypad':
         # wrap with a gather
         with twiml_response.gather() as g:
