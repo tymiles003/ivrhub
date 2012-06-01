@@ -164,6 +164,9 @@
                                         <i class='icon-download'></i>
                                     </a>
                                 </div>
+                                
+                            {% elif answer.question.response_type == 'no response' %}
+                                <i>not applicable</i>
                             {% endif %}
                         </td>
                         

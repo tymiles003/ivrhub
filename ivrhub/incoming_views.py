@@ -22,6 +22,7 @@ def _build_question_twiml(question, twiml_response):
     interrupts not available for twilio's 'say'
     '''
     if question.response_type == 'keypad':
+        # wrap with a gather
         with twiml_response.gather() as g:
             if question.prompt_type == 'text_prompt':
                 g.say(question.text_prompt
@@ -33,7 +34,10 @@ def _build_question_twiml(question, twiml_response):
             else:
                 g.say('error, there is no prompt')
 
-    elif question.response_type == 'voice':
+    elif question.response_type == 'voice' or \
+            question.response_type == 'no response':
+
+        # start by saying something
         if question.prompt_type == 'text_prompt':
             twiml_response.say(question.text_prompt
                 , language=question.text_prompt_language)
@@ -44,8 +48,14 @@ def _build_question_twiml(question, twiml_response):
         else:
             twiml_response.say('error, there is no prompt')
         
-        twiml_response.record()
-
+        # listen for a reply if it's a voice type response
+        if question.response_type == 'voice':
+            twiml_response.record()
+        
+        # go back to the server if it's not expecting a response
+        if question.response_type == 'no response':
+            twiml_response.redirect()
+    
     return twiml_response
                 
 
@@ -58,9 +68,6 @@ def _ask_first_question(response, twiml_response):
         twiml_response.hangup()
         return str(twiml_response)
 
-    twiml_response.say('Hello.  This form is called %s. First question.' % 
-        response.form.name)
-    
     # build up the twiml with the first question
     twiml_response = _build_question_twiml(response.form.questions[0]
         , twiml_response)
@@ -181,7 +188,6 @@ def incoming(interaction_type):
                 # that was the last question, hangup
                 response.update(
                     set__completion_time = datetime.datetime.utcnow())
-                twiml_response.say('This form is complete.  Goodbye.')
                 twiml_response.hangup()
                 return str(twiml_response)
             

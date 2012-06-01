@@ -142,6 +142,8 @@
                                 <span class='label label-info'>keypad</span>
                             {% elif question.response_type == 'voice' %}
                                 <span class='label label-warning'>voice</span>
+                            {% elif question.response_type == 'no response' %}
+                                <span class='label label-no-response'>no response</span>
                             {% endif %}
                         </td>
 

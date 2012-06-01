@@ -114,7 +114,14 @@
                                             {% endif %}
                                             > <span class='label label-warning'>voice</span>
                                         </label>
-                                        <p class='help-block'>the respondent will type or speak their answer</p>
+                                        <label class='radio'>
+                                            <input type='radio' name='response_type' value='no response'
+                                            {% if question.response_type == 'no response' %}
+                                                checked
+                                            {% endif %}
+                                            > <span class='label label-no-response'>no repsonse</span>
+                                        </label>
+                                        <p class='help-block'>the respondent will type or speak their answer, or the respondent will just listen</p>
                                     </div>
                                 </div>
                             </div> <!-- /.span4 -->

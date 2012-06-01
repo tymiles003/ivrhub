@@ -36,15 +36,9 @@ class Form(Document):
     '''
     # unique code for requesting this form via sms or a call
     calling_code = StringField()
-    # something to say after asking questions
-    # object is structured like a question without the metdadata
-    conclusion = DictField()
     creation_time = DateTimeField()
     creator = ReferenceField(User)
     description = StringField(default = '')
-    # something to say before asking questions
-    # object is structured like a question without the metdadata
-    intro = DictField()
     # url-safe version of the name
     label = StringField(unique_with='organization')
     language = StringField(default = '')
@@ -67,7 +61,7 @@ class Question(Document):
     name = StringField(unique_with='form')
     # 'text_prompt', 'audio_file' or 'audio_url'
     prompt_type = StringField(default='text_prompt')
-    # 'keypad' or 'voice'
+    # 'keypad' or 'voice' or 'no response'
     response_type = StringField(default='keypad')
     s3_key = StringField()
     s3_url = StringField()
