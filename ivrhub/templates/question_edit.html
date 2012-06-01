@@ -54,7 +54,8 @@
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Save</button>
-                            <a class='btn' href="{{ url_for('forms', org_label=question.form.organization.label, form_label=question.form.label) }}">Cancel</a>
+                            <a class='btn' href="{{ url_for('questions', org_label=question.form.organization.label
+                                , form_label=question.form.label) }}">Cancel</a>
                         </div>
                     </fieldset>
                 </form>
@@ -216,7 +217,8 @@
 
                         <div class='form-actions'>
                             <button type='submit' class='btn btn-success'>Save prompt</button>
-                            <a class='btn' href="{{ url_for('forms', org_label=question.form.organization.label, form_label=question.form.label) }}">Cancel</a>
+                            <a class='btn' href="{{ url_for('questions', org_label=question.form.organization.label
+                                , form_label=question.form.label) }}">Cancel</a>
                         </div>
                     </fieldset>
                 </form>
