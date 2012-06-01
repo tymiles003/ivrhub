@@ -117,6 +117,7 @@ def responses(org_label, form_label, response_sid):
         
         else:
             # no response in particular was specified; show em all
-            responses = Response.objects(form=form)
+            responses = Response.objects(form=form).order_by(
+                '-initiation_time')
             return render_template('form_responses.html', responses=responses
                 , form=form)
