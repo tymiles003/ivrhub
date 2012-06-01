@@ -1,5 +1,13 @@
 {% extends "layout.html" %}
 
+{% block head %}
+<style>
+    .form-name-container {
+        min-width: 180px;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
 <div class='row'>
     <div class='span12'>
@@ -64,7 +72,11 @@
         <tbody>
             {% for form in forms %}
             <tr>
-                <td><a href="{{ url_for('forms', org_label=organization.label, form_label=form.label) }}">{{ form.name }}</a></td>
+                <td>
+                    <div class='form-name-container'>
+                        <a href="{{ url_for('forms', org_label=organization.label, form_label=form.label) }}">{{ form.name }}</a>
+                    </div>
+                </td>
                 <td>
                     {% if form.description %}
                         {{ form.description }}
