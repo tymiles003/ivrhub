@@ -87,6 +87,21 @@ def questions(org_label, form_label, question_label):
             question.name = name
             question.label = str(escape(name).replace(' ', '-')).lower()
             question.description = request.form.get('description', '')
+            
+            # returns to question editing, unlike other form types
+            try:
+                question.save()
+                flash('Question info saved successfully', 'success')
+            except:
+                question.reload()
+                app.logger.error('%s experienced an error saving info \
+                    about question "%s"' % (
+                    session['email'], request.form['name']))
+                flash('Error saving changes, are the names unique?', 'error')
+            
+            return redirect(url_for('questions', org_label=org.label
+                , form_label=form.label, question_label=question.label
+                , edit='true'))
 
         elif form_type == 'prompt':
             # save response type
@@ -213,8 +228,7 @@ def questions(org_label, form_label, question_label):
 
 
                 app.logger.info('question created by %s' % session['email'])
-                flash('Question created; please change the defaults', 
-                    'success')
+                flash('Question created; please change the defaults', 'info')
                 # redirect to the editing screen
                 return redirect(url_for('questions', org_label=org_label
                     , form_label=form.label, question_label=new_question.label
