@@ -21,7 +21,7 @@ def send_forgot_password_link(user):
     ''' user has requested password reset link
     '''
     forgot_url = urlparse.urljoin(app.config['APP_ROOT']
-        , url_for('forgot_password', code=user.forgot_password_code))
+        , url_for('forgot', code=user.forgot_password_code))
 
     body = '''
         Hello!  Someone has recently requested a password reset for %s.  
