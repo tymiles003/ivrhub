@@ -36,7 +36,6 @@ from answer_views import *
 '''
 @app.route('/register', methods=['GET', 'POST'])
 @require_not_logged_in
-@csrf_protect
 def register():
     ''' displays registration page
     sends confirmation email to registrant
