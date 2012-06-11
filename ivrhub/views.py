@@ -194,7 +194,6 @@ def dashboard():
 
 @app.route('/members/', defaults={'internal_id': None})
 @app.route('/members/<internal_id>', methods=['GET', 'POST'])
-@csrf_protect
 @admin_required
 @csrf_protect
 def members(internal_id):
