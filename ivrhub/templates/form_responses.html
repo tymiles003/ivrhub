@@ -49,6 +49,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Initiated</th>
+                        <th>Respondent phone number</th>
                         <th>Status</th>
                         <th>Notes</th>
                     </tr>
@@ -65,6 +66,7 @@
                             </code>
                         </td>
                         <td>{{ response.initiation_time|_format_datetime('short-date-with-time') }}</td>
+                        <td><code>{{ response.respondent_phone_number }}</code></td>
                         <td>
                             {% if response.completion_time %}
                                 <span class='label label-info'>
