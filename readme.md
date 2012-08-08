@@ -1,30 +1,32 @@
 [IVRHub](https://ivrhub.org) is a mobile data collection system built by [Aquaya](http://aquaya.org).
 Surveys are created in a web interface and responses are completed via a phone call.
 Respondents may speak their answers or use their phone's keypad to reply.
-This is a hosted service that requires no on-the-ground hardware installations.
 Respondents can use simple phones to fill out surveys - no special apps are required.
+This is a hosted service that requires no on-the-ground hardware installations.
+All data is private - only team members may view the questions and responses.
 
 We built IVRHub to test phone-based data collection in several different countries.
-This is a great tool for prototyping and quickly gauging the feasibility of an IVR-based solution.
-For projects that can support hardware on the ground and require tens of thousands of respondents
+This is a useful tool for rapid prototyping and quickly gauging the feasibility of an IVR-based solution.
+For projects that can support hardware on the ground and require tens of thousands of respondents,
 we recommend looking at telephony platforms like [FreedomFone](http://www.freedomfone.org).
 
 
 ### Use Cases
 Data collection for water plant operators
 
-1. Project manager sets up a survey and schedule
-2. The survey consists of several spoken questions regarding O&M activities
-3. Every Friday at 4pm, personnel receive a short phone call playing back the
-manager's voice questions and recording their answers
-4. The manager may view the raw responses on the web interface
+* A project manager sets up a survey and schedule
+* The survey consists of several spoken questions regarding O&M activities
+* Every Friday at 4pm, operators receive a short phone call playing back the
+manager's voice questions.  The operator's repsonses are recorded.
+* The manager may view the responses on the web interface
 or in [Pipeline](https://github.com/aquaya/pipeline)
 
 Data collection for mobile staff
 
-1. Auditors check up on rural water supplies
-2. After testing a water source, the auditors call in to IVRHub and select a "blank" form
-3. Their responses are visible on the site for further analysis
+* Auditors check up on rural water supplies
+* After testing a water source, the auditors call in to IVRHub and select a form
+* The form asks the questions and the staff member's responses are recorded 
+* These responses are made visible on the site for further analysis
 
 
 ### Requirements
