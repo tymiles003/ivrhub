@@ -30,6 +30,8 @@ Data collection for mobile staff
 
 
 ### Requirements
+This is for running your own server.  If you would like to use the service, please visit [IVRHub.org](https://ivrhub.org).
+
 Tested on Ubuntu 11.10.
 
 You'll need a locally-running mongodb instance - see their docs for more info.
