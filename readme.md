@@ -42,6 +42,10 @@ after cloning this repo, pull in the dependencies:
     $ git submodule update
 
 
+### Third party services
+If you are running this service you'll need accounts with Twilio and AWS.
+
+
 ### Running locally
 setup a real config file outside of source control
 
