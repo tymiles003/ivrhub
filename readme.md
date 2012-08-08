@@ -1,7 +1,8 @@
-IVRHub is a mobile data collection system.
+IVRHub is a mobile data collection system built by [Aquaya](http://aquaya.org).
 Surveys are created via a web interface and responses are completed via a phone call.
-It is a hosted service that requires no on-the-ground hardware installations.
-Respondents can use simple phones to fill out surveys -- no special apps are required.
+Respondents may speak their answers or use their phone's keypad to reply.
+This is a hosted service that requires no on-the-ground hardware installations.
+Respondents can use simple phones to fill out surveys - no special apps are required.
 
 
 ### Requirements
