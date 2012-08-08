@@ -3,9 +3,10 @@ Surveys are created in a web interface and responses are completed via a phone c
 Respondents may speak their answers or use their phone's keypad to reply.
 This is a hosted service that requires no on-the-ground hardware installations.
 Respondents can use simple phones to fill out surveys - no special apps are required.
+
 We built IVRHub to test phone-based data collection in several different countries.
 This is a great tool for prototyping and quickly gauging the feasibility of an IVR-based solution.
-For projects that can support hardware on the ground and require thousands of respondents
+For projects that can support hardware on the ground and require tens of thousands of respondents
 we recommend looking at telephony platforms like [FreedomFone](http://www.freedomfone.org).
 
 
