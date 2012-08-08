@@ -1,20 +1,26 @@
-flask app skeleton backed by mongodb
+IVRHub is a mobile data collection system.
+Surveys are created via a web interface and responses are completed via a phone call.
+It is a hosted service that requires no on-the-ground hardware installations.
+Respondents can use simple phones to fill out surveys -- no special apps are required.
+
 
 ### Requirements
-first off, you'll need a locally-running mongodb instance
+Tested on Ubuntu 11.10.
 
-use virtualenv and pip
+You'll need a locally-running mongodb instance - see their docs for more info.
+
+use `virtualenv` and `pip` to install other requirements:
 
     $ virtualenv /path/to/venv
     $ pip install -r requirements.txt -E /path/to/venv
 
-after cloning, pull in the dependencies:
+after cloning this repo, pull in the dependencies:
     
     $ git submodule init
     $ git submodule update
 
 
-### Go-time
+### Running locally
 setup a real config file outside of source control
 
     $ cp conf/ivrhub_settings_sample.py /path/to/real/settings.py              
@@ -33,13 +39,13 @@ activate your virtualenv and create the default admin
 start up the server
 
     (venv)$ python run.py
+    * Running on http://127.0.0.1:8000/
 
 
-### Go-time in production
+### Usage in production
 we have some example config files for supervisord, gunicorn, nginx, and fabric -- check those out
 
-
-### Bootstrapping a new server
+Bootstrapping a new server:
  
  - install virtualenv and pip
  - copy over config files for supervisord, gunicorn, nginx and this app
