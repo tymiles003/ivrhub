@@ -1,6 +1,17 @@
 {% extends "layout.html" %}
 
 {% block head %}
+<style>
+    .terms {
+        height: 70px;
+        overflow-y: scroll;
+        background: #f4f4f4;
+        padding: 3px 2px 4px 2px;
+    }
+    .terms p {
+        font-size: 11px;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -34,6 +45,51 @@
                     <label class='control-label' for='password'>Retype Password</label>
                     <div class='controls'>
                         <input type='password' class='span3' name='retype_password' id='retype_password'>
+                    </div>
+                </div>
+
+                <div class='control-group'>
+                    <label class='control-label'>Terms</label>
+                    <div class='controls'>
+                        <div class='terms'>
+                            <p>
+                            By clicking the Sign Up button, you acknowledge 
+                            that our service is based on beta software and you 
+                            agree to all of these terms and conditions of use.  
+                            Aquaya makes no representations, warranties or guarantees 
+                            about the performance, security, reliability, accuracy 
+                            or continuity of our service.  In particular, our 
+                            service is provided "AS IS, WITH ALL FAULTS," 
+                            without any warranty of any kind, express or implied, 
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  
+                            Aquaya reserves the right to pause or terminate our service, 
+                            or to delete your account and/or your data, at any time, 
+                            with or without cause and without notice, and Aquaya shall 
+                            not be liable to you or any third party for any such 
+                            actions.  In addition, Aquaya shall not be liable to 
+                            you or to any third party for any damages, losses, costs 
+                            or expenses, whether direct, indirect, special or consequential, 
+                            that you or any third party may suffer or incur arising 
+                            from or related to your use of our service or arising 
+                            from or related to any service interruption, termination 
+                            of service, loss of data or for any other reason whatsoever.  
+                            Your use of our service is entirely at your own risk.  
+                            If you do not agree to these terms and conditions of, 
+                            please do not click the Sign Up button and do not use our service.  
+                            In accordance with the Digital Millennium Copyright 
+                            Act of 1998 (the "DMCA"), Aquaya has designated an 
+                            agent to receive notifications of alleged copyright 
+                            infringement in accordance with the DMCA.  Any written 
+                            Notification of Claimed Infringement or any counter-notice 
+                            should comply with the requirements of the DMCA and 
+                            should be provided in writing to our designated agent 
+                            as follows:  Mr. Brad Lang, The Aquaya Institute, 
+                            1004B O'Reilly Avenue, San Francisco, CA 94129.  
+                            Phone number: 415 674 9551.  Fax number: 415 674 9552.  
+                            E-mail: Brad@Aquaya.org
+                            </p>
+                        </div>
                     </div>
                 </div>
 
