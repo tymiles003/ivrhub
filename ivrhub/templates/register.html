@@ -17,7 +17,7 @@
 {% block body %}
 <div class='row'>
     <div class='offset3 span6'>
-        <form class='form-horizontal' action="{{ url_for('register') }}" method=post id='registration_form'>
+        <form class='form-horizontal prevent-enter' action="{{ url_for('register') }}" method=post id='registration_form'>
             <fieldset>
                 <legend>Register
                     <small> or <a href="{{ url_for('login') }}">login</a></small>
@@ -135,6 +135,15 @@
                     , message: ''
                     , test: happy.equal('#password')
                 }
+            }
+        });
+
+        // based on the wording of the terms and conditions,
+        // people are required to click the button
+        // pressing enter to submit the registration form must be blocked
+        $('.prevent-enter').keypress(function(e) {
+            if (e.which == 13) {
+                e.preventDefault();
             }
         });
 
