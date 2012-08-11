@@ -79,6 +79,15 @@
         color: #8c8c8c;
       }
 
+      /* adds a "built by" note to the navbar
+      */
+      a.brand {
+        margin-right: -22px;
+      }
+      .topbar-built-by {
+        font-size: 12px;
+      }
+
       .badge-warning, .label-warning {
         background-color: #F0953C;
       }
@@ -129,6 +138,7 @@
         <div class='container'>
           <a class='brand' href="{{url_for('home')}}">IVRHub</a>
           <ul class='nav'>
+            <li class='topbar-built-by'><a href="http://aquaya.org" target=_blank>by Aquaya</a></li>
             {% if config.APP_PHONE_NUMBER %}
               <li>
                 <a>+{{ config.APP_PHONE_NUMBER['country_code'] }} 
