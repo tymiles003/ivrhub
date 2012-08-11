@@ -82,12 +82,21 @@
       /* adds a "built by" note to the navbar
       */
       a.brand {
-        margin-right: -22px;
+        margin-right: -12px;
       }
       .topbar-built-by {
         font-size: 12px;
       }
+      .topbar-built-by img {
+        position: relative;
+        top: -11px;
+        left: -33px;
+        margin-right: -12px;
+      }
 
+
+      /* some custom colors
+      */
       .badge-warning, .label-warning {
         background-color: #F0953C;
       }
@@ -138,15 +147,12 @@
         <div class='container'>
           <a class='brand' href="{{url_for('home')}}">IVRHub</a>
           <ul class='nav'>
-            <li class='topbar-built-by'><a href="http://aquaya.org" target=_blank>by Aquaya</a></li>
-            {% if config.APP_PHONE_NUMBER %}
-              <li>
-                <a>+{{ config.APP_PHONE_NUMBER['country_code'] }} 
-                    ({{ config.APP_PHONE_NUMBER['area_code'] }}) 
-                    {{ config.APP_PHONE_NUMBER['national_number_first'] }}-{{ config.APP_PHONE_NUMBER['national_number_second'] }}
-                </a>
-              </li>
-            {% endif %}
+            <li class='topbar-built-by'>
+              <a href="http://aquaya.org" target=_blank>
+                by aquaya
+                <img height='20' src={{ url_for('static', filename='img/aquaya-logo.png') }} />
+              </a>
+            </li>
             <li class='divider-vertical'></li>
             <li><a href="{{ url_for('about') }}">About</a></li>
             <li><a href="{{ url_for('help') }}">Help</a></li>
@@ -159,6 +165,14 @@
             {% endif %}
           </ul>
           <ul class='nav pull-right'>
+            {% if config.APP_PHONE_NUMBER %}
+              <li>
+                <a>+{{ config.APP_PHONE_NUMBER['country_code'] }} 
+                    ({{ config.APP_PHONE_NUMBER['area_code'] }}) 
+                    {{ config.APP_PHONE_NUMBER['national_number_first'] }}-{{ config.APP_PHONE_NUMBER['national_number_second'] }}
+                </a>
+              </li>
+            {% endif %}
             <li class='divider-vertical'></li>
             {% if session.email %}
             <li class='dropdown'>
