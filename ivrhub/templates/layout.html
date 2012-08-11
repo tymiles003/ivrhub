@@ -4,7 +4,7 @@
     <title>IVRHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap-bootswatch-spacelab.min.css') }}">
     <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap-responsive.css') }}">
 
     <link rel='shortcut icon' href="{{ url_for('static', filename='img/icon.ico') }}">
@@ -77,6 +77,10 @@
       span.divider {
         padding: 0 7px 0 7px;
         color: #8c8c8c;
+      }
+
+      .badge-warning, .label-warning {
+        background-color: #F0953C;
       }
 
       .badge-form, .label-form {
