@@ -25,7 +25,13 @@
 
         <br />
 
-        <p>Check out our <a href="{{ url_for('demo') }}">demo</a> to see more, or feel free to get in touch, contact details are <a href='https://github.com/aquaya'>here</a>.</p>
+        <p>Check out our <a href="{{ url_for('demo') }}">demo</a> to see more, 
+        or feel free to get in touch, contact details are <a href='https://github.com/aquaya'>here</a>.
+        If IVRHub doesn't seem quite right for your data collection needs, 
+        be sure to check out these <a href="{{ url_for('friends') }}">other excellent options</a>.</p>
+
+        <p>The IVRHub source code is freely available as open source software 
+        <a href="https://github.com/aquaya/ivrhub">on github</a>.</p>
     </div>
 
 </div>
@@ -34,11 +40,15 @@
 
 <div class='row'>
     <div class='span10'>
-        <h3>FYI</h3>
-        <p>If IVRHub doesn't seem quite right for your data collection needs, 
-        be sure to check out these <a href="{{ url_for('friends') }}">other excellent options</a>.</p>
-        <p>This is a beta service built by the folks at <a href='http://aquaya.org'>Aquaya</a>.
-        The source code is freely available <a href="https://github.com/aquaya/ivrhub">on github</a> under the MIT license.</p>
+        <h3>Services</h3>
+        <p>Aquaya works with institutions in the water sector to build 
+        capacity for information management and data analysis.</p>
+
+        <p>IVRHub is part of Aquaya's work to support the monitoring and 
+        evaluation of water sector projects. We use domain expertise and technical 
+        knowledge to develop and scale these solutions. Read more about 
+        Aquaya's work in Mobile Water 
+        <a href='http://www.aquaya.org/what-we-do/technology-development/mobile-water'>here</a>.</p>
     </div>
 </div>
 {% endblock %}
