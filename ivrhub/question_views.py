@@ -214,6 +214,14 @@ def questions(org_label, form_label, question_label):
 
         if request.args.get('create', '') == 'true':
             # create a new question
+
+            # CSRF validation:
+            token = request.args.get('token', '')
+            if not verify_token(token):
+                app.logger.error('organization-creation CSRF attempt on %s' %
+                        session['email'])
+                abort(403)
+
             try:
                 question_name = 'qst-%s' % utilities.generate_random_string(6)
                 new_question = Question(

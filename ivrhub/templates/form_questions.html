@@ -68,7 +68,7 @@
     <div class='span12'>
         <h3 class='section-name'>Questions
             <small>click a name to edit, drag the icon to reorder, or <a href="{{ url_for('questions', org_label=form.organization.label, form_label=form.label
-                , create='true') }}">add a new one</a></small>
+                , create='true', token=csrf_token())|safe }}">add a new one</a></small>
         </h3>
         {% if not form.questions %}
             <i>No questions created for this form yet.</i>

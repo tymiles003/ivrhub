@@ -177,6 +177,13 @@ def organizations(org_label):
                     denied for want of admin rights' % session['email'])
                 abort(404)
 
+            # CSRF validation:
+            token = request.args.get('token', '')
+            if not verify_token(token):
+                app.logger.error('organization-creation CSRF attempt on %s' %
+                        session['email'])
+                abort(403)
+
             try:
                 org_name = 'org-%s' % utilities.generate_random_string(6)
                 new_org = Organization(

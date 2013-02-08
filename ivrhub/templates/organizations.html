@@ -13,7 +13,7 @@
             Organizations
             <small>click on a name to edit 
                 {% if session.admin_rights %}
-                or <a href="{{ url_for('organizations', create='true') }}">create a new one</a>
+                or <a href="{{ url_for('organizations', create='true', token=csrf_token())|safe }}">create a new one</a>
                 {% endif %}
             </small>
         </h3>

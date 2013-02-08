@@ -55,7 +55,9 @@
     <br />
 
     <h3 class='section-name'>Forms
-        <small>click a name to view or <a href="{{ url_for('forms', org_label=organization.label, create='true') }}">create a new one</a>
+        <small>click a name to view or 
+            <a href="{{ url_for('forms', org_label=organization.label, create='true', token=csrf_token())|safe }}">
+            create a new one</a>
         </small>
     </h3>
     {% if not forms %}

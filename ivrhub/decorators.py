@@ -71,6 +71,27 @@ def require_not_logged_in(f):
     return decorated_function
 
 
+def verify_token(token):
+    ''' verifies that a submitted CSRF token is valid
+    '''
+    if '-' not in token:
+        return False
+
+    [submitted_salt, submitted_csrf_hash] = token.split('-')
+    # get the user for their API key
+    user = User.objects(email=session['email'])[0]
+    # hash the app's secret with these values
+    m = hashlib.md5()
+    target = (submitted_salt + user.api_key +
+        base64.b64encode(app.config['SECRET_KEY']))
+    m.update(target)
+
+    if submitted_csrf_hash != m.hexdigest():
+        return False
+    else:
+        return True
+
+
 def csrf_protect(f):
     ''' CSRF protection
     from bobince's answer at http://stackoverflow.com/questions/2695153
@@ -80,19 +101,7 @@ def csrf_protect(f):
         if request.method == 'POST':
             if not app.config['TESTING']:
                 submitted_token = request.form.get('_csrf_token', '')
-                [submitted_salt, submitted_csrf_hash] = \
-                    submitted_token.split('-')
-                
-                # get the user for their API key
-                user = User.objects(email=session['email'])[0]
-
-                # hash the app's secret with these values
-                m = hashlib.md5()
-                target = submitted_salt + user.api_key + \
-                    base64.b64encode(app.config['SECRET_KEY'])
-                m.update(target)
-
-                if submitted_csrf_hash != m.hexdigest():
+                if not verify_token(submitted_token):
                     app.logger.error('bad CSRF token')
                     abort(403)
 
